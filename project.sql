@@ -1240,18 +1240,29 @@ and to_char(s.ddate,'yymmdd')=dd and d.peak = CASE
         end
     and d.discount = '정상' and d.sg=sgrade and substr(d.route,1,instr(d.route,'/')-1)=dap and substr(d.route,instr(d.route,'-')+1,instr(d.route,'/',-1)-instr(d.route,'-')-1)=aap and 
       d.timezone = case when to_char( s.ddate , 'hh24mi') >= '1500' then '일반' else '선호' end  and d.wknddy  = case to_char(s.ddate , 'dy') when '월' then '주중' when '화' then '주중' when '수' then '주중' when '목' then '주중' else '주말' end;
-
+   rec vreserv%ROWTYPE;
 begin
+     open vreserv;
+       FETCH vreserv INTO rec;
+     if vreserv%notfound then
+        raise no_data_found ;
+        close vreserv;
+        end if;
+          close vreserv;
         for rec in vreserv loop 
             dbms_output.put_line('출발시각 :'|| rec.출발시각 || ' 도착시각 : ' ||rec.도착시각 || ' 출발공항 :'|| rec.출발공항 ||' 도착공항 :'||rec.도착공항 || ' 소요시간 : '|| rec.소요시간 ||' 정상 운임 : ' ||rec.정상운임 ||' 남은 일등석 갯수 :'|| rec.남은일등석수 ||' 남은 프레스티지석 갯수 :'||rec.남은프레스티지석수||' 남은 일반석 갯수 :'|| rec.남은일반석수  );
         end loop;
-
         
+        exception 
+            when no_data_found then
+            dbms_output.put_line('해당하는 예약 가능한 일정이 없습니다.');
+            when others then
+            dbms_output.put_line('입력 오류입니다.');
 end;
 
 exec mk_scplane_01 ('SEOUL','JEJU','240328',1,'일반석');
 exec mk_scplane_01 ('SEOUL','JEJU','240323',1,'일반석');
-exec mk_scplane_01 ('SEOUL','JEJU','240410',1,'일반석');
+exec mk_scplane_01 ('SEOUL','JEJU','240411',1,'일반석');
 --
 --예약 (결제 ) 기능 
 drop sequence mk_payrefundseq;
