@@ -13,6 +13,7 @@ ALTER TABLE Rfamily DROP CONSTRAINT FK_flightuser_TO_Rfamily_1;
 ALTER TABLE Cservice DROP CONSTRAINT FK_Adminstrator_TO_Cservice_1;
 
 -- 참조 관계가 없는 테이블 삭제
+drop table loginhis;
 DROP TABLE CARD_USE;
 DROP TABLE GIFTCARD;
 DROP TABLE Contract;
@@ -194,7 +195,6 @@ CREATE TABLE Scplane (
     dnation varchar2(100) NOT NULL,
     anation varchar2(100) NOT NULL,
     AdminID varchar2(100) NOT NULL,
-    fare number null,
     fnumber varchar2(100) NOT NULL,
     aairport varchar2(100) NOT NULL,
     dairport varchar2(100) NOT NULL,
@@ -587,28 +587,51 @@ INSERT INTO airplane VALUES (
     ,NULL
 );
 -- 예약 일정 5개
-INSERT INTO Scplane VALUES (1, NULL, TO_DATE('2024-03-20 09:30', 'YYYY-MM-DD HH24:MI'), TO_DATE('2024-03-20 10:45', 'YYYY-MM-DD HH24:MI'), 'Korea', 'Korea', 'admin001', 97000, 'KE1234', 'JEJU.CJU', 'SEOUL.GMP', 23, 2, 'HL7553');
-INSERT INTO Scplane VALUES (2, NULL, TO_DATE('2024-03-23 15:15', 'YYYY-MM-DD HH24:MI'), TO_DATE('2024-03-23 16:30', 'YYYY-MM-DD HH24:MI'), 'Korea', 'Korea', 'admin002', 115000, 'KE5678',  'JEJU.CJU','SEOUL.GMP', 15, 3, 'HL7554');
-INSERT INTO Scplane VALUES (3, '햄버거', TO_DATE('2024-04-09 14:45', 'YYYY-MM-DD HH24:MI'), TO_DATE('2024-04-09 20:00', 'YYYY-MM-DD HH24:MI'), 'Korea', 'Japan', 'admin003', 199000, 'KE9876', 'FUKU.FUK','SEOUL.ICN', 8, 1, 'HL7611');
-INSERT INTO Scplane VALUES (4, '김치찌개', TO_DATE('2024-04-10 09:05', 'YYYY-MM-DD HH24:MI'), TO_DATE('2024-04-10 10:25', 'YYYY-MM-DD HH24:MI'), 'Korea', 'China', 'admin004', 169000, 'KE4321', 'BEIJING.PEK', 'SEOUL.ICN', 12, 4, 'HL8348');
-INSERT INTO Scplane VALUES (5, NULL, TO_DATE('2024-05-03 21:00', 'YYYY-MM-DD HH24:MI'), TO_DATE('2024-05-03 22:15', 'YYYY-MM-DD HH24:MI'), 'Korea', 'Korea', 'admin005', 132000, 'KE8765', 'JEJU.CJU', 'SEOUL.GMP', 20, 2, 'HL8240');
+INSERT INTO Scplane VALUES (1, NULL, TO_DATE('2024-03-20 09:30', 'YYYY-MM-DD HH24:MI'), TO_DATE('2024-03-20 10:45', 'YYYY-MM-DD HH24:MI'), 'Korea', 'Korea', 'admin001', 'KE1234', 'JEJU.CJU', 'SEOUL.GMP', 23, 2, 'HL7553');
+INSERT INTO Scplane VALUES (2, NULL, TO_DATE('2024-03-23 15:15', 'YYYY-MM-DD HH24:MI'), TO_DATE('2024-03-23 16:30', 'YYYY-MM-DD HH24:MI'), 'Korea', 'Korea', 'admin002',  'KE5678',  'JEJU.CJU','SEOUL.GMP', 15, 3, 'HL7554');
+INSERT INTO Scplane VALUES (3, '햄버거', TO_DATE('2024-04-09 14:45', 'YYYY-MM-DD HH24:MI'), TO_DATE('2024-04-09 20:00', 'YYYY-MM-DD HH24:MI'), 'Korea', 'Japan', 'admin003', 'KE9876', 'FUKU.FUK','SEOUL.ICN', 8, 1, 'HL7611');
+INSERT INTO Scplane VALUES (4, '김치찌개', TO_DATE('2024-04-10 09:05', 'YYYY-MM-DD HH24:MI'), TO_DATE('2024-04-10 10:25', 'YYYY-MM-DD HH24:MI'), 'Korea', 'China', 'admin004',  'KE4321', 'BEIJING.PEK', 'SEOUL.ICN', 12, 4, 'HL8348');
+INSERT INTO Scplane VALUES (5, NULL, TO_DATE('2024-05-03 21:00', 'YYYY-MM-DD HH24:MI'), TO_DATE('2024-05-03 22:15', 'YYYY-MM-DD HH24:MI'), 'Korea', 'Korea', 'admin005', 'KE8765', 'JEJU.CJU', 'SEOUL.GMP', 20, 2, 'HL8240');
 INSERT INTO Scplane VALUES 
 (6, NULL, TO_DATE('2024-03-28 06:05', 'YYYY-MM-DD HH24:MI'), TO_DATE('2024-03-28 07:15', 'YYYY-MM-DD HH24:MI')
-, 'Korea', 'Korea', 'admin001', 101000, 'KE5153', 'JEJU.CJU', 'SEOUL.GMP', 23, 2, 'HL7553');
+, 'Korea', 'Korea', 'admin001',  'KE5153', 'JEJU.CJU', 'SEOUL.GMP', 23, 2, 'HL7553');
 INSERT INTO Scplane VALUES 
-(7, NULL, TO_DATE('2024-03-28 08:05', 'YYYY-MM-DD HH24:MI'), TO_DATE('2024-03-28 09:15', 'YYYY-MM-DD HH24:MI')
-, 'Korea', 'Korea', 'admin001', 101000, 'KE5153','JEJU.CJU','SEOUL.GMP', 23, 2, 'HL7553');
+(7, NULL, TO_DATE('2024-03-28 07:05', 'YYYY-MM-DD HH24:MI'), TO_DATE('2024-03-28 08:15', 'YYYY-MM-DD HH24:MI')
+, 'Korea', 'Korea', 'admin001',  'KE5153','JEJU.CJU','SEOUL.GMP', 23, 2, 'HL7553');
 INSERT INTO Scplane VALUES 
-(8, NULL, TO_DATE('2024-03-28 06:05', 'YYYY-MM-DD HH24:MI'), TO_DATE('2024-03-28 07:15', 'YYYY-MM-DD HH24:MI')
-, 'Korea', 'Korea', 'admin001', 101000, 'KE5153','JEJU.CJU', 'SEOUL.GMP',  23, 2, 'HL7553');
+(8, NULL, TO_DATE('2024-03-28 07:25', 'YYYY-MM-DD HH24:MI'), TO_DATE('2024-03-28 08:35', 'YYYY-MM-DD HH24:MI')
+, 'Korea', 'Korea', 'admin001',  'KE5153','JEJU.CJU', 'SEOUL.GMP',  23, 2, 'HL7553');
 INSERT INTO Scplane VALUES 
-(9, NULL, TO_DATE('2024-03-28 06:05', 'YYYY-MM-DD HH24:MI'), TO_DATE('2024-03-28 07:15', 'YYYY-MM-DD HH24:MI')
-, 'Korea', 'Korea', 'admin001', 101000, 'KE5153','JEJU.CJU', 'SEOUL.GMP', 23, 2, 'HL7553');
+(9, NULL, TO_DATE('2024-03-28 08:00', 'YYYY-MM-DD HH24:MI'), TO_DATE('2024-03-28 09:10', 'YYYY-MM-DD HH24:MI')
+, 'Korea', 'Korea', 'admin001',  'KE5153','JEJU.CJU', 'SEOUL.GMP', 23, 2, 'HL7553');
 INSERT INTO Scplane VALUES 
-(10, NULL, TO_DATE('2024-03-28 06:05', 'YYYY-MM-DD HH24:MI'), TO_DATE('2024-03-28 07:15', 'YYYY-MM-DD HH24:MI')
-, 'Korea', 'Korea', 'admin001', 101000, 'KE5153','JEJU.CJU', 'SEOUL.GMP', 23, 2, 'HL7553');
+(10, NULL, TO_DATE('2024-03-28 08:30', 'YYYY-MM-DD HH24:MI'), TO_DATE('2024-03-28 09:40', 'YYYY-MM-DD HH24:MI')
+, 'Korea', 'Korea', 'admin001',  'KE5153','JEJU.CJU', 'SEOUL.GMP', 23, 2, 'HL7553');
 
---select * from scplane;
+-- 일정 삽입 프로시저 
+create or replace procedure mk_scplane_01 
+(
+    pddate date,
+    padate date,
+    pdnation scplane.dnation%type default 'Korea',
+    panation scplane.anation%type,
+    padmin scplane.adminid%type,
+    pfnumber scplane.fnumber%type,
+    pdairport scplane.dairport%type,
+    paairport scplane.aairport%type
+    
+)
+is
+    vnumber varchar2(100);
+    vasnum varchar2(100);
+
+begin
+    select asnum into vasnum from airplane  where rownum=1;
+    select dbms_random.string('x',10) into vnumber from dual ;
+    insert into scplane values (vnumber ,default, pddate, padate ,pdnation,panation,padmin,'KE5153',paairport,pdairport,dbms_random.value(1,30),dbms_random.value(1,6),vasnum);
+end;
+exec mk_scplane_01(to_date ('202404050800','yyyy-mm-dd hh24:mi'), to_date ('202404050925','yyyy-mm-dd hh24:mi') ,'korea' ,'Korea','admin001','asdf','FUK.FUK','SEOUL.ICN');
+select * from scplane;
 ---- 나머지 5개의 데이터
 --INSERT INTO Scplane VALUES 
 --(11, NULL, TO_DATE('2024-03-25 09:00', 'YYYY-MM-DD HH24:MI'), TO_DATE('2024-03-25 11:05', 'YYYY-MM-DD HH24:MI')
@@ -1239,7 +1262,7 @@ a.NCLA_COUNT -(select count(p.renum)  from scplane s,airplane a ,payrefund p,sea
 ) 남은일반석수, 
 d.fare 정상운임 from scplane s,airplane a , dfare d 
 where s.asnum=a.asnum 
-and substr(s.dairport,1,instr(s.dairport,'.')-1)=dap and substr(s.aairport,1,instr(s.aairport,'.')-1)=aap 
+and substr(s.dairport,1,instr(s.dairport,'.')-1)=dap and substr(s.aairport,1,instr(s.aairport,'.')-1)=aap  and sgrade = d.sg 
 and to_char(s.ddate,'yymmdd')=dd and d.peak = CASE
         WHEN to_char(s.ddate, 'yymmdd') = to_date('240101','yymmdd') THEN '성수기'
         WHEN to_char(s.ddate, 'yymmdd') BETWEEN to_date('240208','yymmdd') AND to_date('240213','yymmdd') THEN '성수기'
@@ -1372,11 +1395,11 @@ where s.renum=vrenum and d.peak = CASE
           dbms_output.put_line('마일리지 잔액이 부족합니다.');
 end;
 
-exec mk_payrefund_01('2403200930','GMP','CJU','20A',1,'할인','카드',1);
+exec mk_payrefund_01('2403200930','GMP','CJU','20B',1,'할인','기프트카드',1);
 
 select * from adminstrator;
 select * from userdetail;
-
+select * from scplane;
 SELECT * FROM GIFTCARD;
 update giftcard set amount=50000 where sender = '김철수' ;
 select * from payrefund;
