@@ -1276,7 +1276,11 @@ is
     vpnum payrefund.seatnumber%type;
     occupfiederror exception; 
     nocard exception; 
+    nocardamount exception; 
+    nomile exception; 
+    vamount number;
     cardnumc payrefund.giftcardnumber%type;
+    vmile number;
 begin
      select 
          count(seatnumber)  into vpnum from payrefund p ,scplane s where p.renum = s.renum and pseatnum=p.seatnumber ;
@@ -1307,9 +1311,23 @@ where s.renum=vrenum and d.peak = CASE
         end
     and d.discount = '정상' and substr(d.route,instr(d.route,'/')+1,instr(d.route,'-')-instr(d.route,'/')-1)=pdairport and substr(d.route,instr(d.route,'/',-1)+1)=paairport and 
       d.timezone = case when to_char( s.ddate , 'hh24mi') >= '1500' then '일반' else '선호' end  and d.wknddy  = case to_char(s.ddate , 'dy') when '월' then '주중' when '화' then '주중' when '수' then '주중' when '목' then '주중' else '주말' end;
-
+    
+     if ppmethod = '기프트카드' then 
+      select amount into vamount from giftcard where card_num = pcardnum; 
+        if vamount <vcost then 
+        raise nocardamount ;
+        end if;
+        end if;
+      
+        vcost := (case when pflight = '할인' then vcost*0.85 when pflight = '특가' then vcost *0.55 else vcost end);
+          if ppmethod = '마일리지' then
+            select totalmile into vmile from userdetail where userid = 'user001';
+            if vmile<vcost then 
+                raise nomile;
+                end if;
+            end if ;
     insert into payrefund  values
-    (mk_payrefundseq.nextval, '결제', ppmethod , pflight, pseatnum ,sysdate , pnluggage ,vcost, 0 ,'user001', vrenum, pcardnum);
+    (mk_payrefundseq.nextval, '결제', ppmethod , pflight, pseatnum ,sysdate , pnluggage ,round(vcost,-2), round(vcost*0.005,-1) ,'user001', vrenum, pcardnum);
     dbms_output.put_line('예약이 완료되었습니다.');
     exception
         when no_data_found then
@@ -1318,11 +1336,19 @@ where s.renum=vrenum and d.peak = CASE
          dbms_output.put_line('해당 좌석은 이미 예약되어있습니다.');
           when nocard then
          dbms_output.put_line('입력하신 기프트카드가 없습니다.');
+         when nocardamount then
+          dbms_output.put_line('기프트카드 잔액이 부족합니다.');
+          when nomile then
+          dbms_output.put_line('마일리지 잔액이 부족합니다.');
 end;
 
-exec mk_payrefund_01('2403200930','GMP','CJU','20E',1,'할인','기프트카드',1, '1234-5678-9012-3456');
+exec mk_payrefund_01('2403200930','GMP','CJU','20C',1,'할인','마일리지',1);
+
+
+select * from userdetail;
 
 SELECT * FROM GIFTCARD;
+update giftcard set amount=50000 where sender = '김철수' ;
 select * from payrefund;
 SELECT * FROM MTRACKING;
 DELETE CARD_USE WHERE 1=1;
