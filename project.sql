@@ -70,6 +70,10 @@ CREATE TABLE flightuser (
     Skypassnumber varchar2(200) NOT NULL
 );
 
+CREATE TABLE Loginhis (
+	UserID	varchar2(100)		NOT NULL,
+	logd	varchar2(100)		NULL
+);
 
 CREATE TABLE Cservice (
     CS_num VARCHAR2(4) NOT NULL,
@@ -426,6 +430,9 @@ ALTER TABLE TV ADD CONSTRAINT PK_TV PRIMARY KEY (Title);
 
 ALTER TABLE Music ADD CONSTRAINT PK_MUSIC PRIMARY KEY (Title);
 
+ALTER TABLE Loginhis ADD CONSTRAINT PK_LOGINHIS PRIMARY KEY (UserID);
+
+
 ALTER TABLE Cservice ADD CONSTRAINT FK_Adminstrator_TO_Cservice_1 FOREIGN KEY (AdminID)
 REFERENCES Adminstrator (AdminID) on delete cascade;
 
@@ -628,11 +635,11 @@ INSERT INTO Scplane VALUES
 
 --
 -- 관리자 5개행 삽입
-INSERT INTO Adminstrator VALUES ('admin001', '김', '철수', 'Kim', 'Chulsoo', 'adminpass1', TO_DATE('1990-01-15', 'YYYY-MM-DD'), 'Male', 'chulsoo.kim@example.com', '010-1234-5678', 'Seoul, South Korea', '1234-5678-9012-3456');
-INSERT INTO Adminstrator VALUES ('admin002', '이', '영희', 'Lee', 'Younghee', 'adminpass2', TO_DATE('1985-03-22', 'YYYY-MM-DD'), 'Female', 'younghee.lee@example.com', '010-9876-5432', 'Busan, South Korea', '7890-1234-5678-9012');
-INSERT INTO Adminstrator VALUES ('admin003', '박', '민수', 'Park', 'Minsu', 'adminpass3', TO_DATE('1995-07-10', 'YYYY-MM-DD'), 'Male', 'minsu.park@example.com', '010-5555-1234', 'Incheon, South Korea', '3456-7890-1234-5678');
-INSERT INTO Adminstrator VALUES ('admin004', '장', '서영', 'Jang', 'Seoyoung', 'adminpass4', TO_DATE('1988-11-05', 'YYYY-MM-DD'), 'Female', 'seoyoung.jang@example.com', '010-7777-8888', 'Daejeon, South Korea', '9012-3456-7890-1234');
-INSERT INTO Adminstrator VALUES ('admin005', '윤', '준호', 'Yoon', 'Junho', 'adminpass5', TO_DATE('1992-04-30', 'YYYY-MM-DD'), 'Male', 'junho.yoon@example.com', '010-3333-9999', 'Ulsan, South Korea', '5678-9012-3456-7890');
+INSERT INTO Adminstrator VALUES ('#admin001', '김', '철수', 'Kim', 'Chulsoo', 'adminpass1', TO_DATE('1990-01-15', 'YYYY-MM-DD'), 'Male', 'chulsoo.kim@example.com', '010-1234-5678', 'Seoul, South Korea', '1234-5678-9012-3456');
+INSERT INTO Adminstrator VALUES ('#admin002', '이', '영희', 'Lee', 'Younghee', 'adminpass2', TO_DATE('1985-03-22', 'YYYY-MM-DD'), 'Female', 'younghee.lee@example.com', '010-9876-5432', 'Busan, South Korea', '7890-1234-5678-9012');
+INSERT INTO Adminstrator VALUES ('#admin003', '박', '민수', 'Park', 'Minsu', 'adminpass3', TO_DATE('1995-07-10', 'YYYY-MM-DD'), 'Male', 'minsu.park@example.com', '010-5555-1234', 'Incheon, South Korea', '3456-7890-1234-5678');
+INSERT INTO Adminstrator VALUES ('#admin004', '장', '서영', 'Jang', 'Seoyoung', 'adminpass4', TO_DATE('1988-11-05', 'YYYY-MM-DD'), 'Female', 'seoyoung.jang@example.com', '010-7777-8888', 'Daejeon, South Korea', '9012-3456-7890-1234');
+INSERT INTO Adminstrator VALUES ('#admin005', '윤', '준호', 'Yoon', 'Junho', 'adminpass5', TO_DATE('1992-04-30', 'YYYY-MM-DD'), 'Male', 'junho.yoon@example.com', '010-3333-9999', 'Ulsan, South Korea', '5678-9012-3456-7890');
 
 --
 --국내선 운임 인서트 3개
@@ -763,11 +770,11 @@ INSERT INTO S_Grade VALUES (4, '밀리언 마일러 클럽', 1000000, 40);
 -- 가족 신청 하기 
 
 
-INSERT INTO Rfamily (keynum,relation,family_id,userid) VALUES (1,'부','#id_01','user001');
-INSERT INTO Rfamily (keynum,relation,family_id,userid) VALUES (2,'모','#id_01','user002');
-INSERT INTO Rfamily (keynum,relation,family_id,userid) VALUES (3,'부','#id_02','user003');
-INSERT INTO Rfamily (keynum,relation,family_id,userid) VALUES (4,'모','#id_02','user004');
-INSERT INTO Rfamily (keynum,relation,family_id,userid) VALUES (5,'자','#id_02','user005');
+--INSERT INTO Rfamily (keynum,relation,family_id,userid) VALUES (1,'부','#id_01','user001');
+--INSERT INTO Rfamily (keynum,relation,family_id,userid) VALUES (2,'모','#id_01','user002');
+--INSERT INTO Rfamily (keynum,relation,family_id,userid) VALUES (3,'부','#id_02','user003');
+--INSERT INTO Rfamily (keynum,relation,family_id,userid) VALUES (4,'모','#id_02','user004');
+--INSERT INTO Rfamily (keynum,relation,family_id,userid) VALUES (5,'자','#id_02','user005');
 
 -- 회원 세부 정보 
 INSERT INTO Userdetail (UserID) VALUES ('user001');
@@ -1180,11 +1187,12 @@ create or replace procedure mk_flightuser_02
     vpw flightuser.password%type;
  begin
         select  password into vpw from flightuser where userid=ui;
-        if vpw <> pw then
+        if vpw != pw then
         raise_application_error(-20006,'비밀번호가 일치하지 않습니다.');
         end if;
-      
+        
         dbms_output.put_line('로그인에 성공하였습니다');
+        insert into loginhis values(ui,to_char(sysdate, 'yyyy"년" mm"월" dd"일" hh24"시" mi"분" ss"초"'));
         exception
             when no_data_found then 
             raise_application_error(-20007,'아이디가 존재하지 않습니다.');
@@ -1196,6 +1204,15 @@ exec mk_flightuser_01('user006', '홍', '길동', 'Hong', 'GilDong', 'password12
 exec mk_flightuser_02('user006');
 
 exec mk_flightuser_03('user001','password123');
+--로그아웃 프로시저 -- 
+create or replace procedure mk_loginhis_01
+is
+begin
+    delete loginhis where 1=1;
+end;
+
+exec mk_loginhis_01;
+select * from loginhis;
 
 set serveroutput on;
 
@@ -1292,7 +1309,9 @@ is
     vamount number;
     cardnumc payrefund.giftcardnumber%type;
     vmile number;
+    vuserid varchar2(100);
 begin
+     select userid into vuserid from loginhis ;
      select 
          count(seatnumber)  into vpnum from payrefund p ,scplane s where p.renum = s.renum and pseatnum=p.seatnumber ;
      if  vpnum !=0 then
@@ -1332,13 +1351,13 @@ where s.renum=vrenum and d.peak = CASE
       
         vcost := (case when pflight = '할인' then vcost*0.85 when pflight = '특가' then vcost *0.55 else vcost end);
           if ppmethod = '마일리지' then
-            select totalmile into vmile from userdetail where userid = 'user001';
+            select totalmile into vmile from userdetail where userid = vuserid;
             if vmile<vcost then 
                 raise nomile;
                 end if;
             end if ;
     insert into payrefund  values
-    (mk_payrefundseq.nextval, '결제', ppmethod , pflight, pseatnum ,sysdate , pnluggage ,round(vcost,-2), round(vcost*0.005,-1) ,'user001', vrenum, pcardnum);
+    (mk_payrefundseq.nextval, '결제', ppmethod , pflight, pseatnum ,sysdate , pnluggage ,round(vcost,-2), round(vcost*0.005,-1) ,vuserid, vrenum, pcardnum);
     dbms_output.put_line('예약이 완료되었습니다.');
     exception
         when no_data_found then
@@ -1353,9 +1372,9 @@ where s.renum=vrenum and d.peak = CASE
           dbms_output.put_line('마일리지 잔액이 부족합니다.');
 end;
 
-exec mk_payrefund_01('2403200930','GMP','CJU','20C',1,'할인','마일리지',1);
+exec mk_payrefund_01('2403200930','GMP','CJU','20A',1,'할인','카드',1);
 
-
+select * from adminstrator;
 select * from userdetail;
 
 SELECT * FROM GIFTCARD;
