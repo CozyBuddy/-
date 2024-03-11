@@ -177,7 +177,8 @@ CREATE TABLE payrefund (
     mileage number null,
     UserID varchar2(100) NOT NULL,
     renum number NOT NULL,
-    GIFTCARDNUMBER VARCHAR2(100) NULL
+    GIFTCARDNUMBER VARCHAR2(100) NULL,
+    PIN_NUM number(6) null
 );
 
 CREATE TABLE SEAT_NUM (
@@ -334,11 +335,15 @@ CREATE TABLE Adminstrator (
     Skypassnumber varchar2(200) NOT NULL
 );
 
+
+DROP TABLE USERDEtail;
+
 CREATE TABLE Userdetail (
     UserID varchar2(100) NOT NULL,
     totalmile number DEFAULT 0 NULL,
     usergrade varchar2(100) DEFAULT '스카이패스 클럽' NULL,
-    family_id VARCHAR2(100) NULL
+    family_id VARCHAR2(100) NULL,
+    grade_date DATE DEFAULT SYSDATE NULL
 );
 
 CREATE TABLE S_Grade (
@@ -631,12 +636,12 @@ INSERT INTO Scplane VALUES
 --(15, NULL, TO_DATE('2024-05-20 13:20', 'YYYY-MM-DD HH24:MI'), TO_DATE('2024-05-20 14:30', 'YYYY-MM-DD HH24:MI')
 --, 'Korea', 'Thailand', 'admin010', 101000, 'KE1115', 'GMP', 'CJU', 14, 3, 'HL5721');
 
---결제/예약/환불
---INSERT INTO payrefund VALUES (1, '결제', '카드', '정상', '20A', SYSDATE, 2, 97000, 276, 'user001', 1);
---INSERT INTO payrefund VALUES (2, '결제', '기프트카드', '정상', '21A', SYSDATE, 0, 115000, 150, 'user002', 2);
---INSERT INTO payrefund VALUES (3, '결제', '카드', '정상', '22A', SYSDATE, 1, 199000, 250, 'user003', 3);
---INSERT INTO payrefund VALUES (4, '결제', '마일리지', '정상', '20A', SYSDATE, 0, 169000, 398, 'user004', 4);
---INSERT INTO payrefund VALUES (5, '결제', '기프트카드', '할인', '20A', SYSDATE, 3, 63000, 276, 'user005', 5);
+결제/예약/환불
+INSERT INTO payrefund VALUES (1, '결제', '카드', '정상', '20A', SYSDATE, 2, 97000, 276, 'user001', 1 ,'a');
+INSERT INTO payrefund VALUES (2, '결제', '기프트카드', '정상', '21A', SYSDATE, 0, 115000, 150, 'user002', 2);
+INSERT INTO payrefund VALUES (3, '결제', '카드', '정상', '22A', SYSDATE, 1, 199000, 250, 'user003', 3);
+INSERT INTO payrefund VALUES (4, '결제', '마일리지', '정상', '20A', SYSDATE, 0, 169000, 398, 'user004', 4);
+INSERT INTO payrefund VALUES (5, '결제', '기프트카드', '할인', '20A', SYSDATE, 3, 63000, 276, 'user005', 5);
 
 --
 -- 관리자 5개행 삽입
@@ -1097,16 +1102,22 @@ drop sequence mk_giftcardseq;
 ------------------------------------트리거 목록 ----------------------------------------------------------
 ------------------------------------트리거 목록 ----------------------------------------------------------
 -- 예약 결제 행 업데이트 후 
+select * from mtracking;
 create or replace trigger tr_mk_payrefund_01
 AFTER insert on payrefund
 for each row
+declare 
+    vnum1 number;
+    vnum2 number;
 begin
+     select count(tracking_num)+1 into vnum1 from mtracking;
+     select count(record_num)+1 into vnum2 from card_use;
      if :new.pmethod ='마일리지' then
-     insert into mtracking values(mk_mtrackingseq.nextval , sysdate, :new.mileage,'대한항공','소비','user001');
+     insert into mtracking values(vnum1 , sysdate, :new.mileage,'대한항공','소비','user001');
      elsif :new.pmethod ='카드' then 
-     insert into mtracking values(mk_mtrackingseq.nextval , sysdate, :new.mileage, '대한항공','적립','user001');
+     insert into mtracking values(vnum1 , sysdate, :new.mileage, '대한항공','적립','user001');
      elsif :new.pmethod = '기프트카드' then
-     insert into card_use values ( mk_giftcardseq.nextval,'사용' ,sysdate, :new.cost, :new.giftcardnumber);
+     insert into card_use values ( vnum2,'사용' ,sysdate, :new.cost, :new.giftcardnumber);
      end if;
 end;
 select * from mtracking;
@@ -1211,6 +1222,7 @@ begin
        insert into yesno values ( yesnoseq.nextval,decode(instr(ct2,'3'),0,'거부','동의'),to_char(sysdate,'yyyy-mm-dd'),ui,3);
        insert into yesno values ( yesnoseq.nextval,decode(instr(ct2,'4'),0,'거부','동의'),to_char(sysdate,'yyyy-mm-dd'),ui,4);
        insert into yesno values ( yesnoseq.nextval,decode(instr(ct2,'5'),0,'거부','동의'),to_char(sysdate,'yyyy-mm-dd'),ui,5);
+        dbms_output.put_line('회원가입에 성공하였습니다.');
 end;
 
 --회원 탈퇴 프로시저
@@ -1223,12 +1235,12 @@ create or replace procedure mk_flightuser_02
      vUI flightuser.userid%type;
     vppw flightuser.password%type;
  begin
-    select ui into vui from flightuser where userid=ui;
-    select ppw into vppw from flightuser where userid=vui and ppw= vppw ;
-    if 
-   delete flightuser
-   where userid=ui and password= ppw;
-   exception
+    select userid into vui from flightuser where userid=ui;
+    select password into vppw from flightuser where userid=vui and ppw= password ;
+    delete flightuser
+   where userid=ui;
+    dbms_output.put_line('회원탈퇴가 성공하였습니다..');
+    exception
     when no_data_found then
         dbms_output.put_line('해당하는 회원이 없습니다.');
     when others then
@@ -1236,7 +1248,7 @@ create or replace procedure mk_flightuser_02
  end;
 
  --로그인 프로시저
- 
+ select * from payrefund;
  create or replace procedure mk_flightuser_03
  (
    ui flightuser.userid%type ,
@@ -1256,6 +1268,8 @@ create or replace procedure mk_flightuser_02
         exception
             when no_data_found then 
             raise_application_error(-20007,'아이디가 존재하지 않습니다.');
+             when others then
+             raise_application_error(-20015,'이미 로그인 되어있습니다.');
 end;
 
 
@@ -1266,6 +1280,7 @@ create or replace procedure mk_loginhis_01
 is
 begin
     delete loginhis where 1=1;
+    dbms_output.put_line('로그아웃 하였습니다');
 end;
 
 exec mk_loginhis_01;
@@ -1324,7 +1339,7 @@ begin
         end if;
           close vreserv;
         for rec in vreserv loop 
-            dbms_output.put_line('출발시각 :'|| rec.출발시각 || ' 도착시각 : ' ||rec.도착시각 || ' 출발공항 :'|| rec.출발공항 ||' 도착공항 :'||rec.도착공항 || ' 소요시간 : '|| rec.소요시간 ||' 정상 운임 : ' ||rec.정상운임 ||' 남은 일등석 갯수 :'|| rec.남은일등석수 ||' 남은 프레스티지석 갯수 :'||rec.남은프레스티지석수||' 남은 일반석 갯수 :'|| rec.남은일반석수  );
+            dbms_output.put_line('출발시각 :'|| rec.출발시각 || ' 도착시각 : ' ||rec.도착시각 || ' 출발공항 :'|| rec.출발공항 ||' 도착공항 :'||rec.도착공항 || ' 소요시간 : '|| rec.소요시간 ||' 정상 운임 : ' ||rec.정상운임 ||'원'||'할인 운임 : ' || round(rec.정상운임*0.85,-2) ||'원'||' 특가 운임 : ' ||round(rec.정상운임*0.55,-2)||'원' ||' 남은 일등석 갯수 :'|| rec.남은일등석수 ||' 남은 프레스티지석 갯수 :'||rec.남은프레스티지석수||' 남은 일반석 갯수 :'|| rec.남은일반석수  );
         end loop;
         
         exception 
@@ -1340,8 +1355,6 @@ exec mk_scplane_01 ('SEOUL','JEJU','240411',1,'일반석');
 --
 --예약 (결제 ) 기능 
 drop sequence mk_payrefundseq;
-     create sequence mk_payrefundseq 
-     start with 1 increment by 1 ;
 create or replace procedure mk_payrefund_01
 (
     pddate varchar2,
@@ -1352,7 +1365,8 @@ create or replace procedure mk_payrefund_01
     pflight payrefund.flight%type,
     ppmethod payrefund.pmethod%type,
     pnluggage payrefund.nluggage%type,
-    PCARDNUM PAYrefund.giftcardnumber%type default null
+    PCARDNUM PAYrefund.giftcardnumber%type default null,
+    PPIN_NUMBER giftcard.pin_num%TYPE default null
 )
 
 is
@@ -1367,7 +1381,9 @@ is
     cardnumc payrefund.giftcardnumber%type;
     vmile number;
     vuserid varchar2(100);
+    vpaynum number;
 begin
+    select count(serialnumber)+1 into vpaynum from payrefund;
      select userid into vuserid from loginhis ;
      select 
          count(seatnumber)  into vpnum from payrefund p ,scplane s where p.renum = (select renum from scplane s where to_char(s.ddate ,'YYMMDDhh24mi') =pddate) and pseatnum=p.seatnumber ;
@@ -1395,15 +1411,15 @@ where s.renum=vrenum and d.peak = CASE
         end
     and d.discount = '정상' and substr(d.route,instr(d.route,'/')+1,instr(d.route,'-')-instr(d.route,'/')-1)=pdairport and substr(d.route,instr(d.route,'/',-1)+1)=paairport and 
       d.timezone = case when to_char( s.ddate , 'hh24mi') >= '1500' then '일반' else '선호' end  and d.wknddy  = case to_char(s.ddate , 'dy') when '월' then '주중' when '화' then '주중' when '수' then '주중' when '목' then '주중' else '주말' end;
-     if ppmethod = '기프트카드' then
-        
-        select count(card_num) into cardnumc from giftcard where card_num = pcardnum;
+      if ppmethod = '기프트카드' then
+
+        select count(card_num) into cardnumc from giftcard g where g.card_num = pcardnum and g.pin_num=PPIN_NUMBER ;
          if  cardnumc !=1  then
          raise  nocard ;
          else  select amount into vamount from giftcard where card_num = pcardnum; 
          end if;
          end if;
-         
+      
         if vamount <vcost then 
         raise nocardamount ;
         end if;
@@ -1418,7 +1434,7 @@ where s.renum=vrenum and d.peak = CASE
                 end if;
        
       insert into payrefund  values
-      (mk_payrefundseq.nextval, '결제', ppmethod , pflight, pseatnum ,sysdate , pnluggage ,round(vcost,-2), round(vcost*0.005,-1) ,vuserid, vrenum, pcardnum);
+      (vpaynum, '결제', ppmethod , pflight, pseatnum ,sysdate , pnluggage ,round(vcost,-2), round(vcost*0.005,-1) ,vuserid, vrenum, pcardnum ,PPIN_NUMBER);
      dbms_output.put_line('예약이 완료되었습니다.');
      
     exception
@@ -1435,8 +1451,13 @@ where s.renum=vrenum and d.peak = CASE
           
 end;
 
-exec mk_payrefund_01('2403200930','GMP','CJU','20A',1,'정상','카드',1);
+exec mk_payrefund_01('2403200930','GMP','CJU','20A',1,'정상','기프트카드',1,'1234-5678-9012-3456',123456);
+exec mk_payrefund_01('2403200930','GMP','CJU','20C',1,'정상','기프트카드',1,'1234-5678-9012-3456',123456);
 
+
+
+
+exec mk_flightuser_03('user001','password123');
 select * from dfare;
 select * from loginhis;
 select * from adminstrator;
@@ -1492,6 +1513,8 @@ where userid='user007';
 -------------------------------------------- 실제 실행 ------------------------------------------------------------------
 -------------------------------------------- 실제 실행 ------------------------------------------------------------------
 -------------------------------------------- 실제 실행 ------------------------------------------------------------------
+select * from scplane;
+delete scplane where 1=1;
 --일정 삽입 
 exec mk_scplane_01('202404050800', '202404050925' ,'korea' ,'japan','#admin001','FUK.FUK','SEOUL.ICN');
 exec mk_scplane_01('202404200800', '202404200925' ,'korea' ,'japan','#admin001','FUK.FUK','SEOUL.ICN');
@@ -1513,6 +1536,7 @@ exec mk_scplane_01('202405101840', '202405102005' ,'korea' ,'china','#admin002',
 ---------- 회원가입 --------------------------------------------------
 
 exec mk_flightuser_01('user001', '홍', '길동', 'Hong', 'GilDong', 'password123', TO_DATE('1990-01-01', 'YYYY-MM-DD'), 'Male', 'user001@example.com', '01012345678', 'Korea', '1234-5678-9012-3456',12,35);
+delete flightuser where userid='user001';
 select * from flightuser;
 select * from yesno;
 ----------------회원 탈퇴 ------------------------------
@@ -1545,6 +1569,7 @@ select * from loginhis;
 exec mk_scplane_01 ('SEOUL','JEJU','240328',1,'일반석');
 exec mk_scplane_01 ('SEOUL','JEJU','240323',1,'일반석');
 exec mk_scplane_01 ('SEOUL','JEJU','240411',1,'일반석');
+select * from scplane;
 
 ----------------------------------------------------------
 ----------------------------명건-------------------------------------------------
@@ -1648,9 +1673,11 @@ EXCEPTION
 END;
 ------------------------------------------------------------------------------
 --국제선 운임 테이블 삭제 프로시저
+SELECT *
+FROM ifare;
 --EXEC up_deleteifare(3, '#admin001');
---EXEC up_deleteifare('3~5', '#admin001');
---EXEC up_deleteifare('4,8', '#admin001');
+--EXEC up_deleteifare('5~10', '#admin001');
+--EXEC up_deleteifare('4,11,12,13', '#admin001');
 --한개의 행만 지울때에는 숫자를 매개변수로 받고
 --두개이상 혹은 범위의 행을 지울때에는 ,와 ~를 입력한 문자열로 매개변수를 줄 수 있다.
 CREATE OR REPLACE PROCEDURE up_deleteifare (
@@ -1906,6 +1933,8 @@ END;
 ----------------------------------------------------------------------------------영은
 -- 공지사항 생성, 수정, 삭제, 조회
 -- 공지사항 생성을 위한 프로시저
+
+delete notice where 1=1;
 CREATE OR REPLACE PROCEDURE ye_Notice_01(
     p_Notice_num IN VARCHAR2,
     p_Notice_title IN VARCHAR2,
@@ -1924,8 +1953,10 @@ END;
 
 SET SERVEROUTPUT ON;
 BEGIN
-    ye_Notice_01('10', '새로운 공지사항', '새로운 내용', '새로운 주제', 'admin003');
+    ye_Notice_01('10', '새로운 공지사항', '새로운 내용', '새로운 주제', '#admin003');
 END;
+
+SELECT * FROM notice;
 /
 SET SERVEROUTPUT ON;
 DECLARE
@@ -1992,8 +2023,10 @@ END;
 
 SET SERVEROUTPUT ON;
 BEGIN
-    ye_Notice_04('3');
+    ye_Notice_04('10');
 END;
+SELECT * FROM notice;
+
 -- 약관 추가 및 수정
 CREATE OR REPLACE PROCEDURE ye_Update_Contract (
     p_Contract_code IN NUMBER,
@@ -2023,9 +2056,11 @@ END ye_Update_Contract;
 --
 SET SERVEROUTPUT ON;
 BEGIN
-    ye_Update_Contract(10, '선택', '2023년 02월 15일 추가됨', '추가완료');
+    --ye_Update_Contract(10, '선택', '2023년 02월 15일 추가됨', '추가완료');
     ye_Update_Contract(10, '선택', '2024년 03월 11일 수정됨', '수정완료');
 END;
+
+SELECT * FROM contract;
 
 -------------------------------------------------------------------------------------------
 -------------------------------------------------------------------------------------------
@@ -2234,7 +2269,10 @@ WHEN NO_DATA_FOUND THEN
     RAISE_APPLICATION_ERROR(-20001,'예약/결제 정보가 없습니다. 다시 확인해 주세요.');
 END;
 
-EXEC SE_PAYREFUND_01 (1,TO_DATE('2024-03-20 10:45', 'YYYY-MM-DD HH24:MI'),'Hong', 'GilDong');
+SELECT *
+FROM payrefund;
+
+EXEC SE_PAYREFUND_01 (1,TO_DATE('2024-03-20 09:30', 'YYYY-MM-DD HH24:MI'),'Hong', 'GilDong');
 EXEC SE_PAYREFUND_01 (2,TO_DATE('2024-03-20 10:45', 'YYYY-MM-DD HH24:MI'),'Hong', 'GilDong');
 -------------------------------------------------------------------------------------
 
@@ -2255,7 +2293,7 @@ START WITH 2;
 -- 고객의 말씀 조회
 -- 고객의 말씀 조회
 
-EXEC dc_customerc_01(5);
+EXEC dc_customerc_01(10);
 
 CREATE OR REPLACE PROCEDURE dc_customerc_01
 (
@@ -2343,7 +2381,7 @@ BEGIN
     'KE123'
     );
     END;
-
+select * from customerc;
 -- 고객의 말씀 수정
 
 CREATE OR REPLACE PROCEDURE dc_customerc_03
@@ -2424,7 +2462,7 @@ END;
 
 -- 고객의말씀 DELETE -입력
 
-EXEC dc_customerc_04(3);
+EXEC dc_customerc_04(2);
 
 
 
@@ -2564,11 +2602,12 @@ exec dc_flight_meal_04(4);
 
 
 
-
+ALTER TABLE payrefund ADD PIN_NUM NUMBER(6) NOT NULL;
 
 -- 카드 금액 업데이트
 CREATE SEQUENCE tr_dc_giftcard;
 
+drop trigger tr_dc_giftcard_01;
 CREATE OR REPLACE TRIGGER tr_dc_giftcard_01
 BEFORE INSERT ON payrefund
 FOR EACH ROW
@@ -2607,6 +2646,87 @@ BEGIN
 END;
 
 
+
+
+create or replace procedure mk_payrefund_01
+(
+    pddate varchar2,
+    pdairport scplane.dairport%type,
+    paairport scplane.aairport%type,
+    pseatnum payrefund.seatnumber%type default null,
+    pnum number,
+    pflight payrefund.flight%type,
+    ppmethod payrefund.pmethod%type,
+    pnluggage payrefund.nluggage%type,
+    PCARDNUM PAYrefund.giftcardnumber%type default null,
+    PPIN_NUMBER giftcard.pin_num%TYPE
+)
+
+is
+    vrenum scplane.renum%type;
+    vcost payrefund.cost%type;
+    vpnum payrefund.seatnumber%type;
+    occupfiederror exception; 
+    nocard exception; 
+    cardnumc payrefund.giftcardnumber%type;
+begin
+     select 
+         count(seatnumber)  into vpnum 
+         from payrefund p ,scplane s where p.renum = s.renum and pseatnum=p.seatnumber ;
+     if  vpnum !=0 then
+         raise occupfiederror;
+        end if;
+        select count(card_num) into cardnumc from giftcard ;
+         if  cardnumc !=1  and ppmethod = '기프트카드' then
+         raise  nocard ;
+        end if;
+    select renum  into vrenum 
+    from scplane s where to_char(s.ddate ,'YYMMDDhh24mi') =pddate
+    and substr(s.dairport,instr(s.dairport,'.')+1) = pdairport 
+    and  substr(s.aairport,instr(s.aairport,'.')+1) = paairport ;
+    select d.fare 정상운임 into vcost 
+    from scplane s,dfare d 
+where s.renum=vrenum and d.peak = CASE
+        WHEN to_char(s.ddate, 'yymmdd') = to_date('240101','yymmdd') THEN '성수기'
+        WHEN to_char(s.ddate, 'yymmdd') BETWEEN to_date('240208','yymmdd') AND to_date('240213','yymmdd') THEN '성수기'
+        WHEN to_char(s.ddate, 'yymmdd') BETWEEN to_date('240224','yymmdd') AND to_date('240302','yymmdd') THEN '성수기'
+        WHEN to_char(s.ddate, 'yymmdd') BETWEEN to_date('240503','yymmdd') AND to_date('240506','yymmdd') THEN '성수기'
+        WHEN to_char(s.ddate, 'yymmdd') = to_date('240515','yymmdd') THEN '성수기'
+        WHEN to_char(s.ddate, 'yymmdd') BETWEEN to_Date('240606','yymmdd') AND to_date('240608','yymmdd') THEN '성수기'
+        WHEN to_char(s.ddate, 'yymmdd') BETWEEN to_Date('240727','yymmdd') AND to_date('240824','yymmdd') THEN '성수기'
+        WHEN to_char(s.ddate, 'yymmdd') BETWEEN to_Date('240913','yymmdd')AND to_Date('240919','yymmdd') THEN '성수기'
+        WHEN to_char(s.ddate, 'yymmdd') BETWEEN to_Date('241003','yymmdd') AND to_Date('241005','yymmdd') THEN '성수기'
+        WHEN to_char(s.ddate, 'yymmdd') = to_Date('241009','yymmdd') THEN '성수기'
+        WHEN to_char(s.ddate, 'yymmdd') = to_Date('241225','yymmdd') THEN '성수기'
+        WHEN to_char(s.ddate, 'yymmdd') = to_Date('241231','yymmdd') THEN '성수기'
+        else '비수기'
+        end
+    and d.discount = '정상' and substr(d.route,instr(d.route,'/')+1,instr(d.route,'-')-instr(d.route,'/')-1)=pdairport and substr(d.route,instr(d.route,'/',-1)+1)=paairport and 
+      d.timezone = case when to_char( s.ddate , 'hh24mi') >= '1500' then '일반' else '선호' end  and d.wknddy  = case to_char(s.ddate , 'dy') when '월' then '주중' when '화' then '주중' when '수' then '주중' when '목' then '주중' else '주말' end;
+
+    insert into payrefund  values
+    (mk_payrefundseq.nextval, '결제', ppmethod , pflight, pseatnum ,sysdate , pnluggage ,vcost, 0 ,'user001', vrenum, pcardnum,PPIN_NUMBER);
+    dbms_output.put_line('예약이 완료되었습니다.');
+    exception
+        when no_data_found then
+        dbms_output.put_line('예약가능한 일정이 없습니다');
+        when occupfiederror then
+         dbms_output.put_line('해당 좌석은 이미 예약되어있습니다.');
+          when nocard then
+         dbms_output.put_line('입력하신 기프트카드가 없습니다.');
+end;
+
+exec mk_payrefund_01('2403200930','GMP','CJU','20E',1,'할인','기프트카드',1, '1234-5678-9012-3456',123456);
+exec mk_payrefund_01('2403200930','GMP','CJU','20E',1,'할인','기프트카드',1, '1234-5678-9012-3456',126556);
+
+SELECT * FROM GIFTCARD;
+select * from payrefund;
+SELECT * FROM MTRACKING;
+SELECT * FROM CARD_USE;
+delete payrefund where 1=1;
+DELETE CARD_USE WHERE 1=1;
+
+
 exec mk_payrefund_01('2403200930','GMP','CJU','20E',1,'할인','기프트카드',1, '1234-5678-9012-3456',123456);
 exec mk_payrefund_01('2403200930','GMP','CJU','20E',1,'할인','기프트카드',1, '1234-5678-9012-3456',126556);    -- 핀넘버 불일치
 
@@ -2616,9 +2736,185 @@ exec mk_payrefund_01('2403200930','GMP','CJU','20E',1,'할인','기프트카드'
 ---------------------------------------대안---------------------------------------
 ---------------------------------------대안---------------------------------------
 ---------------------------------------대안---------------------------------------
+-- mtracking insert / userdetail totalmile, clubgrade, 모닝캄 클럽 period update  
+-- EXEC da_Mtracking_03(500000,'대한항공','적립','user001') ;
+
+-- mtracking insert / userdetail totalmile, clubgrade, 모닝캄 클럽 period update  
+-- EXEC da_Mtracking_03(500000,'대한항공','적립','user001') ;
+EXEC pd_da_Rfamily_01('본','user001','user001');
+-- Rfamily insert / userdetail update family_id 
+CREATE OR REPLACE PROCEDURE pd_da_Rfamily_01
+(
+    pRelation Rfamily.relation%TYPE,
+    pfamily_id Rfamily.family_id%TYPE,
+    puserid Rfamily.userid%TYPE
+)
+IS
+    vfamily_id VARCHAR2(20);
+BEGIN
+    vfamily_id := '$' || pfamily_id ;
+    INSERT INTO Rfamily (relation,status, family_id, userid) VALUES(pRelation,'진행중', vfamily_id ,puserid); 
+    
+    UPDATE userdetail
+    SET family_id = vfamily_id
+    WHERE userid = puserid; 
+    
+    COMMIT;
+END;
 
 
+-- EXEC pd_da_Rfamily_03(1,'$user002');
+-- 가족 진행 중과 완료 두 가지로 나누고 이 값을 1. 수정 2. 조회  / 수정할 id -> 진행중 OR 완료 || 조회할 가족 id 만 출력  
+CREATE OR REPLACE PROCEDURE pd_da_Rfamily_03
+(
+    pSearchCondition NUMBER 
+    , psearchWord VARCHAR2
+    , pupdateWord VARCHAR2 DEFAULT NULL
+)
+IS
+    vsql VARCHAR2(100);
+    vcur SYS_REFCURSOR;
+    vrow Rfamily%ROWTYPE;
+BEGIN
+    IF pSearchCondition = 1 THEN
+        vsql := 'UPDATE Rfamily ' ;
+        vsql := vsql || 'SET status = :pupdateWord' ;
+        vsql := vsql || 'WHERE family_id = :psearchWord' ;    
+    ELSIF pSearchCondition = 2 THEN
+        vsql := 'SELECT * ' ;
+        vsql := vsql || ' FROM Rfamily '  ;
+        vsql := vsql || ' WHERE family_id = :psearchWord' ;
+    END IF;
+    
+    IF pupdateWord IS NULL THEN
+        OPEN vcur FOR vsql USING psearchWord;
+        LOOP
+            FETCH vcur INTO vrow;
+            EXIT WHEN vcur%NOTFOUND;
+            DBMS_OUTPUT.PUT_LINE( vrow.family_id || ' ' || vrow.userid || ' ' || vrow.relation || ' ' || vrow.status );
+        END LOOP;
+        CLOSE vcur;
+    ELSIF pupdateWord IS NOT NULL THEN
+        OPEN vcur FOR vsql USING psearchWord, pupdateWord;
+        LOOP
+            FETCH vcur INTO vrow;
+            EXIT WHEN vcur%NOTFOUND;
+            DBMS_OUTPUT.PUT_LINE( vrow.family_id || ' ' || vrow.userid || ' ' || vrow.relation || ' ' || vrow.status );
+        END LOOP;
+        CLOSE vcur;    
+    END IF;
+    EXCEPTION
+        WHEN NO_DATA_FOUND THEN
+            RAISE_APPLICATION_ERROR(-20001, '> Rfamily data not found...');
+END;
 
+-- 가족 삭제 프로시저 
+CREATE OR REPLACE PROCEDURE pd_da_Rfamily_04
+(
+    puserid Rfamily.userid%TYPE
+)
+IS
+BEGIN
+    DELETE FROM Rfamily
+    WHERE userid = puserid;
+END;
+
+-- Mtracking 시퀀스 
+DROP SEQUENCE seq_mtracking;
+
+CREATE SEQUENCE seq_mtracking
+INCREMENT BY 1 
+START WITH 1 
+MINVALUE 1 
+MAXVALUE 9999 
+NOCYCLE
+NOCACHE
+NOORDER;
+
+-- mtracking insert / userdetail totalmile, clubgrade, 모닝캄 클럽 period update  
+-- EXEC da_Mtracking_03(5100000,'대한항공','적립','user001') ;
+-- EXEC da_Mtracking_03(5100000,'대한항공','소비','user001') ;
+
+CREATE OR REPLACE PROCEDURE da_Mtracking_03 -- EXEC da_Mtracking_03(마일리지값, '항공사이름', '적립 또는 소비' , 'userid' ) 
+(
+    pMileage Mtracking.amount_mileage%TYPE,
+    pAirLineType Mtracking.airline_type%TYPE,
+    p_sore Mtracking.spendorearned%TYPE,
+    p_Userid Mtracking.userid%TYPE
+)
+IS
+ curtime DATE;
+ vSum NUMBER;
+ vamount_earned NUMBER;
+ vamount_consume NUMBER;
+ vamount_total NUMBER;
+ vride NUMBER;
+ vGrade VARCHAR2(40);
+ dat DATE;
+ vUserid VARCHAR2(40);
+BEGIN
+    curtime := TO_DATE(SYSDATE, 'yyyy-mm-dd HH24:MI:SS');
+    INSERT INTO MTracking VALUES (seq_mtracking.NEXTVAL, curtime, pMileage, pAirLineType, p_sore, p_Userid);
+    
+    SELECT SUM(amount_mileage) into vamount_earned -- 그 사람의 마일리지 총값 
+    FROM Mtracking 
+    WHERE userid = p_Userid AND spendorearned LIKE '%적립%';
+    
+    SELECT SUM(amount_mileage) into vamount_consume -- 그 사람의 마일리지 총값 
+    FROM Mtracking 
+    WHERE userid = p_Userid AND spendorearned LIKE '%소비%';
+    
+    SELECT COUNT(*) INTO vride
+    FROM Mtracking
+    WHERE userid = p_Userid;
+    
+    UPDATE userdetail
+    SET totalmile = NVL(vamount_earned,0) - NVL(vamount_consume,0)
+    WHERE userid = p_Userid;
+    
+    SELECT usergrade into vGrade
+    FROM userdetail
+    WHERE userid = p_Userid;
+    
+--     등급 체크 
+    IF vamount_earned >= 50000 OR vride >= 40 THEN 
+        IF vamount_earned >= 500000 AND vamount_earned <= 999999 THEN
+            vGrade := '모닝캄 프리미엄 클럽';
+        ELSIF vamount_earned >= 1000000 THEN
+            vGrade := '밀리언 마일러 클럽';
+        ELSIF vGrade = '모닝캄 클럽' AND vamount_earned <= 499999 THEN
+            SELECT grade_date into dat
+            FROM userdetail
+            WHERE userid = p_Userid;
+            IF TO_DATE(SYSDATE, 'YYYY/MM/DD') - TO_DATE(dat, 'YYYY/MM/DD') > 730 THEN 
+                vGrade := '스카이패스 클럽';
+            END IF;
+        ELSE 
+        vGrade := '모닝캄 클럽';
+        UPDATE userdetail
+        SET grade_date = TO_DATE(SYSDATE, 'YYYY/MM/DD')
+        WHERE userid = p_Userid;
+        END IF;
+    END IF;
+    
+    UPDATE userdetail
+    SET usergrade = vGrade
+    WHERE userid = p_Userid;
+    
+    EXCEPTION 
+        WHEN no_data_found THEN
+            ROLLBACK;
+    COMMIT;
+END;
+
+
+insert into userdetail (userid) values('user001');
+
+SELECT *
+FROM userdetail;
+
+select sysdate from dual;
+select to_char( sysdate , 'yyyy"년" mm"월" hh24"시" mi"분"') from dual; 
 SELECT * FROM SCPLANE;
 SELECT * FROM FLIGHTUSER;
 select * from adminstrator;
