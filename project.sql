@@ -1224,7 +1224,7 @@ create or replace procedure mk_flightuser_02
     vppw flightuser.password%type;
  begin
     select ui into vui from flightuser where userid=ui;
-    select ppw into vppw from flightuser where userid=vui and ppw= ;
+    select ppw into vppw from flightuser where userid=vui and ppw= vppw ;
     if 
    delete flightuser
    where userid=ui and password= ppw;
