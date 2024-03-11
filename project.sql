@@ -636,12 +636,12 @@ INSERT INTO Scplane VALUES
 --(15, NULL, TO_DATE('2024-05-20 13:20', 'YYYY-MM-DD HH24:MI'), TO_DATE('2024-05-20 14:30', 'YYYY-MM-DD HH24:MI')
 --, 'Korea', 'Thailand', 'admin010', 101000, 'KE1115', 'GMP', 'CJU', 14, 3, 'HL5721');
 
-결제/예약/환불
-INSERT INTO payrefund VALUES (1, '결제', '카드', '정상', '20A', SYSDATE, 2, 97000, 276, 'user001', 1 ,'a');
-INSERT INTO payrefund VALUES (2, '결제', '기프트카드', '정상', '21A', SYSDATE, 0, 115000, 150, 'user002', 2);
-INSERT INTO payrefund VALUES (3, '결제', '카드', '정상', '22A', SYSDATE, 1, 199000, 250, 'user003', 3);
-INSERT INTO payrefund VALUES (4, '결제', '마일리지', '정상', '20A', SYSDATE, 0, 169000, 398, 'user004', 4);
-INSERT INTO payrefund VALUES (5, '결제', '기프트카드', '할인', '20A', SYSDATE, 3, 63000, 276, 'user005', 5);
+--결제/예약/환불
+--INSERT INTO payrefund VALUES (1, '결제', '카드', '정상', '20A', SYSDATE, 2, 97000, 276, 'user001', 1 ,'a');
+--INSERT INTO payrefund VALUES (2, '결제', '기프트카드', '정상', '21A', SYSDATE, 0, 115000, 150, 'user002', 2);
+--INSERT INTO payrefund VALUES (3, '결제', '카드', '정상', '22A', SYSDATE, 1, 199000, 250, 'user003', 3);
+--INSERT INTO payrefund VALUES (4, '결제', '마일리지', '정상', '20A', SYSDATE, 0, 169000, 398, 'user004', 4);
+--INSERT INTO payrefund VALUES (5, '결제', '기프트카드', '할인', '20A', SYSDATE, 3, 63000, 276, 'user005', 5);
 
 --
 -- 관리자 5개행 삽입
@@ -803,20 +803,20 @@ INSERT INTO SEAT_NUM (SEAT_CODE, asnum, SEAT_NUM, SEAT_GRADE) VALUES ('HL8240-11
 
 
 
--- 일등석 좌석 추가
-INSERT INTO SEAT_NUM (SEAT_CODE, asnum, SEAT_NUM, SEAT_GRADE) VALUES ('HL8240-01A', 'HL8240', '01A', '일등석');
-INSERT INTO SEAT_NUM (SEAT_CODE, asnum, SEAT_NUM, SEAT_GRADE) VALUES ('HL8240-01B', 'HL8240', '01B', '일등석');
-INSERT INTO SEAT_NUM (SEAT_CODE, asnum, SEAT_NUM, SEAT_GRADE) VALUES ('HL8240-01C', 'HL8240', '01C', '일등석');
-
--- 일반석 좌석 추가
-INSERT INTO SEAT_NUM (SEAT_CODE, asnum, SEAT_NUM, SEAT_GRADE) VALUES ('HL8240-20A', 'HL8240', '20A', '일반석');
-INSERT INTO SEAT_NUM (SEAT_CODE, asnum, SEAT_NUM, SEAT_GRADE) VALUES ('HL8240-20B', 'HL8240', '20B', '일반석');
-INSERT INTO SEAT_NUM (SEAT_CODE, asnum, SEAT_NUM, SEAT_GRADE) VALUES ('HL8240-20C', 'HL8240', '20C', '일반석');
-
--- 프레스티지석 좌석 추가
-INSERT INTO SEAT_NUM (SEAT_CODE, asnum, SEAT_NUM, SEAT_GRADE) VALUES ('HL8240-10A', 'HL8240', '10A', '프레스티지석');
-INSERT INTO SEAT_NUM (SEAT_CODE, asnum, SEAT_NUM, SEAT_GRADE) VALUES ('HL8240-10B', 'HL8240', '10B', '프레스티지석');
-INSERT INTO SEAT_NUM (SEAT_CODE, asnum, SEAT_NUM, SEAT_GRADE) VALUES ('HL8240-10C', 'HL8240', '10C', '프레스티지석');
+---- 일등석 좌석 추가
+--INSERT INTO SEAT_NUM (SEAT_CODE, asnum, SEAT_NUM, SEAT_GRADE) VALUES ('HL8240-01A', 'HL8240', '01A', '일등석');
+--INSERT INTO SEAT_NUM (SEAT_CODE, asnum, SEAT_NUM, SEAT_GRADE) VALUES ('HL8240-01B', 'HL8240', '01B', '일등석');
+--INSERT INTO SEAT_NUM (SEAT_CODE, asnum, SEAT_NUM, SEAT_GRADE) VALUES ('HL8240-01C', 'HL8240', '01C', '일등석');
+--
+---- 일반석 좌석 추가
+--INSERT INTO SEAT_NUM (SEAT_CODE, asnum, SEAT_NUM, SEAT_GRADE) VALUES ('HL8240-20A', 'HL8240', '20A', '일반석');
+--INSERT INTO SEAT_NUM (SEAT_CODE, asnum, SEAT_NUM, SEAT_GRADE) VALUES ('HL8240-20B', 'HL8240', '20B', '일반석');
+--INSERT INTO SEAT_NUM (SEAT_CODE, asnum, SEAT_NUM, SEAT_GRADE) VALUES ('HL8240-20C', 'HL8240', '20C', '일반석');
+--
+---- 프레스티지석 좌석 추가
+--INSERT INTO SEAT_NUM (SEAT_CODE, asnum, SEAT_NUM, SEAT_GRADE) VALUES ('HL8240-10A', 'HL8240', '10A', '프레스티지석');
+--INSERT INTO SEAT_NUM (SEAT_CODE, asnum, SEAT_NUM, SEAT_GRADE) VALUES ('HL8240-10B', 'HL8240', '10B', '프레스티지석');
+--INSERT INTO SEAT_NUM (SEAT_CODE, asnum, SEAT_NUM, SEAT_GRADE) VALUES ('HL8240-10C', 'HL8240', '10C', '프레스티지석');
 
 
 -- 클럽등급기준 값 넣기 
@@ -1313,8 +1313,9 @@ create or replace procedure mk_flightuser_02
         raise_application_error(-20006,'비밀번호가 일치하지 않습니다.');
         end if;
         
-        dbms_output.put_line('로그인에 성공하였습니다');
+       
         insert into loginhis values(ui,to_char(sysdate, 'yyyy"년" mm"월" dd"일" hh24"시" mi"분" ss"초"'));
+         dbms_output.put_line('로그인에 성공하였습니다');
         exception
             when no_data_found then 
             raise_application_error(-20007,'아이디가 존재하지 않습니다.');
@@ -1339,17 +1340,87 @@ select * from loginhis;
 set serveroutput on;
 
 --예약 가능 일정 조회 프로시저 (국내선)
-create or replace procedure mk_scplane_01
+--create or replace procedure mk_scplane_01
+--(
+--    dap scplane.dairport%type,
+--    aap scplane.aairport%type,
+--    dd scplane.ddate%type,
+--    anum number,
+--    sgrade seat_num.seat_grade%type
+--)
+--is
+--    vexfee number;
+-- cursor vreserv is
+-- select to_char(s.ddate,'yy/mm/dd hh24:mi') 출발시각, to_char(s.adate,'yy/mm/dd hh24:mi') 도착시각, 
+-- to_char(to_number(to_char(s.adate , 'hh24')) -to_number(to_char(s.ddate , 'hh24')) )||'시간' || to_char(to_number(to_char(s.adate , 'mi')) -to_number(to_char(s.ddate , 'mi'))) || '분' 소요시간,
+-- substr(dairport,instr(dairport,'.')+1) 출발공항,
+-- substr(aairport,instr(aairport,'.')+1) 도착공항,
+-- a.FCLA_COUNT -(select count(p.renum) from scplane s,airplane a ,payrefund p,seat_num sn where s.asnum=a.asnum and s.renum=p.renum and sn.asnum=s.asnum and sn.seat_num=p.seatnumber and substr(s.dairport,1,instr(s.dairport,'.')-1)=dap and substr(s.aairport,1,instr(s.aairport,'.')-1)=aap and to_char(s.ddate,'yymmdd')=dd and sn.seat_grade='일등석'
+--) 남은일등석수 ,
+--a.PreCLA_COUNT -(select count(p.renum)   from scplane s,airplane a ,payrefund p,seat_num sn where s.asnum=a.asnum and s.renum=p.renum and sn.asnum=s.asnum and sn.seat_num=p.seatnumber and substr(s.dairport,1,instr(s.dairport,'.')-1)=dap and substr(s.aairport,1,instr(s.aairport,'.')-1)=aap and to_char(s.ddate,'yymmdd')=dd and sn.seat_grade='프레스티지석'
+--) 남은프레스티지석수 , 
+--a.NCLA_COUNT -(select count(p.renum)  from scplane s,airplane a ,payrefund p,seat_num sn where s.asnum=a.asnum and s.renum=p.renum and sn.asnum=s.asnum and sn.seat_num=p.seatnumber and substr(s.dairport,1,instr(s.dairport,'.')-1)=dap and substr(s.aairport,1,instr(s.aairport,'.')-1)=aap and to_char(s.ddate,'yymmdd')=dd and sn.seat_grade='일반석'
+--) 남은일반석수, 
+-- d.fare 정상운임 from scplane s,airplane a , dfare d 
+--where s.asnum=a.asnum 
+--and substr(s.dairport,1,instr(s.dairport,'.')-1)=dap and substr(s.aairport,1,instr(s.aairport,'.')-1)=aap  and sgrade = d.sg 
+--and to_char(s.ddate,'yymmdd')=dd and d.peak = CASE
+--        WHEN to_char(s.ddate, 'yymmdd') = to_date('240101','yymmdd') THEN '성수기'
+--        WHEN to_char(s.ddate, 'yymmdd') BETWEEN to_date('240208','yymmdd') AND to_date('240213','yymmdd') THEN '성수기'
+--        WHEN to_char(s.ddate, 'yymmdd') BETWEEN to_date('240224','yymmdd') AND to_date('240302','yymmdd') THEN '성수기'
+--        WHEN to_char(s.ddate, 'yymmdd') BETWEEN to_date('240503','yymmdd') AND to_date('240506','yymmdd') THEN '성수기'
+--        WHEN to_char(s.ddate, 'yymmdd') = to_date('240515','yymmdd') THEN '성수기'
+--        WHEN to_char(s.ddate, 'yymmdd') BETWEEN to_Date('240606','yymmdd') AND to_date('240608','yymmdd') THEN '성수기'
+--        WHEN to_char(s.ddate, 'yymmdd') BETWEEN to_Date('240727','yymmdd') AND to_date('240824','yymmdd') THEN '성수기'
+--        WHEN to_char(s.ddate, 'yymmdd') BETWEEN to_Date('240913','yymmdd')AND to_Date('240919','yymmdd') THEN '성수기'
+--        WHEN to_char(s.ddate, 'yymmdd') BETWEEN to_Date('241003','yymmdd') AND to_Date('241005','yymmdd') THEN '성수기'
+--        WHEN to_char(s.ddate, 'yymmdd') = to_Date('241009','yymmdd') THEN '성수기'
+--        WHEN to_char(s.ddate, 'yymmdd') = to_Date('241225','yymmdd') THEN '성수기'
+--        WHEN to_char(s.ddate, 'yymmdd') = to_Date('241231','yymmdd') THEN '성수기'
+--        else '비수기'
+--        end
+--    and d.discount = '정상' and d.sg=sgrade and substr(d.route,1,instr(d.route,'/')-1)=dap and substr(d.route,instr(d.route,'-')+1,instr(d.route,'/',-1)-instr(d.route,'-')-1)=aap and 
+--      d.timezone = case when to_char( s.ddate , 'hh24mi') >= '1500' then '일반' else '선호' end  and d.wknddy  = case to_char(s.ddate , 'dy') when '월' then '주중' when '화' then '주중' when '수' then '주중' when '목' then '주중' else '주말' end;
+--   rec vreserv%ROWTYPE;
+--
+--begin
+--     open vreserv;
+--       FETCH vreserv INTO rec;
+--     if vreserv%notfound then
+--        raise no_data_found ;
+--        close vreserv;
+--        end if;
+--          close vreserv;
+--        for rec in vreserv loop 
+--            dbms_output.put_line('출발시각 :'|| rec.출발시각 || ' 도착시각 : ' ||rec.도착시각 || ' 출발공항 :'|| rec.출발공항 ||' 도착공항 :'||rec.도착공항 || ' 소요시간 : '|| rec.소요시간 ||' 정상 운임 : ' ||rec.정상운임 ||'원'||'할인 운임 : ' || round(rec.정상운임*0.85,-2) ||'원'||' 특가 운임 : ' ||round(rec.정상운임*0.55,-2)||'원' );
+--      
+--       
+--           
+--        
+--    
+--              end loop;
+--            
+--        
+--        exception 
+--            when no_data_found then
+--            dbms_output.put_line('해당하는 예약 가능한 일정이 없습니다.');
+--            when others then
+--            dbms_output.put_line('입력 오류입니다.');
+--end;
+--------------------------------------------------------------------------------
+
+create or replace procedure mk_scplane_02
 (
+  
     dap scplane.dairport%type,
     aap scplane.aairport%type,
     dd scplane.ddate%type,
     anum number,
     sgrade seat_num.seat_grade%type
-)
-is
-    vexfee number;
- cursor vreserv is
+  
+    )
+is 
+    cursor vreserv is
  select to_char(s.ddate,'yy/mm/dd hh24:mi') 출발시각, to_char(s.adate,'yy/mm/dd hh24:mi') 도착시각, 
  to_char(to_number(to_char(s.adate , 'hh24')) -to_number(to_char(s.ddate , 'hh24')) )||'시간' || to_char(to_number(to_char(s.adate , 'mi')) -to_number(to_char(s.ddate , 'mi'))) || '분' 소요시간,
  substr(dairport,instr(dairport,'.')+1) 출발공항,
@@ -1360,8 +1431,9 @@ a.PreCLA_COUNT -(select count(p.renum)   from scplane s,airplane a ,payrefund p,
 ) 남은프레스티지석수 , 
 a.NCLA_COUNT -(select count(p.renum)  from scplane s,airplane a ,payrefund p,seat_num sn where s.asnum=a.asnum and s.renum=p.renum and sn.asnum=s.asnum and sn.seat_num=p.seatnumber and substr(s.dairport,1,instr(s.dairport,'.')-1)=dap and substr(s.aairport,1,instr(s.aairport,'.')-1)=aap and to_char(s.ddate,'yymmdd')=dd and sn.seat_grade='일반석'
 ) 남은일반석수, 
-d.fare 정상운임 from scplane s,airplane a , dfare d 
+ d.fare 정상운임 from scplane s,airplane a , dfare d 
 where s.asnum=a.asnum 
+
 and substr(s.dairport,1,instr(s.dairport,'.')-1)=dap and substr(s.aairport,1,instr(s.aairport,'.')-1)=aap  and sgrade = d.sg 
 and to_char(s.ddate,'yymmdd')=dd and d.peak = CASE
         WHEN to_char(s.ddate, 'yymmdd') = to_date('240101','yymmdd') THEN '성수기'
@@ -1378,11 +1450,27 @@ and to_char(s.ddate,'yymmdd')=dd and d.peak = CASE
         WHEN to_char(s.ddate, 'yymmdd') = to_Date('241231','yymmdd') THEN '성수기'
         else '비수기'
         end
-    and d.discount = '정상' and d.sg=sgrade and substr(d.route,1,instr(d.route,'/')-1)=dap and substr(d.route,instr(d.route,'-')+1,instr(d.route,'/',-1)-instr(d.route,'-')-1)=aap and 
+    and d.discount = '정상'  and 
       d.timezone = case when to_char( s.ddate , 'hh24mi') >= '1500' then '일반' else '선호' end  and d.wknddy  = case to_char(s.ddate , 'dy') when '월' then '주중' when '화' then '주중' when '수' then '주중' when '목' then '주중' else '주말' end;
-   rec vreserv%ROWTYPE;
+      
+      cursor vreserv2 is
+      select to_char(s.ddate,'yy/mm/dd hh24:mi') 출발시각, to_char(s.adate,'yy/mm/dd hh24:mi') 도착시각, 
+ to_char(to_number(to_char(s.adate , 'hh24')) -to_number(to_char(s.ddate , 'hh24')) )||'시간' || to_char(to_number(to_char(s.adate , 'mi')) -to_number(to_char(s.ddate , 'mi'))) || '분' 소요시간,
+ substr(dairport,instr(dairport,'.')+1) 출발공항,
+ substr(aairport,instr(aairport,'.')+1) 도착공항,
+ a.FCLA_COUNT -(select count(p.renum) from scplane s,airplane a ,payrefund p,seat_num sn where s.asnum=a.asnum and s.renum=p.renum and sn.asnum=s.asnum and sn.seat_num=p.seatnumber and substr(s.dairport,1,instr(s.dairport,'.')-1)=dap and substr(s.aairport,1,instr(s.aairport,'.')-1)=aap and to_char(s.ddate,'yymmdd')=dd and sn.seat_grade='일등석'
+) 남은일등석수 ,
+a.PreCLA_COUNT -(select count(p.renum)   from scplane s,airplane a ,payrefund p,seat_num sn where s.asnum=a.asnum and s.renum=p.renum and sn.asnum=s.asnum and sn.seat_num=p.seatnumber and substr(s.dairport,1,instr(s.dairport,'.')-1)=dap and substr(s.aairport,1,instr(s.aairport,'.')-1)=aap and to_char(s.ddate,'yymmdd')=dd and sn.seat_grade='프레스티지석'
+) 남은프레스티지석수 , 
+a.NCLA_COUNT -(select count(p.renum)  from scplane s,airplane a ,payrefund p,seat_num sn where s.asnum=a.asnum and s.renum=p.renum and sn.asnum=s.asnum and sn.seat_num=p.seatnumber and substr(s.dairport,1,instr(s.dairport,'.')-1)=dap and substr(s.aairport,1,instr(s.aairport,'.')-1)=aap and to_char(s.ddate,'yymmdd')=dd and sn.seat_grade='일반석'
+) 남은일반석수,i.fare 정상운임 from scplane s,airplane a , ifare i 
+where s.asnum=a.asnum and substr(s.dairport,instr(s.dairport,'.')+1)=dap and substr(s.aairport,instr(s.aairport,'.')+1)=aap  and sgrade = i.sg and to_char(s.ddate,'yymmdd')=dd;
+     rec vreserv%ROWTYPE;
+     rec2 vreserv2%ROWTYPE;
 begin
-     open vreserv;
+    
+    if aap in ( 'SEOUL','JEJU','INCHEON') THEN 
+         open vreserv;
        FETCH vreserv INTO rec;
      if vreserv%notfound then
         raise no_data_found ;
@@ -1390,29 +1478,63 @@ begin
         end if;
           close vreserv;
         for rec in vreserv loop 
-            dbms_output.put_line('출발시각 :'|| rec.출발시각 || ' 도착시각 : ' ||rec.도착시각 || ' 출발공항 :'|| rec.출발공항 ||' 도착공항 :'||rec.도착공항 || ' 소요시간 : '|| rec.소요시간 ||' 정상 운임 : ' ||rec.정상운임 ||'원'||'할인 운임 : ' || round(rec.정상운임*0.85,-2) ||'원'||' 특가 운임 : ' ||round(rec.정상운임*0.55,-2)||'원' ||' 남은 일등석 갯수 :'|| rec.남은일등석수 ||' 남은 프레스티지석 갯수 :'||rec.남은프레스티지석수||' 남은 일반석 갯수 :'|| rec.남은일반석수  );
-        end loop;
-         select excess_fee into vexfee from L_rule l,R_section r where l.route_section=R.route_section and sgrade = l.seat_grade and r.aairport = 
-            if rec.도착공항 in ( 'ICN','GMP','CJU') then
+            
+           
+            dbms_output.put_line('출발시각 :'|| rec.출발시각 || ' 도착시각 : ' ||rec.도착시각 || ' 출발공항 :'|| rec.출발공항 ||' 도착공항 :'||rec.도착공항 || ' 소요시간 : '|| rec.소요시간 ||' 정상 운임 : ' ||rec.정상운임 ||'원'||'할인 운임 : ' || round(rec.정상운임*0.85,-2) ||'원'||' 특가 운임 : ' ||round(rec.정상운임*0.55,-2)||'원' );
+      
+         --select excess_fee into vexfee from L_rule l,R_section r where l.route_section=R.route_section and sgrade = l.seat_grade;
+     
+           
             dbms_output.put_line(' 무료수화물 갯수는 1개 입니다. 추가 수화물은 체크인시 계산할 수 있습니다.');
-            else 
-            dbms_output.put_line( ' 수화물 추가요금은 다음과 같습니다.');
-            
-            end if;
-            
-             select * from r_section;
-             select * from l_rule;
+           
         
+           
+              end loop;
+        else
+         open vreserv2;
+       FETCH vreserv2 INTO rec2;
+       if vreserv2%notfound then
+        raise no_data_found ;
+        close vreserv2;
+        end if;
+          close vreserv2;
+        for rec2 in vreserv2 loop 
+            
+           
+            dbms_output.put_line('출발시각 :'|| rec2.출발시각 || ' 도착시각 : ' ||rec2.도착시각 || ' 출발공항 :'|| rec2.출발공항 ||' 도착공항 :'||rec2.도착공항 || ' 소요시간 : '|| rec2.소요시간 ||' 정상 운임 : ' ||rec2.정상운임 ||'원'||'할인 운임 : ' || round(rec2.정상운임*0.85,-2) ||'원'||' 특가 운임 : ' ||round(rec2.정상운임*0.55,-2)||'원' );
+        end loop;
+        end if ;
+         
         exception 
             when no_data_found then
             dbms_output.put_line('해당하는 예약 가능한 일정이 없습니다.');
             when others then
             dbms_output.put_line('입력 오류입니다.');
+    
 end;
 
-exec mk_scplane_01 ('SEOUL','JEJU','240328',1,'일반석');
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--------------------------------------------------------------------------------
+
+exec mk_scplane_02 ('SEOUL','FUK','240320',1,'일반석');
+exec mk_scplane_02 ('SEOUL','JEJU','240323',1,'일반석');
 exec mk_scplane_01 ('SEOUL','JEJU','240323',1,'일반석');
-exec mk_scplane_01 ('SEOUL','JEJU','240411',1,'일반석');
+select * from scplane;
 --
 --예약 (결제 ) 기능 
 drop sequence mk_payrefundseq;
