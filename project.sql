@@ -176,7 +176,7 @@ CREATE TABLE payrefund (
     cost number NOT NULL,
     mileage number null,
     UserID varchar2(100) NOT NULL,
-    renum varchar2(10 char) NOT NULL,
+    renum number NOT NULL,
     GIFTCARDNUMBER VARCHAR2(100) NULL
 );
 
@@ -188,7 +188,7 @@ CREATE TABLE SEAT_NUM (
 );
 
 CREATE TABLE Scplane (
-    renum varchar2(10 char) NOT NULL,
+    renum number NOT NULL,
     food varchar2(100) DEFAULT '(기내식 제공없음)' NULL,
     ddate date NOT NULL,
     adate date NOT NULL,
@@ -608,30 +608,7 @@ INSERT INTO Scplane VALUES
 (10, NULL, TO_DATE('2024-03-28 08:30', 'YYYY-MM-DD HH24:MI'), TO_DATE('2024-03-28 09:40', 'YYYY-MM-DD HH24:MI')
 , 'Korea', 'Korea', 'admin001',  'KE5153','JEJU.CJU', 'SEOUL.GMP', 23, 2, 'HL7553');
 
--- 일정 삽입 프로시저 
-create or replace procedure mk_scplane_01 
-(
-    pddate date,
-    padate date,
-    pdnation scplane.dnation%type default 'Korea',
-    panation scplane.anation%type,
-    padmin scplane.adminid%type,
-    pfnumber scplane.fnumber%type,
-    pdairport scplane.dairport%type,
-    paairport scplane.aairport%type
-    
-)
-is
-    vnumber varchar2(100);
-    vasnum varchar2(100);
 
-begin
-    select asnum into vasnum from airplane  where rownum=1;
-    select dbms_random.string('x',10) into vnumber from dual ;
-    insert into scplane values (vnumber ,default, pddate, padate ,pdnation,panation,padmin,'KE5153',paairport,pdairport,dbms_random.value(1,30),dbms_random.value(1,6),vasnum);
-end;
-exec mk_scplane_01(to_date ('202404050800','yyyy-mm-dd hh24:mi'), to_date ('202404050925','yyyy-mm-dd hh24:mi') ,'korea' ,'Korea','admin001','asdf','FUK.FUK','SEOUL.ICN');
-select * from scplane;
 ---- 나머지 5개의 데이터
 --INSERT INTO Scplane VALUES 
 --(11, NULL, TO_DATE('2024-03-25 09:00', 'YYYY-MM-DD HH24:MI'), TO_DATE('2024-03-25 11:05', 'YYYY-MM-DD HH24:MI')
@@ -666,14 +643,14 @@ INSERT INTO Adminstrator VALUES ('#admin005', '윤', '준호', 'Yoon', 'Junho', 
 
 --
 --국내선 운임 인서트 3개
-insert into dfare values (1,'비수기','정상','선호','일반석','SEOUL/GMP-JEJU/CJU',97000,3000,'admin001','주중');
-insert into dfare values (2,'비수기','정상','일반','일반석','SEOUL/GMP-JEJU/CJU',115000,3000,'admin002','주말');
-insert into dfare values (3,'성수기','정상','일반','일반석','SEOUL/GMP-JEJU/CJU',132000,3000,'admin005','주중');
+insert into dfare values (1,'비수기','정상','선호','일반석','SEOUL/GMP-JEJU/CJU',97000,3000,'#admin001','주중');
+insert into dfare values (2,'비수기','정상','일반','일반석','SEOUL/GMP-JEJU/CJU',115000,3000,'#admin002','주말');
+insert into dfare values (3,'성수기','정상','일반','일반석','SEOUL/GMP-JEJU/CJU',132000,3000,'#admin005','주중');
 
 
 --국제선 운임 인서트 2개
-insert into ifare values (1,'ICN','FUK','일반석',150000,110000,20300,21000,'admin003');
-insert into ifare values (2,'ICN','PEK','일반석',235000,172300,22350,35000,'admin004');
+insert into ifare values (1,'ICN','FUK','일반석',150000,110000,20300,21000,'#admin003');
+insert into ifare values (2,'ICN','PEK','일반석',235000,172300,22350,35000,'#admin004');
 
 
 -- 안내 사항 5개
@@ -681,23 +658,23 @@ INSERT INTO notice VALUES ( 1, '한국 입국 세관신고 절차 변경', '2023
  신고할 물품이 없는 경우에는 세관 신고서 없이 면세 라인 이용해 주세요.
  º 필수 신고 품목이 있는 경우에만 세관 신고서 제출 (검사 라인 이용) - 필수 신고 품목 : 미화 8백불 초과 물품, 미화 1만불 초과 외환, 검역물품 등
  º 신고 방법 : App/Web 사전 신고 또는 종이 휴대품 신고서 작성 
- º App 설치 및 Web 접속 방법', '여행정보', 'admin005');
+ º App 설치 및 Web 접속 방법', '여행정보', '#admin005');
 INSERT INTO notice VALUES ( 2, '스카이패스 회원 할인 제휴 변경(키자니아 서울)', '스카이패스 회원 제휴사인 키자니아 서울과의 제휴 내용이 변경됩니다.
  º 스카이패스 회원 할인 적용은 현장 예매 시에만 가능 - 인터넷 사전 예매 시 할인 제공 불가  
- º 반일권 2부 할인율 30%로 인상 ( 2024년 2월 26일 부터) - 반일권 1부 할인율은 20% 유지', '스카이패스', 'admin001');
+ º 반일권 2부 할인율 30%로 인상 ( 2024년 2월 26일 부터) - 반일권 1부 할인율은 20% 유지', '스카이패스', '#admin001');
 INSERT INTO notice VALUES ( 3, '엑설런트 보딩패스 제휴 종료 (쉐이크쉑)', '제휴사 폐점 계획에 따라 쉐이크쉑과의 엑설런트 보딩패스 제휴가 종료됩니다.
  º 제휴사 : 쉐이크쉑 (SHAKE SHACK) 인천국제공항 제2여객터미널 인천공항점
- º 제휴 종료일 : 2024년 3월 30일 º 엑설런트 보딩패스 제휴 혜택은 3월 29일 까지 제공됩니다.', '여행정보', 'admin003');
+ º 제휴 종료일 : 2024년 3월 30일 º 엑설런트 보딩패스 제휴 혜택은 3월 29일 까지 제공됩니다.', '여행정보', '#admin003');
 INSERT INTO notice VALUES ( 4, '카드 영수 일시 중단 (Diners Club, Discover)', '홈페이지에서 항공권 구매 시 Diners club 및 Discover 카드 영수가 일시 중단될 예정입니다.
  º 중단 일자 : 2024년 3월 16일 부 º 중단 사유 : 해당 카드사 심화인증 프로그램 개선 
  * 그 외 클로벌 카드사(Visa, Mastercard, American Express, JCB, UATP)로의 결제는 가능하며 카드사 심화인증 프로그램 개선 작업 후 다시 영수할 예정입니다.(20204년 상반기 내)'
-, '기타안내', 'admin001');
+, '기타안내', '#admin001');
 INSERT INTO notice VALUES ( 5, '신규 마일리지 적립 제휴( 교보문고, 11번가)', '교보문고 및 11번가와 마일리지 적립 제휴를 시행하여,
  대한항공 홈페이지 내 제공된 링크를 통해 쇼핑 시 지불 금액에 따라 스카이패스 마일리지 적립이 가능함을 알려드립니다. 
  <제휴내용> 
   º 교보문고 : 지불 금액 1,000원당 2마일  
   º 11번가 : 지불 금액 1,000원당 1마일'
-, '제휴소식', 'admin002');
+, '제휴소식', '#admin002');
 
 --좌석 입력쿼리
 
@@ -1030,21 +1007,21 @@ INSERT INTO cservice VALUES ('82', '한국', '대한민국', '1588-2001', '02-26
 한국어 : 매일 07:00-22:00 
 영어 : 매일 24시간 
 일본어 : 매일 09:00-19:00(일본 현지시간 기준) 
-중국어 : 매일 08:00-19:00(중국 현지시간 기준)','admin002');
+중국어 : 매일 08:00-19:00(중국 현지시간 기준)','#admin002');
 INSERT INTO cservice VALUES ('81', '동북아시아', '일본', '0570-05-2001', '06-6648-8201', '한국어/영어 : 매일 24시간 
 일본어 : 매일 09:00-19:00 
-중국어 : 매일 08:00-19:00(중국 현지시간 기준)','admin002');
+중국어 : 매일 08:00-19:00(중국 현지시간 기준)','#admin002');
 INSERT INTO cservice (cs_num, area, country_name, cs_call1,lang_time, adminid) VALUES ('852', '동북아시아', '홍콩', '2366-2001', '한국어/영어 : 매일 24시간 
 일본어 : 매일 09:00-19:00(일본 현지시간 기준) 
-중국어(보통화) : 매일 08:00-19:00(중국 현지시간 기준)','admin003');
+중국어(보통화) : 매일 08:00-19:00(중국 현지시간 기준)','#admin003');
 INSERT INTO cservice (cs_num, area, country_name, cs_call1,lang_time, adminid) VALUES ('61', '대양주/괌', '호주', '02-9262-6000', '한국어/영어 : 매일 24시간 
 일본어 : 매일 09:00-19:00(일본 현지시간 기준) 
-중국어 : 매일 08:00-19:00(중국 현지시간 기준)','admin003');
+중국어 : 매일 08:00-19:00(중국 현지시간 기준)','#admin003');
 INSERT INTO cservice VALUES ('7', '러시아/중앙아시아', '러시아', '(모스크바)8-800-500-2510(무료)', '(블라디보스토크)8-4232-433-444', '한국어/영어 : 매일 24시간 
 일본어 : 매일 09:00-19:00(일본 현지시간 기준) 
 중국어 : 매일 08:00-19:00(중국 현지시간 기준) 
 * 현지어 선택 가능
-현지어는 지점의 운영시간에 따라 서비스 제공 시간이 다릅니다.','admin002');
+현지어는 지점의 운영시간에 따라 서비스 제공 시간이 다릅니다.','#admin002');
 
 -- 약관
 INSERT INTO Contract (Contract_code, Essentiality, Contract_title, Contract_contents)
@@ -1104,7 +1081,7 @@ create sequence mk_mtrackingseq
 start with 1 increment by 1 nomaxvalue nocycle;
 create sequence mk_giftcardseq
 start with 1 increment by 1 nomaxvalue nocycle;
-drop sequence yenoseq;
+drop sequence yesnoseq;
 drop sequence mk_mtrackingseq;
 drop sequence mk_giftcardseq;
 
@@ -1147,7 +1124,64 @@ delete mtracking where 1=1;
 ---- 기능 실행 -----------------------------------------------------------------------------------------------------
 ---- 기능 실행 -----------------------------------------------------------------------------------------------------
 
+-----------------------------맑음 --------------------------------------------------
+-----------------------------맑음 --------------------------------------------------
+-----------------------------맑음 --------------------------------------------------
+-----------------------------맑음 --------------------------------------------------
+-----------------------------맑음 --------------------------------------------------
+-----------------------------맑음 --------------------------------------------------
+-----------------------------맑음 --------------------------------------------------
+-----------------------------맑음 --------------------------------------------------
+-----------------------------맑음 --------------------------------------------------
 
+-- 일정 삽입 프로시저 
+create or replace procedure mk_scplane_01 
+(
+    pddate varchar2,
+    padate varchar2,
+    pdnation scplane.dnation%type default 'Korea',
+    panation scplane.anation%type,
+    padmin scplane.adminid%type,
+    pdairport scplane.dairport%type,
+    paairport scplane.aairport%type
+    
+)
+is
+    vnumber varchar2(100);
+    vasnum varchar2(100);
+    vddate date;
+    vadate date;
+    vdnation varchar2(100);
+    vanation varchar2(100);
+    vfood varchar2(100) default '(기내식 제공없음)';
+begin
+    vanation := upper(panation); 
+    if vanation !='KOREA' then
+    select substr(menu,1,instr(menu,'-')-1) into vfood from  (select menu from flight_meal order by dbms_random.value ) where rownum=1;
+    end if ;
+    vddate :=to_date(pddate,'yyyy.mm.dd hh24:mi');
+    vadate :=to_date(padate,'yyyy.mm.dd hh24:mi');
+    select asnum into vasnum from  (select asnum from airplane order by dbms_random.value ) where rownum=1 ;
+    select NVL(max(renum)+1,1) INTO vnumber  from scplane ;
+    insert into scplane values (vnumber ,vfood, vddate,vadate ,upper(pdnation),upper(panation),padmin, substr(initcap(pAnation),1,1) ||upper(dbms_random.string('A',1))||to_char(round(dbms_random.value(1000,9999))),paairport,pdairport,dbms_random.value(1,30),dbms_random.value(1,6),vasnum);
+end;
+exec mk_scplane_01('202404050800', '202404050925' ,'korea' ,'japan','#admin001','FUK.FUK','SEOUL.ICN');
+exec mk_scplane_01('202404200800', '202404200925' ,'korea' ,'japan','#admin001','FUK.FUK','SEOUL.ICN');
+exec mk_scplane_01('202404201835', '202404202000' ,'korea' ,'japan','#admin001','FUK.FUK','SEOUL.ICN');
+exec mk_scplane_01('202403270625', '202403270715' ,'korea' ,'Korea','#admin001','JEJU.CJU','SEOUL.GMP');
+exec mk_scplane_01('202403270915', '202403271025' ,'korea' ,'Korea','#admin001','JEJU.CJU','SEOUL.GMP');
+exec mk_scplane_01('202403271330', '202403271445' ,'korea' ,'Korea','#admin001','JEJU.CJU','SEOUL.GMP');
+exec mk_scplane_01('202404200640', '202404200750' ,'korea' ,'Korea','#admin002','JEJU.CJU','SEOUL.GMP');
+exec mk_scplane_01('202404201300', '202404201410' ,'korea' ,'Korea','#admin002','JEJU.CJU','SEOUL.GMP');
+exec mk_scplane_01('202404201300', '202404201410' ,'korea' ,'Korea','#admin002','JEJU.CJU','SEOUL.GMP');
+exec mk_scplane_01('202404201300', '202404201410' ,'korea' ,'Korea','#admin002','JEJU.CJU','SEOUL.GMP');
+exec mk_scplane_01('202405100905', '202405101025' ,'korea' ,'china','#admin002','BEIJING.PEK','SEOUL.ICN');
+exec mk_scplane_01('202405101040', '202405101205' ,'korea' ,'china','#admin002','BEIJING.PEK','SEOUL.ICN');
+exec mk_scplane_01('202405101840', '202405102005' ,'korea' ,'china','#admin002','BEIJING.PEK','SEOUL.ICN');
+
+select * from flight_meal;
+select * from scplane;
+delete scplane where 1=1;
 --회원가입 프로시저
 create or replace procedure mk_flightuser_01 
 (
@@ -1336,7 +1370,7 @@ is
 begin
      select userid into vuserid from loginhis ;
      select 
-         count(seatnumber)  into vpnum from payrefund p ,scplane s where p.renum = s.renum and pseatnum=p.seatnumber ;
+         count(seatnumber)  into vpnum from payrefund p ,scplane s where p.renum = (select renum from scplane s where to_char(s.ddate ,'YYMMDDhh24mi') =pddate) and pseatnum=p.seatnumber ;
      if  vpnum !=0 then
          raise occupfiederror;
         end if;
@@ -1395,8 +1429,9 @@ where s.renum=vrenum and d.peak = CASE
           dbms_output.put_line('마일리지 잔액이 부족합니다.');
 end;
 
-exec mk_payrefund_01('2403200930','GMP','CJU','20B',1,'할인','기프트카드',1);
+exec mk_payrefund_01('2403231515','GMP','CJU','20A',1,'정상','카드',1);
 
+select * from loginhis;
 select * from adminstrator;
 select * from userdetail;
 select * from scplane;
@@ -1409,6 +1444,22 @@ SELECT * FROM CARD_USE;
 select to_char(ddate,'hh24mi') from scplane;
 delete payrefund where 1=1;
 
+
+
+
+
+
+
+
+-----------------------------맑음 --------------------------------------------------
+-----------------------------맑음 --------------------------------------------------
+-----------------------------맑음 --------------------------------------------------
+-----------------------------맑음 --------------------------------------------------
+-----------------------------맑음 --------------------------------------------------
+-----------------------------맑음 --------------------------------------------------
+-----------------------------맑음 --------------------------------------------------
+-----------------------------맑음 --------------------------------------------------
+-----------------------------맑음 --------------------------------------------------
 -- 지역별 서비스 조회쿼리
 CREATE OR REPLACE PROCEDURE se_cservice_01
 (
