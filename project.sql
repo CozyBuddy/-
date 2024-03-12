@@ -599,7 +599,7 @@ INSERT INTO airplane VALUES (
 delete scplane where 1=1;
 INSERT INTO Scplane VALUES (1, NULL, TO_DATE('2024-03-20 09:30', 'YYYY-MM-DD HH24:MI'), TO_DATE('2024-03-20 10:45', 'YYYY-MM-DD HH24:MI'), 'Korea', 'Korea', 'admin001', 'KE1234', 'JEJU.CJU', 'SEOUL.GMP', 23, 2, 'HL7553');
 INSERT INTO Scplane VALUES (2, NULL, TO_DATE('2024-03-23 15:15', 'YYYY-MM-DD HH24:MI'), TO_DATE('2024-03-23 16:30', 'YYYY-MM-DD HH24:MI'), 'Korea', 'Korea', 'admin002',  'KE5678',  'JEJU.CJU','SEOUL.GMP', 15, 3, 'HL7554');
-INSERT INTO Scplane VALUES (3, '햄버거', TO_DATE('2024-04-09 14:45', 'YYYY-MM-DD HH24:MI'), TO_DATE('2024-04-09 20:00', 'YYYY-MM-DD HH24:MI'), 'Korea', 'Japan', 'admin003', 'KE9876', 'FUKU.FUK','SEOUL.ICN', 8, 1, 'HL7611');
+INSERT INTO Scplane VALUES (3, '햄버거', TO_DATE('2024-04-09 14:45', 'YYYY-MM-DD HH24:MI'), TO_DATE('2024-04-09 20:00', 'YYYY-MM-DD HH24:MI'), 'Korea', 'Japan', 'admin003', 'KE9876', 'FUK.FUK','SEOUL.ICN', 8, 1, 'HL7611');
 INSERT INTO Scplane VALUES (4, '김치찌개', TO_DATE('2024-04-10 09:05', 'YYYY-MM-DD HH24:MI'), TO_DATE('2024-04-10 10:25', 'YYYY-MM-DD HH24:MI'), 'Korea', 'China', 'admin004',  'KE4321', 'BEIJING.PEK', 'SEOUL.ICN', 12, 4, 'HL8348');
 INSERT INTO Scplane VALUES (5, NULL, TO_DATE('2024-05-03 21:00', 'YYYY-MM-DD HH24:MI'), TO_DATE('2024-05-03 22:15', 'YYYY-MM-DD HH24:MI'), 'Korea', 'Korea', 'admin005', 'KE8765', 'JEJU.CJU', 'SEOUL.GMP', 20, 2, 'HL8240');
 INSERT INTO Scplane VALUES 
@@ -619,13 +619,13 @@ INSERT INTO Scplane VALUES
 , 'Korea', 'Korea', 'admin001',  'KE5153','JEJU.CJU', 'SEOUL.GMP', 23, 2, 'HL7553');
 
 
----- 나머지 5개의 데이터
---INSERT INTO Scplane VALUES 
---(11, NULL, TO_DATE('2024-03-25 09:00', 'YYYY-MM-DD HH24:MI'), TO_DATE('2024-03-25 11:05', 'YYYY-MM-DD HH24:MI')
---, 'Korea', 'Japan', 'admin001', 421000, 'KE2468', 'ICN', 'HND', 18, 3, 'HL9102');
---INSERT INTO Scplane VALUES 
---(12, '스테이크', TO_DATE('2024-04-15 11:10', 'YYYY-MM-DD HH24:MI'), TO_DATE('2024-04-15 12:25', 'YYYY-MM-DD HH24:MI')
---, 'Korea', 'CHINA', 'admin001', 166000, 'KE6543', 'ICN', 'PVG', 10, 1, 'HL7321');
+-- 나머지 5개의 데이터
+INSERT INTO Scplane VALUES 
+(11, NULL, TO_DATE('2024-03-25 09:00', 'YYYY-MM-DD HH24:MI'), TO_DATE('2024-03-25 11:05', 'YYYY-MM-DD HH24:MI')
+, 'Korea', 'Japan', 'admin001', 'KE2468', 'FUK.FUK', 'SEOUL.ICN', 18, 3, 'HL7553');
+INSERT INTO Scplane VALUES 
+(12, '스테이크', TO_DATE('2024-04-15 11:10', 'YYYY-MM-DD HH24:MI'), TO_DATE('2024-04-15 12:25', 'YYYY-MM-DD HH24:MI')
+, 'Korea', 'CHINA', 'admin001', 'KE6543', 'BEIJING.PEK','SEOUL.ICN', 10, 1, 'HL8348');
 --INSERT INTO Scplane VALUES 
 --(13, NULL, TO_DATE('2024-05-01 16:30', 'YYYY-MM-DD HH24:MI'), TO_DATE('2024-05-01 17:40', 'YYYY-MM-DD HH24:MI')
 --, 'Korea', 'Korea', 'admin001', 97000, 'KE7890', 'GMP', 'CJU', 25, 4, 'HL8197');
@@ -707,9 +707,9 @@ INSERT INTO SEAT_NUM (SEAT_CODE, asnum, SEAT_NUM, SEAT_GRADE) VALUES ('HL7553-21
 INSERT INTO SEAT_NUM (SEAT_CODE, asnum, SEAT_NUM, SEAT_GRADE) VALUES ('HL7553-10A', 'HL7553', '10A', '프레스티지석');
 INSERT INTO SEAT_NUM (SEAT_CODE, asnum, SEAT_NUM, SEAT_GRADE) VALUES ('HL7553-10B', 'HL7553', '10B', '프레스티지석');
 INSERT INTO SEAT_NUM (SEAT_CODE, asnum, SEAT_NUM, SEAT_GRADE) VALUES ('HL7553-10C', 'HL7553', '10C', '프레스티지석');
-INSERT INTO SEAT_NUM (SEAT_CODE, asnum, SEAT_NUM, SEAT_GRADE) VALUES ('HL7553-10A', 'HL7553', '11A', '프레스티지석');
-INSERT INTO SEAT_NUM (SEAT_CODE, asnum, SEAT_NUM, SEAT_GRADE) VALUES ('HL7553-10B', 'HL7553', '11B', '프레스티지석');
-INSERT INTO SEAT_NUM (SEAT_CODE, asnum, SEAT_NUM, SEAT_GRADE) VALUES ('HL7553-10C', 'HL7553', '11C', '프레스티지석');
+--INSERT INTO SEAT_NUM (SEAT_CODE, asnum, SEAT_NUM, SEAT_GRADE) VALUES ('HL7553-10A', 'HL7553', '11A', '프레스티지석');
+--INSERT INTO SEAT_NUM (SEAT_CODE, asnum, SEAT_NUM, SEAT_GRADE) VALUES ('HL7553-10B', 'HL7553', '11B', '프레스티지석');
+--INSERT INTO SEAT_NUM (SEAT_CODE, asnum, SEAT_NUM, SEAT_GRADE) VALUES ('HL7553-10C', 'HL7553', '11C', '프레스티지석');
 
 -- 일등석
 INSERT INTO SEAT_NUM (SEAT_CODE, asnum, SEAT_NUM, SEAT_GRADE) VALUES ('HL7554-01D', 'HL7554', '01D', '일등석');
@@ -1232,6 +1232,27 @@ begin
     insert into scplane values (vnumber ,vfood, vddate,vadate ,upper(pdnation),upper(panation),padmin, substr(initcap(pAnation),1,1) ||upper(dbms_random.string('A',1))||to_char(round(dbms_random.value(1000,9999))),paairport,pdairport,dbms_random.value(1,30),dbms_random.value(1,6),vasnum);
 end;
 
+exec mk_scplane_01 ('202404190640','202404190750','korea','korea','#admin001','SEOUL.GMP','JEJU.CJU');
+exec mk_scplane_01 ('202404190730','202404190840','korea','korea','#admin001','SEOUL.GMP','JEJU.CJU');
+exec mk_scplane_01 ('202404190730','202404190840','korea','korea','#admin001','SEOUL.GMP','JEJU.CJU');
+exec mk_scplane_01 ('202404191330','202404191440','korea','korea','#admin001','SEOUL.GMP','JEJU.CJU');
+exec mk_scplane_01  ('202404191900','202404192010','korea','korea','#admin001','SEOUL.GMP','JEJU.CJU');
+exec mk_scplane_01  ('202404192030','202404192140','korea','korea','#admin001','SEOUL.GMP','JEJU.CJU');
+exec mk_scplane_01  ('202404050800','202404050925','korea','JAPAN','#admin001','SEOUL.ICN','FUK.FUK');
+exec mk_scplane_01  ('202404051355','202404051525','korea','JAPAN','#admin001','SEOUL.ICN','FUK.FUK');
+exec mk_scplane_01  ('202404051835','202404052000','korea','JAPAN','#admin001','SEOUL.ICN','FUK.FUK');
+exec mk_scplane_01  ('202404200815','202404200940','korea','JAPAN','#admin001','SEOUL.ICN','BEIJING.PEK');
+exec mk_scplane_01  ('202404200905','202404201025','korea','JAPAN','#admin002','SEOUL.ICN','BEIJING.PEK');
+exec mk_scplane_01  ('202404201840','202404202005','korea','JAPAN','#admin002','SEOUL.ICN','BEIJING.PEK');
+exec mk_scplane_01  ('202404201000','202404210020','korea','USA','#admin002','SEOUL.ICN','NYC.JFK');
+exec mk_scplane_01  ('202404201930','202404210930','korea','USA','#admin002','SEOUL.ICN','NYC.JFK');
+exec mk_scplane_01  ('202405100930','202405102330','korea','USA','#admin002','SEOUL.ICN','BOS.BOS');
+exec mk_scplane_01  ('202405100920','202405110340','korea','USA','#admin002','SEOUL.ICN','BOS.BOS');
+exec mk_scplane_01  ('202403271600','202403280633','korea','USA','#admin002','SEOUL.ICN','LAS.LAS');
+exec mk_scplane_01  ('202403271430','202403280631','korea','USA','#admin002','SEOUL.ICN','LAS.LAS');
+exec mk_scplane_01  ('202403271940','202403281200','korea','USA','#admin002','SEOUL.ICN','LAS.LAS');
+
+
 
 select * from flight_meal;
 select * from scplane;
@@ -1422,7 +1443,7 @@ create or replace procedure mk_scplane_02
 is 
     cursor vreserv is
  select to_char(s.ddate,'yy/mm/dd hh24:mi') 출발시각, to_char(s.adate,'yy/mm/dd hh24:mi') 도착시각, 
- to_char(to_number(to_char(s.adate , 'hh24')) -to_number(to_char(s.ddate , 'hh24')) )||'시간' || to_char(to_number(to_char(s.adate , 'mi')) -to_number(to_char(s.ddate , 'mi'))) || '분' 소요시간,
+ to_char(ABS(to_number(-to_char(s.adate , 'hh24')) +to_number(to_char(s.ddate , 'hh24')) + (to_number(to_char(s.adate , 'DD')) -to_number(to_char(s.ddate , 'DD')))*24 ))||'시간' || to_char(ABS(to_number(to_char(s.adate , 'mi')) -to_number(to_char(s.ddate , 'mi')))) || '분' 소요시간,
  substr(dairport,instr(dairport,'.')+1) 출발공항,
  substr(aairport,instr(aairport,'.')+1) 도착공항,
  a.FCLA_COUNT -(select count(p.renum) from scplane s,airplane a ,payrefund p,seat_num sn where s.asnum=a.asnum and s.renum=p.renum and sn.asnum=s.asnum and sn.seat_num=p.seatnumber and substr(s.dairport,1,instr(s.dairport,'.')-1)=dap and substr(s.aairport,1,instr(s.aairport,'.')-1)=aap and to_char(s.ddate,'yymmdd')=dd and sn.seat_grade='일등석'
@@ -1455,7 +1476,7 @@ and to_char(s.ddate,'yymmdd')=dd and d.peak = CASE
       
       cursor vreserv2 is
       select to_char(s.ddate,'yy/mm/dd hh24:mi') 출발시각, to_char(s.adate,'yy/mm/dd hh24:mi') 도착시각, 
- to_char(to_number(to_char(s.adate , 'hh24')) -to_number(to_char(s.ddate , 'hh24')) )||'시간' || to_char(to_number(to_char(s.adate , 'mi')) -to_number(to_char(s.ddate , 'mi'))) || '분' 소요시간,
+ to_char(ABS(to_number(-to_char(s.adate , 'hh24')) +to_number(to_char(s.ddate , 'hh24')) + (to_number(to_char(s.adate , 'DD')) -to_number(to_char(s.ddate , 'DD')))*24 ))||'시간' ||ABS( to_char(to_number(to_char(s.adate , 'mi')) -to_number(to_char(s.ddate , 'mi')))) || '분' 소요시간,
  substr(dairport,instr(dairport,'.')+1) 출발공항,
  substr(aairport,instr(aairport,'.')+1) 도착공항,
  a.FCLA_COUNT -(select count(p.renum) from scplane s,airplane a ,payrefund p,seat_num sn where s.asnum=a.asnum and s.renum=p.renum and sn.asnum=s.asnum and sn.seat_num=p.seatnumber and substr(s.dairport,1,instr(s.dairport,'.')-1)=dap and substr(s.aairport,1,instr(s.aairport,'.')-1)=aap and to_char(s.ddate,'yymmdd')=dd and sn.seat_grade='일등석'
@@ -1464,11 +1485,13 @@ a.PreCLA_COUNT -(select count(p.renum)   from scplane s,airplane a ,payrefund p,
 ) 남은프레스티지석수 , 
 a.NCLA_COUNT -(select count(p.renum)  from scplane s,airplane a ,payrefund p,seat_num sn where s.asnum=a.asnum and s.renum=p.renum and sn.asnum=s.asnum and sn.seat_num=p.seatnumber and substr(s.dairport,1,instr(s.dairport,'.')-1)=dap and substr(s.aairport,1,instr(s.aairport,'.')-1)=aap and to_char(s.ddate,'yymmdd')=dd and sn.seat_grade='일반석'
 ) 남은일반석수,i.fare 정상운임 from scplane s,airplane a , ifare i 
-where s.asnum=a.asnum and substr(s.dairport,instr(s.dairport,'.')+1)=dap and substr(s.aairport,instr(s.aairport,'.')+1)=aap  and sgrade = i.sg and to_char(s.ddate,'yymmdd')=dd;
+where s.asnum=a.asnum and substr(s.dairport,1,instr(s.dairport,'.')-1)=dap and substr(s.aairport,1,instr(s.aairport,'.')-1)=aap   and sgrade = i.sg and to_char(s.ddate,'yymmdd')=dd AND I.ARRIVE = substr(s.aairport,instr(s.aairport,'.')+1);
      rec vreserv%ROWTYPE;
      rec2 vreserv2%ROWTYPE;
+    EF NUMBER ;
+    EF2 VARCHAR2(100) ;
 begin
-    
+
     if aap in ( 'SEOUL','JEJU','INCHEON') THEN 
          open vreserv;
        FETCH vreserv INTO rec;
@@ -1481,16 +1504,12 @@ begin
             
            
             dbms_output.put_line('출발시각 :'|| rec.출발시각 || ' 도착시각 : ' ||rec.도착시각 || ' 출발공항 :'|| rec.출발공항 ||' 도착공항 :'||rec.도착공항 || ' 소요시간 : '|| rec.소요시간 ||' 정상 운임 : ' ||rec.정상운임 ||'원'||'할인 운임 : ' || round(rec.정상운임*0.85,-2) ||'원'||' 특가 운임 : ' ||round(rec.정상운임*0.55,-2)||'원' );
-      
-         --select excess_fee into vexfee from L_rule l,R_section r where l.route_section=R.route_section and sgrade = l.seat_grade;
-     
-           
-            dbms_output.put_line(' 무료수화물 갯수는 1개 입니다. 추가 수화물은 체크인시 계산할 수 있습니다.');
-           
         
-           
-              end loop;
-        else
+         end loop;
+                dbms_output.put_line('                     무료수화물 갯수는 1개 입니다. 
+                추가 수화물은 공항체크인시 초과무게 1KG 당 2000원의 추가요금이 발생합니다!');
+       
+         else
          open vreserv2;
        FETCH vreserv2 INTO rec2;
        if vreserv2%notfound then
@@ -1500,8 +1519,15 @@ begin
           close vreserv2;
         for rec2 in vreserv2 loop 
             
-           
+            
             dbms_output.put_line('출발시각 :'|| rec2.출발시각 || ' 도착시각 : ' ||rec2.도착시각 || ' 출발공항 :'|| rec2.출발공항 ||' 도착공항 :'||rec2.도착공항 || ' 소요시간 : '|| rec2.소요시간 ||' 정상 운임 : ' ||rec2.정상운임 ||'원'||'할인 운임 : ' || round(rec2.정상운임*0.85,-2) ||'원'||' 특가 운임 : ' ||round(rec2.정상운임*0.55,-2)||'원' );
+            
+        end loop;
+            for rec in (select NUMBEROFLUGGAGE , EXCESS_fEE  from l_rule where seat_grade = sgrade and route_section = case when aap in ('BEIJING','FUK') then '국제선 동북아시아' else '국제선 미주' end)  loop
+            ef := rec.numberofluggage ;
+            ef2 := rec.excess_fee ;
+             dbms_output.put_line( '                    수화물 갯수 : ' || ef ||'개 당' || '추가금액 : '|| ef2 || '원');
+                
         end loop;
         end if ;
          
@@ -1527,14 +1553,17 @@ end;
 
 
 
-
+select * from scplane;
 
 --------------------------------------------------------------------------------
 
-exec mk_scplane_02 ('SEOUL','FUK','240320',1,'일반석');
-exec mk_scplane_02 ('SEOUL','JEJU','240323',1,'일반석');
-exec mk_scplane_01 ('SEOUL','JEJU','240323',1,'일반석');
+exec mk_scplane_02 ('SEOUL','FUK','240405',1,'일반석');
+exec mk_scplane_02 ('SEOUL','JEJU','240419',1,'일반석');
+exec mk_scplane_02 ('SEOUL','BEIJING','240420',1,'일반석');
+exec mk_scplane_02 ('SEOUL','NYC','240420',1,'일반석');
 select * from scplane;
+select * from r_section;
+select * from l_rule;
 --
 --예약 (결제 ) 기능 
 drop sequence mk_payrefundseq;
@@ -1635,7 +1664,8 @@ where s.renum=vrenum and d.peak = CASE
 end;
 
 exec mk_payrefund_01('2403200930','GMP','CJU','20A',1,'정상','기프트카드',1,'1234-5678-9012-3456',123456);
-exec mk_payrefund_01('2403200930','GMP','CJU','20D',1,'정상','카드',1);
+
+exec mk_payrefund_01('2403200930','GMP','CJU','20A',1,'정상','카드',1);
 
 
 
