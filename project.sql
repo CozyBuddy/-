@@ -1804,7 +1804,7 @@ create or replace procedure mk_payrefund_04
 is
     vuserid flightuser.userid%type;
     cursor cpayrefund is 
-    select p.pmethod , p.flight ,p.seatnumber ,p.drdate ,p.nluggage , p.cost,s.ddate ,s.adate ,s.dairport, s.aairport from payrefund p ,scplane s where p.userid = ( select userid  from loginhis ) and s.renum = p.renum  AND p.payrefund = '결제' 
+    select p.serialnumber ,p.pmethod , p.flight ,p.seatnumber ,p.drdate ,p.nluggage , p.cost,s.ddate ,s.adate ,s.dairport, s.aairport from payrefund p ,scplane s where p.userid = ( select userid  from loginhis ) and s.renum = p.renum  AND p.payrefund = '결제' 
     and not exists( select 1 from payrefund pr where pr.payrefund = '환불' AND pr.userid = (SELECT userid FROM loginhis) AND pr.seatnumber = p.seatnumber and pr.renum=p.renum and 0= (select mod(count(serialnumber),2) from payrefund pr2 where pr2.userid = ( select userid  from loginhis ) and p.renum = pr2.renum  and( pr2.payrefund = '결제' or pr2.payrefund ='환불')))  ;
     rec cpayrefund%rowtype;
     vnumber number :=0;
@@ -1815,7 +1815,7 @@ begin
         dbms_output.put_line( vuserid ||'회원님의 예약 내역입니다');
        for rec in cpayrefund loop
          vnumber := vnumber +1;
-            dbms_output.put_line( vnumber|| '번 예약 ' ||' 결제수단 : ' || rec.pmethod ||' 정상,할인,특가여부 : ' || rec.flight || ' 출발공항 :' || rec.dairport ||' 도착공항 : ' || rec.aairport ||' 결제일자 :' || to_char(rec.drdate , 'yyyy"년" mm"월" dd"일" hh24"시" mi"분" ss"초" ' ) || ' 결제금액 :' || rec.cost||'원' );
+            dbms_output.put_line( rec.serialnumber || '번 예약 ' ||' 결제수단 : ' || rec.pmethod ||' 정상,할인,특가여부 : ' || rec.flight || ' 출발공항 :' || rec.dairport ||' 도착공항 : ' || rec.aairport ||' 결제일자 :' || to_char(rec.drdate , 'yyyy"년" mm"월" dd"일" hh24"시" mi"분" ss"초" ' ) || ' 결제금액 :' || rec.cost||'원' );
          
        end loop;
 end;
@@ -1828,7 +1828,7 @@ create or replace procedure mk_payrefund_03
 )
 is
   cursor vrefund is 
-    select p.* from payrefund p ,scplane s where p.userid = ( select userid  from loginhis ) and s.renum = p.renum  AND p.payrefund = '결제' and rownum = pnumber 
+    select p.* from payrefund p ,scplane s where p.userid = ( select userid  from loginhis ) and s.renum = p.renum  AND p.payrefund = '결제'  and serialnumber=pnumber
     and not exists( select 1 from payrefund pr where pr.payrefund = '환불' AND pr.userid = (SELECT userid FROM loginhis) AND pr.seatnumber = p.seatnumber and pr.renum=p.renum and 0= (select mod(count(serialnumber),2) from payrefund pr2 where pr2.userid = ( select userid  from loginhis ) and p.renum = pr2.renum  and( pr2.payrefund = '결제' or pr2.payrefund ='환불')))  ;
     v_row vrefund%ROWTYPE;
   v_number number;
@@ -2327,7 +2327,7 @@ select * from payrefund;
 -------------------------------------------------
 -------------------------------------------------
 ------------------------------예약 환불 ----------------
-exec mk_payrefund_03(1);
+exec mk_payrefund_03(4);
 delete payrefund ;
 --------------------------------예약 후 탑승권 발급
 --------------------------------예약 후 탑승권 발급
