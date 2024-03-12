@@ -1187,16 +1187,7 @@ VALUES ('8', '동의', TO_DATE('2024.03.08', 'YYYY.MM.DD'), 'user001', 8);
 -------기능 실행 전 미리 만들어야하는 수열 ----------------------------------------------------------------------------
 -------기능 실행 전 미리 만들어야하는 수열 ----------------------------------------------------------------------------
 -------기능 실행 전 미리 만들어야하는 수열 ----------------------------------------------------------------------------
-drop sequence yesnoseq;
-drop sequence mk_mtrackingseq;
-drop sequence mk_giftcardseq;
--- 약관용 수열
-create sequence yesnoseq
-start with 1 increment by 1 nomaxvalue nocycle;
-create sequence mk_mtrackingseq
-start with 1 increment by 1 nomaxvalue nocycle;
-create sequence mk_giftcardseq
-start with 1 increment by 1 nomaxvalue nocycle;
+
 
 
 
@@ -1212,13 +1203,15 @@ for each row
 declare 
     vnum1 number;
     vnum2 number;
+    vuserid varchar2(100);
 begin
      select count(tracking_num)+1 into vnum1 from mtracking;
      select count(record_num)+1 into vnum2 from card_use;
+        select userid into vuserid from loginhis ;
      if :new.pmethod ='마일리지' then
-     insert into mtracking values(vnum1 , sysdate, :new.mileage,'대한항공','소비','user001');
+     insert into mtracking values(vnum1 , sysdate, :new.mileage,'대한항공','소비', vuserid);
      elsif :new.pmethod ='카드' then 
-     insert into mtracking values(vnum1 , sysdate, :new.mileage, '대한항공','적립','user001');
+     insert into mtracking values(vnum1 , sysdate, :new.mileage, '대한항공','적립',vuserid);
      elsif :new.pmethod = '기프트카드' then
      insert into card_use values ( vnum2,'사용' ,sysdate, :new.cost, :new.giftcardnumber);
      end if;
@@ -1236,7 +1229,7 @@ end;
  end;
  
  -------------결제 (payrefund ) 환불시 마일리지 혹은 기프트카드 내역에서 환불추가---
-  create or replace trigger tr_mk_payrefund_01 
+  create or replace trigger tr_mk_payrefund_02
   after delete on payrefund 
   for each row 
   declare 
@@ -1369,15 +1362,22 @@ is
     vdnation varchar2(100);
     vanation varchar2(100);
     vfood varchar2(100) default '(기내식 제공없음)';
+    vcheck number(10);
 begin
+    select count(renum) into vcheck from scplane where pddate = to_char(ddate,'yyyymmddhh24mi') and padate = to_char(adate,'yyyymmddhh24mi') and substr(dairport ,instr(dairport ,'.')+1) =substr(pdairport ,instr(pdairport ,'.')+1) and substr(aairport ,instr(aairport ,'.')+1) =substr(paairport ,instr(paairport ,'.')+1) ;
+    if vcheck !=0 then
+    raise_application_error ( -20022 , '중복된 일정이 존재합니다');
+    end if;
     vanation := upper(panation); 
     if vanation !='KOREA' then
     select substr(menu,1,instr(menu,'-')-1) into vfood from  (select menu from flight_meal order by dbms_random.value ) where rownum=1;
     end if ;
     vddate :=to_date(pddate,'yyyy.mm.dd hh24:mi');
     vadate :=to_date(padate,'yyyy.mm.dd hh24:mi');
+    
     select asnum into vasnum from  (select asnum from airplane order by dbms_random.value ) where rownum=1 ;
     select NVL(max(renum)+1,1) INTO vnumber  from scplane ;
+    
     insert into scplane values (vnumber ,vfood, vddate,vadate ,upper(pdnation),upper(panation),padmin, substr(initcap(pAnation),1,1) ||upper(dbms_random.string('A',1))||to_char(round(dbms_random.value(1000,9999))),paairport,pdairport,dbms_random.value(1,30),dbms_random.value(1,6),vasnum);
 end;
 
@@ -1405,14 +1405,19 @@ create or replace procedure mk_flightuser_01
 )
 is
   vui flightuser.userid%type;
+  vnum number;
 begin
     if ct1<>12 then 
         raise_application_error(-20003,' 필수 약관 미동의 회원가입 진행 불가');
      end if;
-      select userid into vui from flightuser where userid=ui ;
-     if ui=vui then
-        raise_application_error(-20002,' 유저Id 중복 오류');
-    end if;
+        select count(userid) into vnum from flightuser where userid=ui;
+        if vnum =1 then
+          raise_application_error(-20002,' 유저Id 중복 오류');
+        else
+         select userid into vui from flightuser where userid=ui;
+        end if;
+      
+  
     exception 
         when no_data_found then
        insert into flightuser values ( ui,kl,kf,lne,fn,pw,bd,gd,ea1,pn,at1,spn);
@@ -1474,7 +1479,7 @@ end;
 
 
 
-exec mk_flightuser_03('user001','password123');
+
 --로그아웃 프로시저 -- 
 create or replace procedure mk_loginhis_01
 is
@@ -1570,7 +1575,7 @@ create or replace procedure mk_scplane_02
 is 
     cursor vreserv is
  select to_char(s.ddate,'yy/mm/dd hh24:mi') 출발시각, to_char(s.adate,'yy/mm/dd hh24:mi') 도착시각, 
- to_char(ABS(to_number(-to_char(s.adate , 'hh24')) +to_number(to_char(s.ddate , 'hh24')) + (to_number(to_char(s.adate , 'DD')) -to_number(to_char(s.ddate , 'DD')))*24 ))||'시간' || to_char(ABS(to_number(to_char(s.adate , 'mi')) -to_number(to_char(s.ddate , 'mi')))) || '분' 소요시간,
+ to_char( (to_number(to_char(s.adate , 'DD')) -to_number(to_char(s.ddate , 'DD')))*24 + to_number(to_char(s.adate , 'hh24'))-to_number(to_char(s.ddate , 'hh24'))) + case when sign(to_number(to_char(s.adate , 'mi')) -to_number(to_char(s.ddate , 'mi'))) <0 then (-1) else 0 end ||'시간' || to_char(ABS(to_number(to_char(s.adate , 'mi')) -to_number(to_char(s.ddate , 'mi')))) || '분' 소요시간,
  substr(dairport,instr(dairport,'.')+1) 출발공항,
  substr(aairport,instr(aairport,'.')+1) 도착공항,
  a.FCLA_COUNT -(select count(p.renum) from scplane s,airplane a ,payrefund p,seat_num sn where s.asnum=a.asnum and s.renum=p.renum and sn.asnum=s.asnum and sn.seat_num=p.seatnumber and substr(s.dairport,1,instr(s.dairport,'.')-1)=dap and substr(s.aairport,1,instr(s.aairport,'.')-1)=aap and to_char(s.ddate,'yymmdd')=dd and sn.seat_grade='일등석'
@@ -1603,7 +1608,7 @@ and to_char(s.ddate,'yymmdd')=dd and d.peak = CASE
       
       cursor vreserv2 is
       select to_char(s.ddate,'yy/mm/dd hh24:mi') 출발시각, to_char(s.adate,'yy/mm/dd hh24:mi') 도착시각, 
- to_char(ABS(to_number(-to_char(s.adate , 'hh24')) +to_number(to_char(s.ddate , 'hh24')) + (to_number(to_char(s.adate , 'DD')) -to_number(to_char(s.ddate , 'DD')))*24 ))||'시간' ||ABS( to_char(to_number(to_char(s.adate , 'mi')) -to_number(to_char(s.ddate , 'mi')))) || '분' 소요시간,
+ to_char( (to_number(to_char(s.adate , 'DD')) -to_number(to_char(s.ddate , 'DD')))*24 + to_number(to_char(s.adate , 'hh24'))-to_number(to_char(s.ddate , 'hh24'))) + case when sign(to_number(to_char(s.adate , 'mi')) -to_number(to_char(s.ddate , 'mi'))) <0 then (-1) else 0 end ||'시간' ||ABS( to_char(to_number(to_char(s.adate , 'mi')) -to_number(to_char(s.ddate , 'mi')))) || '분' 소요시간,
  substr(dairport,instr(dairport,'.')+1) 출발공항,
  substr(aairport,instr(aairport,'.')+1) 도착공항,
  a.FCLA_COUNT -(select count(p.renum) from scplane s,airplane a ,payrefund p,seat_num sn where s.asnum=a.asnum and s.renum=p.renum and sn.asnum=s.asnum and sn.seat_num=p.seatnumber and substr(s.dairport,1,instr(s.dairport,'.')-1)=dap and substr(s.aairport,1,instr(s.aairport,'.')-1)=aap and to_char(s.ddate,'yymmdd')=dd and sn.seat_grade='일등석'
@@ -1685,7 +1690,7 @@ end;
 
 --
 --예약 (결제 ) 기능 
-drop sequence mk_payrefundseq;
+
 create or replace procedure mk_payrefund_01
 (
     pddate varchar2,
@@ -1799,15 +1804,17 @@ create or replace procedure mk_payrefund_04
 is
     vuserid flightuser.userid%type;
     cursor cpayrefund is 
-    select p.pmethod , p.flight ,p.seatnumber ,p.drdate ,p.nluggage , p.cost,s.ddate ,s.adate ,s.dairport, s.aairport from payrefund p ,scplane s where p.userid = ( select userid  from loginhis ) and s.renum = p.renum  AND p.payrefund = '결제' and not exists( select 1 from payrefund pr where pr.payrefund = '환불' AND pr.userid = (SELECT userid FROM loginhis) AND pr.drdate = p.drdate )  ;
+    select p.pmethod , p.flight ,p.seatnumber ,p.drdate ,p.nluggage , p.cost,s.ddate ,s.adate ,s.dairport, s.aairport from payrefund p ,scplane s where p.userid = ( select userid  from loginhis ) and s.renum = p.renum  AND p.payrefund = '결제' 
+    and not exists( select 1 from payrefund pr where pr.payrefund = '환불' AND pr.userid = (SELECT userid FROM loginhis) AND pr.seatnumber = p.seatnumber and pr.renum=p.renum and 0= (select mod(count(serialnumber),2) from payrefund pr2 where pr2.userid = ( select userid  from loginhis ) and p.renum = pr2.renum  and( pr2.payrefund = '결제' or pr2.payrefund ='환불')))  ;
     rec cpayrefund%rowtype;
     vnumber number :=0;
     
 begin
-        vnumber := vnumber +1;
+       
         select userid into vuserid from loginhis;
         dbms_output.put_line( vuserid ||'회원님의 예약 내역입니다');
        for rec in cpayrefund loop
+         vnumber := vnumber +1;
             dbms_output.put_line( vnumber|| '번 예약 ' ||' 결제수단 : ' || rec.pmethod ||' 정상,할인,특가여부 : ' || rec.flight || ' 출발공항 :' || rec.dairport ||' 도착공항 : ' || rec.aairport ||' 결제일자 :' || to_char(rec.drdate , 'yyyy"년" mm"월" dd"일" hh24"시" mi"분" ss"초" ' ) || ' 결제금액 :' || rec.cost||'원' );
          
        end loop;
@@ -1821,16 +1828,26 @@ create or replace procedure mk_payrefund_03
 )
 is
   cursor vrefund is 
-  select * from payrefund where userid = (select userid from loginhis)and rownum = pnumber;
-  v_row vrefund%ROWTYPE;
+    select p.* from payrefund p ,scplane s where p.userid = ( select userid  from loginhis ) and s.renum = p.renum  AND p.payrefund = '결제' and rownum = pnumber 
+    and not exists( select 1 from payrefund pr where pr.payrefund = '환불' AND pr.userid = (SELECT userid FROM loginhis) AND pr.seatnumber = p.seatnumber and pr.renum=p.renum and 0= (select mod(count(serialnumber),2) from payrefund pr2 where pr2.userid = ( select userid  from loginhis ) and p.renum = pr2.renum  and( pr2.payrefund = '결제' or pr2.payrefund ='환불')))  ;
+    v_row vrefund%ROWTYPE;
   v_number number;
+  vcheck number;
 BEGIN
+
+    select count(renum) into vcheck from payrefund pr where userid = (select userid from loginhis) and exists (select renum from payrefund p where p.userid=pr.userid and p.payrefund ='환불' and not exists ( select 1 from payrefund pr where pr.payrefund = '결제' and pr.renum=p.renum )) ;
+    if vcheck !=0 then
+    raise_application_error ( -20032,'이미 환불처리 되었습니다');
+    end if;
     select max(serialnumber)+1 into v_number from payrefund;
     OPEN vrefund;
     FETCH vrefund INTO v_row;
     insert into payrefund values ( v_number,'환불', v_row.pmethod,v_row.flight,v_row.seatnumber,v_row.drdate,v_row.nluggage , v_row.cost,v_row.mileage,v_row.userid,v_row.renum,v_row.giftcardnumber,v_row.pin_num);
     dbms_output.put_line('환불이 완료되었습니다');
     CLOSE vrefund;
+    exception
+    when others then
+    dbms_output.put_line('환불에 실패하였습니다.');
 end;
 
 
@@ -2235,10 +2252,11 @@ exec mk_scplane_01  ('202403271940','202403281200','korea','USA','#admin002','SE
 delete scplane ;
 
 
----------- 회원가입 --------------------------------------------------
----------- 회원가입 --------------------------------------------------
----------- 회원가입 --------------------------------------------------
 
+---------- 회원가입 --------------------------------------------------
+---------- 회원가입 --------------------------------------------------
+---------- 회원가입 --------------------------------------------------
+set serveroutput on;
 exec mk_flightuser_01('user001', '홍', '길동', 'Hong', 'GilDong', 'password123', TO_DATE('1990-01-01', 'YYYY-MM-DD'), 'Male', 'user001@example.com', '01012345678', 'Korea', '1234-5678-9012-3456',12,35);
 delete flightuser where userid='user001';
 select * from flightuser;
@@ -2274,16 +2292,19 @@ exec mk_scplane_02 ('SEOUL','JEJU','240328',1,'일반석');
 exec mk_scplane_02 ('SEOUL','LAS','240327',1,'일반석');
 exec mk_scplane_02 ('SEOUL','JEJU','240420',1,'일반석');
 select * from scplane;
+select * from seat_num;
 ----------------------------- 예약 ( 결제 ) 기능 ------
 ----------------------------- 예약 ( 결제 ) 기능 ------
 ----------------------------- 예약 ( 결제 ) 기능 ------
 ----------------------------- 예약 ( 결제 ) 기능 ------
 
 
-exec MK_PAYREFUND_01('2403200930','GMP','CJU','20A',1,'정상','카드',1);
-exec MK_PAYREFUND_01('2403271940','ICN','LAS','20B',4,'정상','카드',1);
+exec MK_PAYREFUND_01('2403270625','GMP','CJU','20A',1,'정상','카드',3);
+exec MK_PAYREFUND_01('2403270915','GMP','CJU','20A',1,'정상','카드',3);
+exec MK_PAYREFUND_01('2403271330','GMP','CJU','20A',1,'정상','카드',3);
+exec MK_PAYREFUND_01('2403271940','ICN','LAS','21B',1,'정상','카드',3);
 
-
+select * from scplane;
 select S.* ,DDATE,TO_CHAR(DDATE,'HH24:MI') from scplane S;
 select * from seat_num;
 
