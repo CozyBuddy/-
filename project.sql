@@ -602,21 +602,7 @@ INSERT INTO Scplane VALUES (2, NULL, TO_DATE('2024-03-23 15:15', 'YYYY-MM-DD HH2
 INSERT INTO Scplane VALUES (3, '햄버거', TO_DATE('2024-04-09 14:45', 'YYYY-MM-DD HH24:MI'), TO_DATE('2024-04-09 20:00', 'YYYY-MM-DD HH24:MI'), 'Korea', 'Japan', 'admin003', 'KE9876', 'FUK.FUK','SEOUL.ICN', 8, 1, 'HL7611');
 INSERT INTO Scplane VALUES (4, '김치찌개', TO_DATE('2024-04-10 09:05', 'YYYY-MM-DD HH24:MI'), TO_DATE('2024-04-10 10:25', 'YYYY-MM-DD HH24:MI'), 'Korea', 'China', 'admin004',  'KE4321', 'BEIJING.PEK', 'SEOUL.ICN', 12, 4, 'HL8348');
 INSERT INTO Scplane VALUES (5, NULL, TO_DATE('2024-05-03 21:00', 'YYYY-MM-DD HH24:MI'), TO_DATE('2024-05-03 22:15', 'YYYY-MM-DD HH24:MI'), 'Korea', 'Korea', 'admin005', 'KE8765', 'JEJU.CJU', 'SEOUL.GMP', 20, 2, 'HL8240');
-INSERT INTO Scplane VALUES 
-(6, NULL, TO_DATE('2024-03-28 06:05', 'YYYY-MM-DD HH24:MI'), TO_DATE('2024-03-28 07:15', 'YYYY-MM-DD HH24:MI')
-, 'Korea', 'Korea', 'admin001',  'KE5153', 'JEJU.CJU', 'SEOUL.GMP', 23, 2, 'HL7553');
-INSERT INTO Scplane VALUES 
-(7, NULL, TO_DATE('2024-03-28 07:05', 'YYYY-MM-DD HH24:MI'), TO_DATE('2024-03-28 08:15', 'YYYY-MM-DD HH24:MI')
-, 'Korea', 'Korea', 'admin001',  'KE5153','JEJU.CJU','SEOUL.GMP', 23, 2, 'HL7553');
-INSERT INTO Scplane VALUES 
-(8, NULL, TO_DATE('2024-03-28 07:25', 'YYYY-MM-DD HH24:MI'), TO_DATE('2024-03-28 08:35', 'YYYY-MM-DD HH24:MI')
-, 'Korea', 'Korea', 'admin001',  'KE5153','JEJU.CJU', 'SEOUL.GMP',  23, 2, 'HL7553');
-INSERT INTO Scplane VALUES 
-(9, NULL, TO_DATE('2024-03-28 08:00', 'YYYY-MM-DD HH24:MI'), TO_DATE('2024-03-28 09:10', 'YYYY-MM-DD HH24:MI')
-, 'Korea', 'Korea', 'admin001',  'KE5153','JEJU.CJU', 'SEOUL.GMP', 23, 2, 'HL7553');
-INSERT INTO Scplane VALUES 
-(10, NULL, TO_DATE('2024-03-28 08:30', 'YYYY-MM-DD HH24:MI'), TO_DATE('2024-03-28 09:40', 'YYYY-MM-DD HH24:MI')
-, 'Korea', 'Korea', 'admin001',  'KE5153','JEJU.CJU', 'SEOUL.GMP', 23, 2, 'HL7553');
+
 
 
 -- 나머지 5개의 데이터
@@ -655,6 +641,7 @@ INSERT INTO Adminstrator VALUES ('#admin005', '윤', '준호', 'Yoon', 'Junho', 
 --국내선 운임 인서트 3개
 insert into dfare values (1,'비수기','정상','선호','일반석','SEOUL/GMP-JEJU/CJU',97000,3000,'#admin001','주중');
 insert into dfare values (2,'비수기','정상','일반','일반석','SEOUL/GMP-JEJU/CJU',115000,3000,'#admin002','주말');
+insert into dfare values (4,'비수기','정상','선호','일반석','SEOUL/GMP-JEJU/CJU',135000,3000,'#admin002','주말');
 insert into dfare values (3,'성수기','정상','일반','일반석','SEOUL/GMP-JEJU/CJU',132000,3000,'#admin005','주중');
 
 
@@ -836,12 +823,12 @@ INSERT INTO S_Grade VALUES (4, '밀리언 마일러 클럽', 1000000, 40);
 --INSERT INTO Rfamily (keynum,relation,family_id,userid) VALUES (4,'모','#id_02','user004');
 --INSERT INTO Rfamily (keynum,relation,family_id,userid) VALUES (5,'자','#id_02','user005');
 
--- 회원 세부 정보 
-INSERT INTO Userdetail (UserID) VALUES ('user001');
-INSERT INTO Userdetail (UserID) VALUES ('user002');
-INSERT INTO Userdetail (UserID) VALUES ('user003');
-INSERT INTO Userdetail (UserID) VALUES ('user004');
-INSERT INTO Userdetail (UserID) VALUES ('user005');
+---- 회원 세부 정보 
+--INSERT INTO Userdetail (UserID) VALUES ('user001');
+--INSERT INTO Userdetail (UserID) VALUES ('user002');
+--INSERT INTO Userdetail (UserID) VALUES ('user003');
+--INSERT INTO Userdetail (UserID) VALUES ('user004');
+--INSERT INTO Userdetail (UserID) VALUES ('user005');
 
 
 -- 마일리지 적립 / 소비
@@ -1133,7 +1120,9 @@ VALUES ('8', '동의', TO_DATE('2024.03.08', 'YYYY.MM.DD'), 'user001', 8);
 -------기능 실행 전 미리 만들어야하는 수열 ----------------------------------------------------------------------------
 -------기능 실행 전 미리 만들어야하는 수열 ----------------------------------------------------------------------------
 -------기능 실행 전 미리 만들어야하는 수열 ----------------------------------------------------------------------------
-
+drop sequence yesnoseq;
+drop sequence mk_mtrackingseq;
+drop sequence mk_giftcardseq;
 -- 약관용 수열
 create sequence yesnoseq
 start with 1 increment by 1 nomaxvalue nocycle;
@@ -1141,18 +1130,15 @@ create sequence mk_mtrackingseq
 start with 1 increment by 1 nomaxvalue nocycle;
 create sequence mk_giftcardseq
 start with 1 increment by 1 nomaxvalue nocycle;
-drop sequence yesnoseq;
-drop sequence mk_mtrackingseq;
-drop sequence mk_giftcardseq;
 
 
-------------------------------------트리거 목록 ----------------------------------------------------------
-------------------------------------트리거 목록 ----------------------------------------------------------
-------------------------------------트리거 목록 ----------------------------------------------------------
-------------------------------------트리거 목록 ----------------------------------------------------------
-------------------------------------트리거 목록 ----------------------------------------------------------
+
+------------------------------------트리거 목록 --------------------------------------------
+------------------------------------트리거 목록 --------------------------------------------
+------------------------------------트리거 목록 ---------------------------------------------
+------------------------------------트리거 목록 ----------------------------------------------
+------------------------------------트리거 목록 ---------------------------------------------
 -- 예약 결제 행 업데이트 후 
-select * from mtracking;
 create or replace trigger tr_mk_payrefund_01
 AFTER insert on payrefund
 for each row
@@ -1170,15 +1156,19 @@ begin
      insert into card_use values ( vnum2,'사용' ,sysdate, :new.cost, :new.giftcardnumber);
      end if;
 end;
-select * from mtracking;
-delete mtracking where 1=1;
 
 
 -------------- 회원가입시 userdetail 테이블에 추가 트리거 필요
 
+ create or replace trigger tr_mk_flightuser_01 
+ after insert on flightuser
+ for each row
+ begin
+        insert into userdetail(userid) values (:new.userid);
 
-
-
+ end;
+ 
+ -------------
 
 
 
@@ -1232,31 +1222,10 @@ begin
     insert into scplane values (vnumber ,vfood, vddate,vadate ,upper(pdnation),upper(panation),padmin, substr(initcap(pAnation),1,1) ||upper(dbms_random.string('A',1))||to_char(round(dbms_random.value(1000,9999))),paairport,pdairport,dbms_random.value(1,30),dbms_random.value(1,6),vasnum);
 end;
 
-exec mk_scplane_01 ('202404190640','202404190750','korea','korea','#admin001','SEOUL.GMP','JEJU.CJU');
-exec mk_scplane_01 ('202404190730','202404190840','korea','korea','#admin001','SEOUL.GMP','JEJU.CJU');
-exec mk_scplane_01 ('202404190730','202404190840','korea','korea','#admin001','SEOUL.GMP','JEJU.CJU');
-exec mk_scplane_01 ('202404191330','202404191440','korea','korea','#admin001','SEOUL.GMP','JEJU.CJU');
-exec mk_scplane_01  ('202404191900','202404192010','korea','korea','#admin001','SEOUL.GMP','JEJU.CJU');
-exec mk_scplane_01  ('202404192030','202404192140','korea','korea','#admin001','SEOUL.GMP','JEJU.CJU');
-exec mk_scplane_01  ('202404050800','202404050925','korea','JAPAN','#admin001','SEOUL.ICN','FUK.FUK');
-exec mk_scplane_01  ('202404051355','202404051525','korea','JAPAN','#admin001','SEOUL.ICN','FUK.FUK');
-exec mk_scplane_01  ('202404051835','202404052000','korea','JAPAN','#admin001','SEOUL.ICN','FUK.FUK');
-exec mk_scplane_01  ('202404200815','202404200940','korea','JAPAN','#admin001','SEOUL.ICN','BEIJING.PEK');
-exec mk_scplane_01  ('202404200905','202404201025','korea','JAPAN','#admin002','SEOUL.ICN','BEIJING.PEK');
-exec mk_scplane_01  ('202404201840','202404202005','korea','JAPAN','#admin002','SEOUL.ICN','BEIJING.PEK');
-exec mk_scplane_01  ('202404201000','202404210020','korea','USA','#admin002','SEOUL.ICN','NYC.JFK');
-exec mk_scplane_01  ('202404201930','202404210930','korea','USA','#admin002','SEOUL.ICN','NYC.JFK');
-exec mk_scplane_01  ('202405100930','202405102330','korea','USA','#admin002','SEOUL.ICN','BOS.BOS');
-exec mk_scplane_01  ('202405100920','202405110340','korea','USA','#admin002','SEOUL.ICN','BOS.BOS');
-exec mk_scplane_01  ('202403271600','202403280633','korea','USA','#admin002','SEOUL.ICN','LAS.LAS');
-exec mk_scplane_01  ('202403271430','202403280631','korea','USA','#admin002','SEOUL.ICN','LAS.LAS');
-exec mk_scplane_01  ('202403271940','202403281200','korea','USA','#admin002','SEOUL.ICN','LAS.LAS');
 
 
 
-select * from flight_meal;
-select * from scplane;
-delete scplane where 1=1;
+
 --회원가입 프로시저
 create or replace procedure mk_flightuser_01 
 (
@@ -1553,17 +1522,9 @@ end;
 
 
 
-select * from scplane;
 
 --------------------------------------------------------------------------------
 
-exec mk_scplane_02 ('SEOUL','FUK','240405',1,'일반석');
-exec mk_scplane_02 ('SEOUL','JEJU','240419',1,'일반석');
-exec mk_scplane_02 ('SEOUL','BEIJING','240420',1,'일반석');
-exec mk_scplane_02 ('SEOUL','NYC','240420',1,'일반석');
-select * from scplane;
-select * from r_section;
-select * from l_rule;
 --
 --예약 (결제 ) 기능 
 drop sequence mk_payrefundseq;
@@ -1580,7 +1541,6 @@ create or replace procedure mk_payrefund_01
     PCARDNUM PAYrefund.giftcardnumber%type default null,
     PPIN_NUMBER giftcard.pin_num%TYPE default null
 )
-
 is
     vrenum scplane.renum%type;
     vcost payrefund.cost%type;
@@ -1647,7 +1607,7 @@ where s.renum=vrenum and d.peak = CASE
        
       insert into payrefund  values
       (vpaynum, '결제', ppmethod , pflight, pseatnum ,sysdate , pnluggage ,round(vcost,-2), round(vcost*0.005,-1) ,vuserid, vrenum, pcardnum ,PPIN_NUMBER);
-     dbms_output.put_line('예약이 완료되었습니다.');
+       dbms_output.put_line('예약이 완료되었습니다.');
      
      exception
         when no_data_found then
@@ -1663,14 +1623,13 @@ where s.renum=vrenum and d.peak = CASE
           
 end;
 
-exec mk_payrefund_01('2403200930','GMP','CJU','20A',1,'정상','기프트카드',1,'1234-5678-9012-3456',123456);
-
-exec mk_payrefund_01('2403200930','GMP','CJU','20A',1,'정상','카드',1);
 
 
 
+select to_char(ddate , 'hh24:mi') from scplane;
 
-exec mk_flightuser_03('user001','password123');
+
+
 select * from dfare;
 select * from loginhis;
 select * from adminstrator;
@@ -1703,22 +1662,7 @@ delete payrefund where 1=1;
 -----------------------------------------------------------------------------------
 -----------------------------------------------------------------------------------
 -----------------------------------------------------------------------------------
------------------------------------------------------------------------------------
 
-
-delete yesno
-where userid='user006';
-delete flightuser
-where userid='user006';
-
-drop sequence yesnoseq;
-select * from yesno;
-select * from flightuser;
-
-
-commit;
-delete flightuser
-where userid='user007';
 
 
 -------------------------------------------- 실제 실행 ------------------------------------------------------------------
@@ -1726,22 +1670,52 @@ where userid='user007';
 -------------------------------------------- 실제 실행 ------------------------------------------------------------------
 -------------------------------------------- 실제 실행 ------------------------------------------------------------------
 -------------------------------------------- 실제 실행 ------------------------------------------------------------------
-select * from scplane;
-delete scplane where 1=1;
+-------------------------------------------- 실제 실행 ------------------------------------------------------------------
+-------------------------------------------- 실제 실행 ------------------------------------------------------------------
+-------------------------------------------- 실제 실행 ------------------------------------------------------------------
+-------------------------------------------- 실제 실행 ------------------------------------------------------------------
+-------------------------------------------- 실제 실행 ------------------------------------------------------------------
+-------------------------------------------- 실제 실행 ------------------------------------------------------------------
+-------------------------------------------- 실제 실행 ------------------------------------------------------------------
+-------------------------------------------- 실제 실행 ------------------------------------------------------------------
+-------------------------------------------- 실제 실행 ------------------------------------------------------------------
+-------------------------------------------- 실제 실행 ------------------------------------------------------------------
+-------------------------------------------- 실제 실행 ------------------------------------------------------------------
+-------------------------------------------- 실제 실행 ------------------------------------------------------------------
+delete scplane ;
 --일정 삽입 
-exec mk_scplane_01('202404050800', '202404050925' ,'korea' ,'japan','#admin001','FUK.FUK','SEOUL.ICN');
-exec mk_scplane_01('202404200800', '202404200925' ,'korea' ,'japan','#admin001','FUK.FUK','SEOUL.ICN');
-exec mk_scplane_01('202404201835', '202404202000' ,'korea' ,'japan','#admin001','FUK.FUK','SEOUL.ICN');
-exec mk_scplane_01('202403270625', '202403270715' ,'korea' ,'Korea','#admin001','JEJU.CJU','SEOUL.GMP');
-exec mk_scplane_01('202403270915', '202403271025' ,'korea' ,'Korea','#admin001','JEJU.CJU','SEOUL.GMP');
-exec mk_scplane_01('202403271330', '202403271445' ,'korea' ,'Korea','#admin001','JEJU.CJU','SEOUL.GMP');
-exec mk_scplane_01('202404200640', '202404200750' ,'korea' ,'Korea','#admin002','JEJU.CJU','SEOUL.GMP');
-exec mk_scplane_01('202404201300', '202404201410' ,'korea' ,'Korea','#admin002','JEJU.CJU','SEOUL.GMP');
-exec mk_scplane_01('202404201300', '202404201410' ,'korea' ,'Korea','#admin002','JEJU.CJU','SEOUL.GMP');
-exec mk_scplane_01('202404201300', '202404201410' ,'korea' ,'Korea','#admin002','JEJU.CJU','SEOUL.GMP');
-exec mk_scplane_01('202405100905', '202405101025' ,'korea' ,'china','#admin002','BEIJING.PEK','SEOUL.ICN');
-exec mk_scplane_01('202405101040', '202405101205' ,'korea' ,'china','#admin002','BEIJING.PEK','SEOUL.ICN');
-exec mk_scplane_01('202405101840', '202405102005' ,'korea' ,'china','#admin002','BEIJING.PEK','SEOUL.ICN');
+exec mk_scplane_01('202404050800', '202404050925' ,'korea' ,'japan','#admin001','SEOUL.ICN','FUK.FUK');
+exec mk_scplane_01('202404200800', '202404200925' ,'korea' ,'japan','#admin001','SEOUL.ICN','FUK.FUK');
+exec mk_scplane_01('202404201835', '202404202000' ,'korea' ,'japan','#admin001','SEOUL.ICN','FUK.FUK');
+exec mk_scplane_01('202403270625', '202403270715' ,'korea' ,'Korea','#admin001','SEOUL.GMP','JEJU.CJU');
+exec mk_scplane_01('202403270915', '202403271025' ,'korea' ,'Korea','#admin001','SEOUL.GMP','JEJU.CJU');
+exec mk_scplane_01('202403271330', '202403271445' ,'korea' ,'Korea','#admin001','SEOUL.GMP','JEJU.CJU');
+exec mk_scplane_01('202404200640', '202404200750' ,'korea' ,'Korea','#admin002','SEOUL.GMP','JEJU.CJU');
+exec mk_scplane_01('202404201300', '202404201410' ,'korea' ,'Korea','#admin002','SEOUL.GMP','JEJU.CJU');
+exec mk_scplane_01('202404201300', '202404201410' ,'korea' ,'Korea','#admin002','SEOUL.GMP','JEJU.CJU');
+exec mk_scplane_01('202404201300', '202404201410' ,'korea' ,'Korea','#admin002','SEOUL.GMP','JEJU.CJU');
+exec mk_scplane_01('202405100905', '202405101025' ,'korea' ,'china','#admin002','SEOUL.ICN','BEIJING.PEK');
+exec mk_scplane_01('202405101040', '202405101205' ,'korea' ,'china','#admin002','SEOUL.ICN','BEIJING.PEK');
+exec mk_scplane_01('202405101840', '202405102005' ,'korea' ,'china','#admin002','SEOUL.ICN','BEIJING.PEK');
+exec mk_scplane_01 ('202404190640','202404190750','korea','korea','#admin001','SEOUL.GMP','JEJU.CJU');
+exec mk_scplane_01 ('202404190730','202404190840','korea','korea','#admin001','SEOUL.GMP','JEJU.CJU');
+exec mk_scplane_01 ('202404190730','202404190840','korea','korea','#admin001','SEOUL.GMP','JEJU.CJU');
+exec mk_scplane_01 ('202404191330','202404191440','korea','korea','#admin001','SEOUL.GMP','JEJU.CJU');
+exec mk_scplane_01  ('202404191900','202404192010','korea','korea','#admin001','SEOUL.GMP','JEJU.CJU');
+exec mk_scplane_01  ('202404192030','202404192140','korea','korea','#admin001','SEOUL.GMP','JEJU.CJU');
+exec mk_scplane_01  ('202404050800','202404050925','korea','JAPAN','#admin001','SEOUL.ICN','FUK.FUK');
+exec mk_scplane_01  ('202404051355','202404051525','korea','JAPAN','#admin001','SEOUL.ICN','FUK.FUK');
+exec mk_scplane_01  ('202404051835','202404052000','korea','JAPAN','#admin001','SEOUL.ICN','FUK.FUK');
+exec mk_scplane_01  ('202404200815','202404200940','korea','JAPAN','#admin001','SEOUL.ICN','BEIJING.PEK');
+exec mk_scplane_01  ('202404200905','202404201025','korea','JAPAN','#admin002','SEOUL.ICN','BEIJING.PEK');
+exec mk_scplane_01  ('202404201840','202404202005','korea','JAPAN','#admin002','SEOUL.ICN','BEIJING.PEK');
+exec mk_scplane_01  ('202404201000','202404210020','korea','USA','#admin002','SEOUL.ICN','NYC.JFK');
+exec mk_scplane_01  ('202404201930','202404210930','korea','USA','#admin002','SEOUL.ICN','NYC.JFK');
+exec mk_scplane_01  ('202405100930','202405102330','korea','USA','#admin002','SEOUL.ICN','BOS.BOS');
+exec mk_scplane_01  ('202405100920','202405110340','korea','USA','#admin002','SEOUL.ICN','BOS.BOS');
+exec mk_scplane_01  ('202403271600','202403280633','korea','USA','#admin002','SEOUL.ICN','LAS.LAS');
+exec mk_scplane_01  ('202403271430','202403280631','korea','USA','#admin002','SEOUL.ICN','LAS.LAS');
+exec mk_scplane_01  ('202403271940','202403281200','korea','USA','#admin002','SEOUL.ICN','LAS.LAS');
 
 
 ---------- 회원가입 --------------------------------------------------
@@ -1779,10 +1753,25 @@ select * from loginhis;
 --------------------------------------------------예약 조회 기능
 --------------------------------------------------예약 조회 기능
 --------------------------------------------------예약 조회 기능
-exec mk_scplane_01 ('SEOUL','JEJU','240328',1,'일반석');
-exec mk_scplane_01 ('SEOUL','JEJU','240323',1,'일반석');
-exec mk_scplane_01 ('SEOUL','JEJU','240411',1,'일반석');
+exec mk_scplane_02 ('SEOUL','JEJU','240328',1,'일반석');
+exec mk_scplane_02 ('SEOUL','JEJU','240323',1,'일반석');
+exec mk_scplane_02 ('SEOUL','JEJU','240411',1,'일반석');
 select * from scplane;
+----------------------------- 예약 ( 결제 ) 기능 ------
+----------------------------- 예약 ( 결제 ) 기능 ------
+----------------------------- 예약 ( 결제 ) 기능 ------
+----------------------------- 예약 ( 결제 ) 기능 ------
+--------------로그인을 필수로해야함----------------------
+--------------로그인을 필수로해야함----------------------
+--------------로그인을 필수로해야함----------------------
+--------------로그인을 필수로해야함----------------------
+--------------로그인을 필수로해야함----------------------
+exec mk_flightuser_03('user001','password123');
+
+exec mk_scplane_02 ('SEOUL','FUK','240405',1,'일반석');
+exec mk_scplane_02 ('SEOUL','JEJU','240419',1,'일반석');
+exec mk_scplane_02 ('SEOUL','BEIJING','240420',1,'일반석');
+exec mk_scplane_02 ('SEOUL','NYC','240420',1,'일반석');
 
 ----------------------------------------------------------
 ----------------------------명건-------------------------------------------------
