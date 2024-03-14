@@ -50,6 +50,7 @@ drop table card_table;
 ----------------- 시퀀스 삭제 ----------------
 ----------------- 시퀀스 삭제 ----------------
 ----------------- 시퀀스 삭제 ----------------
+drop sequence dc_seqeve;
 drop sequence customercseq;
 drop sequence flight_mealseq;
 drop sequence tr_dc_giftcard;
@@ -57,6 +58,9 @@ drop sequence SE_giftcard_03;
 drop sequence DC_giftcard_01;
 DROP SEQUENCE seq_mtracking;
 drop sequence SEQ_LOB;
+
+
+
 ----------------------------------------------------테이블 생성 문 ---------------------------------------------------------------
 ----------------------------------------------------테이블 생성 문 ---------------------------------------------------------------
 ----------------------------------------------------테이블 생성 문 ---------------------------------------------------------------
@@ -419,6 +423,7 @@ CREATE TABLE Music (
     content clob NOT NULL
 );
 
+
 CREATE TABLE card_table (
     card_code   NUMBER PRIMARY KEY,
     card_number VARCHAR2(19) 
@@ -552,6 +557,12 @@ REFERENCES flightuser (UserID) on delete cascade;
 ALTER TABLE Prize ADD CONSTRAINT FK_Event_TO_Prize_1 FOREIGN KEY (Evnum)
 REFERENCES Event (Evnum) on delete cascade;
 
+ALTER TABLE Loginhis ADD CONSTRAINT FK_flightuser_TO_Loginhis_1 FOREIGN KEY (
+	UserID
+)
+REFERENCES flightuser (
+	UserID
+)  on delete cascade;
 
 
 
@@ -717,16 +728,16 @@ VALUES (10, '성수기', '정상', '성수기', '프레스티지석', 'SEOUL/GMP
 
 
 --국제선 운임 인서트 2개
-insert into ifare values (1,'ICN','FUK','일반석',150000,110000,20300,21000,'#admin003');
-insert into ifare values (2,'ICN','PEK','일반석',235000,172300,22350,35000,'#admin004');
+--insert into ifare values (1,'ICN','FUK','일반석',150000,110000,20300,21000,'#admin003');
+--insert into ifare values (2,'ICN','PEK','일반석',235000,172300,22350,35000,'#admin004');
 --국제선 운임
 
 INSERT INTO Ifare (Keynum, starta, arrive, sg, fare, redis, tax, fuelch, AdminID)
-VALUES (3, 'ICN', 'FUK', '일등석', 807600, 593500, 18450, 35000, '#admin001');
+VALUES (1, 'ICN', 'FUK', '일등석', 807600, 593500, 18450, 35000, '#admin001');
 INSERT INTO Ifare (Keynum, starta, arrive, sg, fare, redis, tax, fuelch, AdminID)
-VALUES (4, 'ICN', 'FUK', '프레스티지석', 588850, 432000, 18450, 35000, '#admin001');
+VALUES (2, 'ICN', 'FUK', '프레스티지석', 588850, 432000, 18450, 35000, '#admin001');
 INSERT INTO Ifare (Keynum, starta, arrive, sg, fare, redis, tax, fuelch, AdminID)
-VALUES (5, 'ICN', 'FUK', '일반석', 235000, 172300, 18450, 35000, '#admin001');
+VALUES (3, 'ICN', 'FUK', '일반석', 235000, 172300, 18450, 35000, '#admin001');
 
 --exec mk_scplane_01  ('202404050800','202404050925','korea','JAPAN','#admin001','SEOUL.ICN','FUK.FUK');
 --exec mk_scplane_01  ('202404051355','202404051525','korea','JAPAN','#admin001','SEOUL.ICN','FUK.FUK');
@@ -734,11 +745,11 @@ VALUES (5, 'ICN', 'FUK', '일반석', 235000, 172300, 18450, 35000, '#admin001')
 
 
 INSERT INTO Ifare (Keynum, starta, arrive, sg, fare, redis, tax, fuelch, AdminID)
-VALUES (7, 'ICN', 'PEK', '일등석', 667000, 489500,  22350, 35000, '#admin001');
+VALUES (4, 'ICN', 'PEK', '일등석', 667000, 489500,  22350, 35000, '#admin001');
 INSERT INTO Ifare (Keynum, starta, arrive, sg, fare, redis, tax, fuelch, AdminID)
-VALUES (8, 'ICN', 'PEK', '프레스티지석', 506000,  370800,  22350, 35000, '#admin001');
+VALUES (5, 'ICN', 'PEK', '프레스티지석', 506000,  370800,  22350, 35000, '#admin001');
 INSERT INTO Ifare (Keynum, starta, arrive, sg, fare, redis, tax, fuelch, AdminID)
-VALUES (9, 'ICN', 'PEK', '일반석', 361500, 265200, 22350, 35000, '#admin001');
+VALUES (6, 'ICN', 'PEK', '일반석', 361500, 265200, 22350, 35000, '#admin001');
 
 --exec mk_scplane_01  ('202404200815','202404200940','korea','CHINA','#admin001','SEOUL.ICN','BEIJING.PEK');
 --exec mk_scplane_01  ('202404200905','202404201025','korea','CHINA','#admin002','SEOUL.ICN','BEIJING.PEK');
@@ -747,32 +758,32 @@ VALUES (9, 'ICN', 'PEK', '일반석', 361500, 265200, 22350, 35000, '#admin001')
 
 
 INSERT INTO Ifare (Keynum, starta, arrive, sg, fare, redis, tax, fuelch, AdminID)
-VALUES (11, 'ICN', 'JFK', '일등석', 6412000,  4743000, 62300, 161000, '#admin001');
+VALUES (7, 'ICN', 'JFK', '일등석', 6412000,  4743000, 62300, 161000, '#admin001');
 INSERT INTO Ifare (Keynum, starta, arrive, sg, fare, redis, tax, fuelch, AdminID)
-VALUES (12, 'ICN', 'JFK', '프레스티지석', 4511000, 3336000, 62300, 161000, '#admin001');
+VALUES (8, 'ICN', 'JFK', '프레스티지석', 4511000, 3336000, 62300, 161000, '#admin001');
 INSERT INTO Ifare (Keynum, starta, arrive, sg, fare, redis, tax, fuelch, AdminID)
-VALUES (13, 'ICN', 'JFK', '일반석', 2384000, 1763000, 62300, 161000, '#admin001');
+VALUES (9, 'ICN', 'JFK', '일반석', 2384000, 1763000, 62300, 161000, '#admin001');
 
 --exec mk_scplane_01  ('202404201000','202404210020','korea','USA','#admin002','SEOUL.ICN','NYC.JFK');
 --exec mk_scplane_01  ('202404201930','202404210930','korea','USA','#admin002','SEOUL.ICN','NYC.JFK');
 
 
 INSERT INTO Ifare (Keynum, starta, arrive, sg, fare, redis, tax, fuelch, AdminID)
-VALUES (15, 'ICN', 'BOS', '일등석', 6412200, 4735028, 62300, 161000, '#admin001');
+VALUES (10, 'ICN', 'BOS', '일등석', 6412200, 4735028, 62300, 161000, '#admin001');
 INSERT INTO Ifare (Keynum, starta, arrive, sg, fare, redis, tax, fuelch, AdminID)
-VALUES (16, 'ICN', 'BOS', '프레스티지석', 4511000, 3334140, 62300, 161000, '#admin001');
+VALUES (11, 'ICN', 'BOS', '프레스티지석', 4511000, 3334140, 62300, 161000, '#admin001');
 INSERT INTO Ifare (Keynum, starta, arrive, sg, fare, redis, tax, fuelch, AdminID)
-VALUES (17, 'ICN', 'BOS', '일반석', 2384500, 1759230, 62300, 161000, '#admin001');
+VALUES (12, 'ICN', 'BOS', '일반석', 2384500, 1759230, 62300, 161000, '#admin001');
 
 --exec mk_scplane_01  ('202405100930','202405102330','korea','USA','#admin002','SEOUL.ICN','BOS.BOS');
 --exec mk_scplane_01  ('202405100920','202405110340','korea','USA','#admin002','SEOUL.ICN','BOS.BOS');
 
 INSERT INTO Ifare (Keynum, starta, arrive, sg, fare, redis, tax, fuelch, AdminID)
-VALUES (19, 'ICN', 'LAS', '일등석', 11033900, 4082543,  124600, 260400, '#admin001');
+VALUES (13, 'ICN', 'LAS', '일등석', 11033900, 4082543,  124600, 260400, '#admin001');
 INSERT INTO Ifare (Keynum, starta, arrive, sg, fare, redis, tax, fuelch, AdminID)
-VALUES (20, 'ICN', 'LAS', '프레스티지석', 7755600, 2869572 , 124600, 260400, '#admin001');
+VALUES (14, 'ICN', 'LAS', '프레스티지석', 7755600, 2869572 , 124600, 260400, '#admin001');
 INSERT INTO Ifare (Keynum, starta, arrive, sg, fare, redis, tax, fuelch, AdminID)
-VALUES (21, 'ICN', 'LAS', '일반석', 3656100, 1352757, 124600, 260400, '#admin001');
+VALUES (15, 'ICN', 'LAS', '일반석', 3656100, 1352757, 124600, 260400, '#admin001');
 
 
 -- 안내 사항 5개
@@ -1378,6 +1389,9 @@ INSERT INTO flightuser VALUES ('user020', '배', '수진', 'Bae', 'SuJin', 'p@ss
 -------기능 실행 전 미리 만들어야하는 수열 ----------------------------------------------------------------------------
 -------기능 실행 전 미리 만들어야하는 수열 ----------------------------------------------------------------------------
 -------기능 실행 전 미리 만들어야하는 수열 ----------------------------------------------------------------------------
+drop sequence dcdraw;
+drop sequence keysequence;
+
 CREATE SEQUENCE DC_SEQEVE
 START WITH 8;
 
@@ -1389,8 +1403,9 @@ CREATE SEQUENCE KeySequence;
 
 CREATE SEQUENCE customercseq
 START WITH 6;
+
 CREATE SEQUENCE flight_mealseq
-START WITH 4;
+START WITH 8;
 CREATE SEQUENCE tr_dc_giftcard
 START WITH 2;
 
@@ -1417,41 +1432,43 @@ NOORDER;
 ------------------------------------트리거 목록 ---------------------------------------------
 ------------------------------------트리거 목록 ----------------------------------------------
 ------------------------------------트리거 목록 ---------------------------------------------
--- 예약 결제 행 업데이트 후 
-create or replace trigger tr_mk_payrefund_01
-AFTER insert on payrefund
-for each row
-declare 
-    vnum1 number;
-    vnum2 number;
-    vuserid varchar2(100);
-begin
-     select nvl(count(tracking_num),0)+1 into vnum1 from mtracking;
-     select nvl(count(record_num),0)+1 into vnum2 from card_use;
-        select userid into vuserid from loginhis ;
-     if :new.pmethod ='마일리지' then
-     insert into mtracking values(vnum1 , sysdate, :new.mileage,'대한항공','소비', vuserid);
-     elsif :new.pmethod ='카드' then 
-     insert into mtracking values(vnum1 , sysdate, :new.mileage, '대한항공','적립',vuserid);
-     elsif :new.pmethod = '기프트카드' then
-     insert into card_use values ( vnum2,'사용' ,sysdate, :new.cost, :new.giftcardnumber);
-     end if;
-end;
+---- 예약 결제 행 업데이트 후 
+--create or replace trigger tr_mk_payrefund_01
+--BEFORE INSERT on payrefund
+--for each row
+--declare 
+--    vnum1 number;
+--    vnum2 number;
+--    vuserid varchar2(100);
+--begin
+--     select nvl(count(tracking_num),0)+1 into vnum1 from mtracking;
+--     select nvl(count(record_num),0)+1 into vnum2 from card_use;
+--        select userid into vuserid from loginhis ;
+--     if :new.pmethod ='마일리지' then
+--     insert into mtracking values(vnum1 , sysdate, :new.mileage,'대한항공','소비', vuserid);
+--     elsif :new.pmethod ='카드' then 
+--     insert into mtracking values(vnum1 , sysdate, :new.mileage, '대한항공','적립',vuserid);
+--     elsif :new.pmethod = '기프트카드' then
+--     insert into card_use values ( vnum2,'사용' ,sysdate, :new.cost, :new.giftcardnumber);
+--     end if;
+--end;
+--
+--DROP TRIGGER tr_mk_payrefund_01;
 
 
 ----------------------------
 ----------------- 마일리지 내역 추가시 해당하는 총마일리지 적립--
 create or replace trigger tr_mk_userdetail_01
-after insert on mtracking
+before insert on mtracking
 for each row
 begin
         update userdetail 
-        set totalmile = nvl(totalmile,0) + ( case :new.spendorearned when '적립' then :new.amount_mileage when '환불' then -(:new.amount_mileage) end)
+        set totalmile = nvl(totalmile,0) + ( case :new.spendorearned when '적립' then :new.amount_mileage when '환불' then -(:new.amount_mileage)  end)
         where userid = (select userid from loginhis);
 end ;
+
 drop trigger tr_mk_userdetail_01;
-select * from userdetail;
-select * from mtracking;
+
 -------------- 회원가입시 userdetail 테이블에 추가 트리거 필요
 
  create or replace trigger tr_mk_flightuser_01 
@@ -1519,6 +1536,9 @@ DECLARE
  vasnum seat_num.asnum%TYPE;
  vcost payrefund.cost%TYPE;
  vdate scplane.ddate%TYPE;
+   vnum1 number;
+    vnum2 number;
+    vuserid varchar2(100);
 BEGIN
  IF :NEW.payrefund = '환불' THEN
  DBMS_OUTPUT.PUT_LINE(' ');
@@ -1540,7 +1560,7 @@ BEGIN
  SELECT aairport INTO vaairport
  FROM scplane 
  WHERE renum = :NEW.renum;
- 
+
  WITH a AS(
  SELECT route_section,
  REGEXP_SUBSTR(aairport , '[^,]+' , 1 , b.lv )AS airport
@@ -1558,12 +1578,23 @@ BEGIN
  END IF;
  
  vcost := :NEW.cost + vfee; 
-
- UPDATE payrefund
- SET cost = :NEW.cost + vfee
- WHERE serialnumber = :NEW.serialnumber;
- DBMS_OUTPUT.PUT_LINE('-------------------------------------------------------');
- DBMS_OUTPUT.PUT_LINE('    '||TO_CHAR(vdate, 'MM/DD')||' '||TO_CHAR(vdate, 'HH24:MI')||'에 출발하는 '||vaairport ||'행 비행기 좌석'|| :NEW.seatnumber);
+ :NEW.COST := :NEW.COST+ VFEE;
+    select nvl(count(tracking_num),0)+1 into vnum1 from mtracking;
+     select nvl(count(record_num),0)+1 into vnum2 from card_use;
+        select userid into vuserid from loginhis ;
+     if :new.pmethod ='마일리지' then
+     insert into mtracking values(vnum1 , sysdate, :new.mileage,'대한항공','소비', vuserid);
+     update userdetail set totalmile = nvl(totalmile,0) -:NEW.COST where userid = ( select userid from loginhis) ;
+     elsif :new.pmethod ='카드' then 
+     insert into mtracking values(vnum1 , sysdate, :new.mileage, '대한항공','적립',vuserid);
+     update userdetail set totalmile = nvl(totalmile,0) + :NEW.mileage where userid = ( select userid from loginhis) ;
+     elsif :new.pmethod = '기프트카드' then
+     insert into card_use values ( vnum2,'사용' ,sysdate, VCOST, :new.giftcardnumber);
+     UPDATE giftcard set amount =amount -vcost where card_num = :new.giftcardnumber;
+    end if;
+   
+    DBMS_OUTPUT.PUT_LINE('-------------------------------------------------------');
+  DBMS_OUTPUT.PUT_LINE('    '||TO_CHAR(vdate, 'MM/DD')||' '||TO_CHAR(vdate, 'HH24:MI')||'에 출발하는 '||vaairport ||'행 비행기 좌석'|| :NEW.seatnumber);
  DBMS_OUTPUT.PUT_LINE('  운임가격은 '||:NEW.cost ||'이고, 위탁수하물 초과 요금은 ' || vfee|| '입니다. ' );
  DBMS_OUTPUT.PUT_LINE('      결제수단은 '||:NEW.pmethod||'고 최종 결제 금액은 ' || vcost ||'입니다!');
  DBMS_OUTPUT.PUT_LINE(' ');
@@ -1579,6 +1610,8 @@ BEGIN
  DBMS_OUTPUT.PUT_LINE('-------------------------------------------------------');
  DBMS_OUTPUT.PUT_LINE(' ');
  DBMS_OUTPUT.PUT_LINE('▶사전체크인 하러 가기                               ');
+
+   
  END IF;
 END;
 
@@ -1596,43 +1629,43 @@ END;
 
 -----------------------------------동찬 트리거 ------------------------------------
 -----------------------------------동찬 트리거 ------------------------------------
-
-CREATE OR REPLACE TRIGGER tr_dc_giftcard_01
-BEFORE INSERT ON payrefund
-FOR EACH ROW
-DECLARE 
-    notenough EXCEPTION;
-    vamount giftcard.AMOUNT%TYPE;
-    vPIN_NUM giftcard.pin_num%TYPE;
-BEGIN
-
-    IF :NEW.pmethod = '기프트카드' THEN
-    
-    SELECT AMOUNT,PIN_NUM INTO vamount,VPIN_NUM
-    FROM GIFTCARD 
-    WHERE  CARD_NUM = :NEW.GIFTCARDNUMBER;
-            IF vPIN_NUM = :NEW.PIN_NUM   THEN 
-            DBMS_OUTPUT.PUT_LINE('핀번호 일치!');
-            
-                        IF vamount<:NEW.cost   THEN
-                            RAISE_APPLICATION_ERROR(-20002, '잔액이 부족합니다.');
-                          
-                            
-                        ELSE
-                            UPDATE GIFTCARD
-                            SET
-                            AMOUNT = vamount - :NEW.cost 
-                            WHERE CARD_NUM = :NEW.GIFTCARDNUMBER;
-                            DBMS_OUTPUT.PUT_LINE( '기프트카드사용완료 이용전 잔액 : '|| VAMOUNT);
-                        END IF;
-            ELSE
-                RAISE_APPLICATION_ERROR(-20000, '핀번호 불일치.');
-               
-            END IF;
-    END IF;
---EXCEPTION
-
-END;
+DROP TRIGGER tr_dc_giftcard_01;
+--CREATE OR REPLACE TRIGGER tr_dc_giftcard_01
+--AFTER INSERT ON payrefund
+--FOR EACH ROW
+--DECLARE 
+--    notenough EXCEPTION;
+--    vamount giftcard.AMOUNT%TYPE;
+--    vPIN_NUM giftcard.pin_num%TYPE;
+--BEGIN
+--
+--    IF :NEW.pmethod = '기프트카드' THEN
+--    
+--    SELECT AMOUNT,PIN_NUM INTO vamount,VPIN_NUM
+--    FROM GIFTCARD 
+--    WHERE  CARD_NUM = :NEW.GIFTCARDNUMBER;
+--            IF vPIN_NUM = :NEW.PIN_NUM   THEN 
+--            DBMS_OUTPUT.PUT_LINE('핀번호 일치!');
+--            
+--                        IF vamount<:NEW.cost   THEN
+--                            RAISE_APPLICATION_ERROR(-20002, '잔액이 부족합니다.');
+--                          
+--                            
+--                        ELSE
+--                            UPDATE GIFTCARD
+--                            SET
+--                            AMOUNT = vamount - :NEW.cost 
+--                            WHERE CARD_NUM = :NEW.GIFTCARDNUMBER;
+--                            DBMS_OUTPUT.PUT_LINE( '기프트카드사용완료 이용전 잔액 : '|| VAMOUNT);
+--                        END IF;
+--            ELSE
+--                RAISE_APPLICATION_ERROR(-20000, '핀번호 불일치.');
+--               
+--            END IF;
+--    END IF;
+----EXCEPTION
+--
+--END;
 
 ---- 기능 실행 -----------------------------------------------------------------------------------------------------
 ---- 기능 실행 -----------------------------------------------------------------------------------------------------
@@ -1756,7 +1789,7 @@ create or replace procedure mk_flightuser_02
     dbms_output.put_line('회원탈퇴가 성공하였습니다..');
     exception
     when no_data_found then
-        dbms_output.put_line('해당하는 회원이 없습니다.');
+        dbms_output.put_line('회원 삭제에 실패했습니다..');
     when others then
         dbms_output.put_line('회원 삭제에 실패했습니다.');
  end;
@@ -1891,14 +1924,22 @@ create or replace procedure mk_scplane_02
 is 
     cursor vreserv is
  select to_char(s.ddate,'yy/mm/dd hh24:mi') 출발시각, to_char(s.adate,'yy/mm/dd hh24:mi') 도착시각, 
- to_char( (to_number(to_char(s.adate , 'DD')) -to_number(to_char(s.ddate , 'DD')))*24 + to_number(to_char(s.adate , 'hh24'))-to_number(to_char(s.ddate , 'hh24'))) + case when sign(to_number(to_char(s.adate , 'mi')) -to_number(to_char(s.ddate , 'mi'))) <0 then (-1) else 0 end ||'시간' || to_char(ABS(to_number(to_char(s.adate , 'mi')) -to_number(to_char(s.ddate , 'mi')))) || '분' 소요시간,
+ to_char( (to_number(to_char(s.adate , 'DD')) -to_number(to_char(s.ddate , 'DD')))*24 + to_number(to_char(s.adate , 'hh24'))-to_number(to_char(s.ddate , 'hh24'))) +
+ case when sign(to_number(to_char(s.adate , 'mi')) -to_number(to_char(s.ddate , 'mi'))) <0 then (-1) else 0 end ||'시간' || to_char(ABS(to_number(to_char(s.adate , 'mi')) 
+ -to_number(to_char(s.ddate , 'mi')))) || '분' 소요시간,
  substr(dairport,instr(dairport,'.')+1) 출발공항,
  substr(aairport,instr(aairport,'.')+1) 도착공항,
- a.FCLA_COUNT -(select count(p.renum) from scplane s,airplane a ,payrefund p,seat_num sn where s.asnum=a.asnum and s.renum=p.renum and sn.asnum=s.asnum and sn.seat_num=p.seatnumber and substr(s.dairport,1,instr(s.dairport,'.')-1)=dap and substr(s.aairport,1,instr(s.aairport,'.')-1)=aap and to_char(s.ddate,'yymmdd')=dd and sn.seat_grade='일등석'
+ a.FCLA_COUNT -(select count(p.renum) from scplane s,airplane a ,payrefund p,seat_num sn where s.asnum=a.asnum and s.renum=p.renum and 
+ sn.asnum=s.asnum and sn.seat_num=p.seatnumber and substr(s.dairport,1,instr(s.dairport,'.')-1)=dap and substr(s.aairport,1,instr(s.aairport,'.')-1)=aap 
+ and to_char(s.ddate,'yymmdd')=dd and sn.seat_grade='일등석'
 ) 남은일등석수 ,
-a.PreCLA_COUNT -(select count(p.renum)   from scplane s,airplane a ,payrefund p,seat_num sn where s.asnum=a.asnum and s.renum=p.renum and sn.asnum=s.asnum and sn.seat_num=p.seatnumber and substr(s.dairport,1,instr(s.dairport,'.')-1)=dap and substr(s.aairport,1,instr(s.aairport,'.')-1)=aap and to_char(s.ddate,'yymmdd')=dd and sn.seat_grade='프레스티지석'
+a.PreCLA_COUNT -(select count(p.renum)   from scplane s,airplane a ,payrefund p,seat_num sn where s.asnum=a.asnum and s.renum=p.renum and 
+sn.asnum=s.asnum and sn.seat_num=p.seatnumber and substr(s.dairport,1,instr(s.dairport,'.')-1)=dap and substr(s.aairport,1,instr(s.aairport,'.')-1)=aap
+and to_char(s.ddate,'yymmdd')=dd and sn.seat_grade='프레스티지석'
 ) 남은프레스티지석수 , 
-a.NCLA_COUNT -(select count(p.renum)  from scplane s,airplane a ,payrefund p,seat_num sn where s.asnum=a.asnum and s.renum=p.renum and sn.asnum=s.asnum and sn.seat_num=p.seatnumber and substr(s.dairport,1,instr(s.dairport,'.')-1)=dap and substr(s.aairport,1,instr(s.aairport,'.')-1)=aap and to_char(s.ddate,'yymmdd')=dd and sn.seat_grade='일반석'
+a.NCLA_COUNT -(select count(p.renum)  from scplane s,airplane a ,payrefund p,seat_num sn where s.asnum=a.asnum and s.renum=p.renum 
+and sn.asnum=s.asnum and sn.seat_num=p.seatnumber and substr(s.dairport,1,instr(s.dairport,'.')-1)=dap and substr(s.aairport,1,instr(s.aairport,'.')-1)=aap 
+and to_char(s.ddate,'yymmdd')=dd and sn.seat_grade='일반석'
 ) 남은일반석수, 
  d.fare 정상운임 from scplane s,airplane a , dfare d 
 where s.asnum=a.asnum 
@@ -1920,20 +1961,30 @@ and to_char(s.ddate,'yymmdd')=dd and d.peak = CASE
         else '비수기'
         end
     and d.discount = '정상'  and 
-      d.timezone = case when to_char( s.ddate , 'hh24mi') >= '1500' then '일반' else '선호' end  and d.wknddy  = case to_char(s.ddate , 'dy') when '월' then '주중' when '화' then '주중' when '수' then '주중' when '목' then '주중' else '주말' end;
+      d.timezone = case when to_char( s.ddate , 'hh24mi') >= '1500' then '일반' else '선호' end  and d.wknddy  = case to_char(s.ddate , 'dy') when '월' then
+      '주중' when '화' then '주중' when '수' then '주중' when '목' then '주중' else '주말' end;
       
       cursor vreserv2 is
       select to_char(s.ddate,'yy/mm/dd hh24:mi') 출발시각, to_char(s.adate,'yy/mm/dd hh24:mi') 도착시각, 
- to_char( (to_number(to_char(s.adate , 'DD')) -to_number(to_char(s.ddate , 'DD')))*24 + to_number(to_char(s.adate , 'hh24'))-to_number(to_char(s.ddate , 'hh24'))) + case when sign(to_number(to_char(s.adate , 'mi')) -to_number(to_char(s.ddate , 'mi'))) <0 then (-1) else 0 end ||'시간' ||ABS( to_char(to_number(to_char(s.adate , 'mi')) -to_number(to_char(s.ddate , 'mi')))) || '분' 소요시간,
+ to_char( (to_number(to_char(s.adate , 'DD')) -to_number(to_char(s.ddate , 'DD')))*24 + to_number(to_char(s.adate , 'hh24'))-to_number(to_char(s.ddate , 'hh24')))
+ + case when sign(to_number(to_char(s.adate , 'mi')) -to_number(to_char(s.ddate , 'mi'))) <0 then (-1) else 0 end ||'시간' ||ABS( to_char(to_number(to_char(s.adate , 'mi'))
+ -to_number(to_char(s.ddate , 'mi')))) || '분' 소요시간,
  substr(dairport,instr(dairport,'.')+1) 출발공항,
  substr(aairport,instr(aairport,'.')+1) 도착공항,
- a.FCLA_COUNT -(select count(p.renum) from scplane s,airplane a ,payrefund p,seat_num sn where s.asnum=a.asnum and s.renum=p.renum and sn.asnum=s.asnum and sn.seat_num=p.seatnumber and substr(s.dairport,1,instr(s.dairport,'.')-1)=dap and substr(s.aairport,1,instr(s.aairport,'.')-1)=aap and to_char(s.ddate,'yymmdd')=dd and sn.seat_grade='일등석'
+ a.FCLA_COUNT -(select count(p.renum) from scplane s,airplane a ,payrefund p,seat_num sn where s.asnum=a.asnum and s.renum=p.renum and 
+ sn.asnum=s.asnum and sn.seat_num=p.seatnumber and substr(s.dairport,1,instr(s.dairport,'.')-1)=dap and substr(s.aairport,1,instr(s.aairport,'.')-1)=aap
+ and to_char(s.ddate,'yymmdd')=dd and sn.seat_grade='일등석'
 ) 남은일등석수 ,
-a.PreCLA_COUNT -(select count(p.renum)   from scplane s,airplane a ,payrefund p,seat_num sn where s.asnum=a.asnum and s.renum=p.renum and sn.asnum=s.asnum and sn.seat_num=p.seatnumber and substr(s.dairport,1,instr(s.dairport,'.')-1)=dap and substr(s.aairport,1,instr(s.aairport,'.')-1)=aap and to_char(s.ddate,'yymmdd')=dd and sn.seat_grade='프레스티지석'
+a.PreCLA_COUNT -(select count(p.renum)   from scplane s,airplane a ,payrefund p,seat_num sn where s.asnum=a.asnum and s.renum=p.renum and sn.asnum=s.asnum
+and sn.seat_num=p.seatnumber and substr(s.dairport,1,instr(s.dairport,'.')-1)=dap and substr(s.aairport,1,instr(s.aairport,'.')-1)=aap and to_char(s.ddate,'yymmdd')=dd 
+and sn.seat_grade='프레스티지석'
 ) 남은프레스티지석수 , 
-a.NCLA_COUNT -(select count(p.renum)  from scplane s,airplane a ,payrefund p,seat_num sn where s.asnum=a.asnum and s.renum=p.renum and sn.asnum=s.asnum and sn.seat_num=p.seatnumber and substr(s.dairport,1,instr(s.dairport,'.')-1)=dap and substr(s.aairport,1,instr(s.aairport,'.')-1)=aap and to_char(s.ddate,'yymmdd')=dd and sn.seat_grade='일반석'
+a.NCLA_COUNT -(select count(p.renum)  from scplane s,airplane a ,payrefund p,seat_num sn where s.asnum=a.asnum and s.renum=p.renum and sn.asnum=s.asnum 
+and sn.seat_num=p.seatnumber and substr(s.dairport,1,instr(s.dairport,'.')-1)=dap and substr(s.aairport,1,instr(s.aairport,'.')-1)=aap and to_char(s.ddate,'yymmdd')=dd 
+and sn.seat_grade='일반석'
 ) 남은일반석수,i.fare 정상운임 from scplane s,airplane a , ifare i 
-where s.asnum=a.asnum and substr(s.dairport,1,instr(s.dairport,'.')-1)=dap and substr(s.aairport,1,instr(s.aairport,'.')-1)=aap   and sgrade = i.sg and to_char(s.ddate,'yymmdd')=dd AND I.ARRIVE = substr(s.aairport,instr(s.aairport,'.')+1);
+where s.asnum=a.asnum and substr(s.dairport,1,instr(s.dairport,'.')-1)=dap and substr(s.aairport,1,instr(s.aairport,'.')-1)=aap   
+and sgrade = i.sg and to_char(s.ddate,'yymmdd')=dd AND I.ARRIVE = substr(s.aairport,instr(s.aairport,'.')+1);
      rec vreserv%ROWTYPE;
      rec2 vreserv2%ROWTYPE;
     EF NUMBER ;
@@ -2046,8 +2097,10 @@ is
 begin
      select nvl(max(serialnumber),0)+1 into vpaynum from payrefund;
      select userid into vuserid from loginhis ;
-     select  count(seatnumber)  into vpnum from payrefund p ,scplane s where p.renum = (select renum from scplane s where to_char(s.ddate ,'YYMMDDhh24mi') =pddate) and pseatnum=p.seatnumber and p.payrefund = '결제' ;
-        select count(seatnumber)  into vpnum2 from payrefund p ,scplane s where p.renum = (select renum from scplane s where to_char(s.ddate ,'YYMMDDhh24mi') =pddate) and pseatnum=p.seatnumber and p.payrefund = '환불';
+     select  count(seatnumber)  into vpnum from payrefund p ,scplane s where p.renum = (select renum from scplane s where to_char(s.ddate ,'YYMMDDhh24mi') =pddate) 
+     and pseatnum=p.seatnumber and p.payrefund = '결제' ;
+        select count(seatnumber)  into vpnum2 from payrefund p ,scplane s where p.renum = (select renum from scplane s where to_char(s.ddate ,'YYMMDDhh24mi') =pddate)
+        and pseatnum=p.seatnumber and p.payrefund = '환불';
        if  vpnum-vpnum2 !=0 then
          raise occupfiederror;
          end if;
@@ -2072,11 +2125,14 @@ where s.renum=vrenum and d.peak = CASE
         else '비수기'
         end
     and d.sg= sn.seat_grade and s.asnum=sn.asnum and sn.seat_num = pseatnum and
-    d.discount = '정상' and substr(d.route,instr(d.route,'/')+1,instr(d.route,'-')-instr(d.route,'/')-1)=pdairport and substr(d.route,instr(d.route,'/',-1)+1)=paairport and 
-      d.timezone = case when to_char( s.ddate , 'hh24mi') >= '1500' then '일반' else '선호' end  and d.wknddy  = case to_char(s.ddate , 'dy') when '월' then '주중' when '화' then '주중' when '수' then '주중' when '목' then '주중' else '주말' end;
+    d.discount = '정상' and substr(d.route,instr(d.route,'/')+1,instr(d.route,'-')-instr(d.route,'/')-1)=pdairport and substr(d.route,instr(d.route,'/',-1)+1)=paairport
+    and 
+      d.timezone = case when to_char( s.ddate , 'hh24mi') >= '1500' then '일반' else '선호' end  and d.wknddy  = case to_char(s.ddate , 'dy') when '월' 
+      then '주중' when '화' then '주중' when '수' then '주중' when '목' then '주중' else '주말' end;
      ELSE
        SELECT  i.fare 정상운임 INTO VCOST from scplane s , ifare i ,SEAT_NUM SN
-       where s.asnum=sn.asnum and substr(s.dairport,instr(s.dairport,'.')+1)=PDAIRPORT and substr(s.aairport,instr(s.aairport,'.')+1)=PAAIRPORT   and  i.sg =SN.SEAT_GRADE  AND SN.SEAT_NUM = PSEATNUM  and to_char(s.ddate,'yymmddHH24MI')=pddate AND I.ARRIVE = substr(s.aairport,instr(s.aairport,'.')+1);
+       where s.asnum=sn.asnum and substr(s.dairport,instr(s.dairport,'.')+1)=PDAIRPORT and substr(s.aairport,instr(s.aairport,'.')+1)=PAAIRPORT 
+       and  i.sg =SN.SEAT_GRADE  AND SN.SEAT_NUM = PSEATNUM  and to_char(s.ddate,'yymmddHH24MI')=pddate AND I.ARRIVE = substr(s.aairport,instr(s.aairport,'.')+1);
      END IF;
      
       if ppmethod = '기프트카드' then
@@ -2128,22 +2184,29 @@ create or replace procedure mk_payrefund_04
 is
     vuserid flightuser.userid%type;
     cursor cpayrefund is 
-    select p.serialnumber, p.pmethod,p.flight,s.dairport ,s.aairport , p.drdate , p.cost from payrefund p , scplane s where p.userid = (select userid from loginhis) and s.renum =p.renum order by serialnumber;
+    select p.serialnumber, p.pmethod,p.flight,s.dairport ,s.aairport ,s.ddate , p.drdate , p.cost from payrefund p , scplane s where p.userid = (select userid from loginhis) and s.renum =p.renum order by serialnumber;
     rec cpayrefund%rowtype;
     vnumber number :=0;
     
 begin
    
         select userid into vuserid from loginhis;
-         dbms_output.put_line( vuserid ||'회원님의 예약 내역입니다');
+         dbms_output.put_line( '  ');
+         dbms_output.put_line( '        ┏');
+         dbms_output.put_line( '               '|| vuserid ||' 회원님의 예약 내역입니다');
+         dbms_output.put_line( '                                                  ┛');
+         dbms_output.put_line( '  ');
+         dbms_output.put_line( '∧∨∧∨∧∨∧∨∧∨∧∨∧∨∧∨∧∨∧∨∧∨∧∨∧∨∧∨∧∨∧∨∧∨∧');
        for rec in cpayrefund loop
            vnumber := vnumber +1;
-            dbms_output.put_line( rec.serialnumber || '번 예약 ' ||' 결제수단 : ' || rec.pmethod ||' 정상,할인,특가여부 : ' || rec.flight || ' 출발공항 :' || rec.dairport ||' 도착공항 : ' || rec.aairport ||' 결제일자 :' || to_char(rec.drdate , 'yyyy"년" mm"월" dd"일" hh24"시" mi"분" ss"초" ' ) || ' 결제금액 :' || rec.cost||'원' );
-         
+            dbms_output.put_line( '  ');
+            dbms_output.put_line( '예약 번호 : '||'     '||rec.serialnumber  ||' 결제수단 : ' || rec.pmethod ||' 정상  할인,특가여부 : ' || rec.flight );
+            dbms_output.put_line( ' 출발일자 : ' ||  to_char(rec.ddate ,'yyyy"년" mm"월" dd"일" hh24"시" mi"분"') );
+            dbms_output.put_line('          '||'출발공항 :' || rec.dairport ||' 도착공항 : ' || rec.aairport);
+            dbms_output.put_line(' '||'결제일자 :' || to_char(rec.drdate , 'yyyy"년" mm"월" dd"일" hh24"시" mi"분" ss"초" ' ) || ' 결제금액 :' || rec.cost||'원' );
+            dbms_output.put_line( '  ');
+            dbms_output.put_line( '∧∨∧∨∧∨∧∨∧∨∧∨∧∨∧∨∧∨∧∨∧∨∧∨∧∨∧∨∧∨∧∨∧∨∧');
        end loop;
-       exception
-       when no_data_found then
-       raise_application_error( -20033 , '예약 내역이 존재하지 않습니다.');
 end;
 
 
@@ -2239,10 +2302,11 @@ BEGIN
  
  vnum := 'b'||vserialnum;
  vname:= vlastname||vfirstname;
- 
+
  SELECT CASE WHEN EXISTS 
   (SELECT serialnumber FROM flightuser f JOIN payrefund p ON f.userid = p.userid
                                          JOIN scplane s ON p.renum = s.renum WHERE serialnumber = pserialnum AND s.ddate = pddate AND
+               
                                                                                    f.lastname = plastname AND f.firstname = pfirstname)  THEN '1' ELSE '0' END 
  INTO EXISTS_NUM
  FROM DUAL;
@@ -2524,6 +2588,9 @@ END;
 ----------------------------------동찬 ---------------------------------------
 ----------------------------------동찬 ---------------------------------------
 --- 고객의 말씀 조회 -----------
+
+--- 고객의 말씀 조회 -----------
+EXEC dc_customerc_01(1);
 CREATE OR REPLACE PROCEDURE dc_customerc_01
 (
     pQ_num NUMBER
@@ -2550,22 +2617,20 @@ BEGIN
                     vE_check :='거부';
                 END IF;
             
-                DBMS_OUTPUT.PUT_LINE('Q_num: ' || vrow.Q_num);
-                DBMS_OUTPUT.PUT_LINE('Type: ' || vrow.type);
-                DBMS_OUTPUT.PUT_LINE('Field: ' || vrow.Field);
-                DBMS_OUTPUT.PUT_LINE('First Name: ' || vrow.F_NAME);
-                DBMS_OUTPUT.PUT_LINE('Last Name: ' || vrow.L_NAME);
-                DBMS_OUTPUT.PUT_LINE('Phone Number: ' || vrow.P_NUM);
-                DBMS_OUTPUT.PUT_LINE('Email: ' || vrow.Email);
-                DBMS_OUTPUT.PUT_LINE('Title: ' || vrow.title);
-                DBMS_OUTPUT.PUT_LINE('Content: ' || vrow.content);
-                DBMS_OUTPUT.PUT_LINE('SP Number: ' || vrow.SP_NUM);
-                DBMS_OUTPUT.PUT_LINE('Renumber: ' || vrow.renum);
-                DBMS_OUTPUT.PUT_LINE('E Check: ' ||vE_check );
-                DBMS_OUTPUT.PUT_LINE('City Arr: ' || vrow.city_arr);
-                DBMS_OUTPUT.PUT_LINE('Start City: ' || vrow.start_city);
-                DBMS_OUTPUT.PUT_LINE('Arrival Date: ' || TO_CHAR(vrow.arr_date, 'YYYY-MM-DD'));
-                DBMS_OUTPUT.PUT_LINE('Flights: ' || vrow.Flights);
+                DBMS_OUTPUT.PUT_LINE('유형: ' || vrow.type);
+                DBMS_OUTPUT.PUT_LINE('분야: ' || vrow.Field);
+                DBMS_OUTPUT.PUT_LINE('이름: ' ||vrow.F_NAME|| vrow.L_NAME);
+                DBMS_OUTPUT.PUT_LINE('전화번호: ' || vrow.P_NUM);
+                DBMS_OUTPUT.PUT_LINE('이메일: ' || vrow.Email);
+                DBMS_OUTPUT.PUT_LINE('제목: ' || vrow.title);
+                DBMS_OUTPUT.PUT_LINE('내용: ' || vrow.content);
+                DBMS_OUTPUT.PUT_LINE('스카이패스회원번호: ' || vrow.SP_NUM);
+                DBMS_OUTPUT.PUT_LINE('예약번호: ' || vrow.renum);
+                DBMS_OUTPUT.PUT_LINE('이메일수신: ' ||vE_check );
+                DBMS_OUTPUT.PUT_LINE('도착 도시 : ' || vrow.city_arr);
+                DBMS_OUTPUT.PUT_LINE('출발 도시: ' || vrow.start_city);
+                DBMS_OUTPUT.PUT_LINE('출발 일자: ' || TO_CHAR(vrow.arr_date, 'YYYY-MM-DD'));
+                DBMS_OUTPUT.PUT_LINE('항공편명 : ' || vrow.Flights);
             END LOOP;
         END IF;
 EXCEPTION
@@ -2574,6 +2639,57 @@ EXCEPTION
     WHEN OTHERS THEN
         DBMS_OUTPUT.PUT_LINE('오류가 발생했습니다: ' );
 END;
+
+
+-- 고객의 말씀 입력
+
+CREATE OR REPLACE PROCEDURE dc_customerc_02
+(
+        ptype VARCHAR2,    pField VARCHAR2,
+    pF_NAME VARCHAR2,    pL_NAME VARCHAR2,    pP_NUM VARCHAR2,
+    pEmail VARCHAR2,    ptitle VARCHAR2,    pcontent varchar2,
+    pSP_NUM VARCHAR2,    prenum VARCHAR2,    pe_check NUMBER,
+    pcity_arr VARCHAR2,    pstart_city VARCHAR2,    parr_date DATE ,
+    pFlights VARCHAR2
+)
+IS
+    vnum number ;
+    vE_check VARCHAR2(20);
+BEGIN
+     vnum := customercseq.NEXTVAL ;
+
+    INSERT INTO customerc
+    VALUES(  vnum  ,
+    ptype ,pField ,pF_NAME ,pL_NAME ,pP_NUM ,pEmail ,ptitle ,pcontent ,pSP_NUM ,prenum ,
+    pe_check ,pcity_arr ,pstart_city ,parr_date  ,pFlights  );
+     
+     
+     IF  pEmail =1 THEN 
+                      vE_check  :='허가';
+                ELSE 
+                    vE_check :='거부';
+                END IF;
+     
+    DBMS_OUTPUT.PUT_LINE('유형: ' ||ptype );
+    DBMS_OUTPUT.PUT_LINE('분야: ' || pField);
+    DBMS_OUTPUT.PUT_LINE('이름: ' ||pF_NAME||pL_NAME);
+    DBMS_OUTPUT.PUT_LINE('전화번호: ' || pP_NUM );
+    DBMS_OUTPUT.PUT_LINE('이메일: ' || pEmail );
+    DBMS_OUTPUT.PUT_LINE('제목: ' || ptitle );
+    DBMS_OUTPUT.PUT_LINE('내용: ' || pcontent );
+    DBMS_OUTPUT.PUT_LINE('스카이패스회원번호: ' || pSP_NUM);
+    DBMS_OUTPUT.PUT_LINE('예약번호: ' || prenum);
+    DBMS_OUTPUT.PUT_LINE('이메일수신: ' ||vE_check );
+    DBMS_OUTPUT.PUT_LINE('도착 도시 : ' || pcity_arr);
+    DBMS_OUTPUT.PUT_LINE('출발 도시: ' || pstart_city);
+    DBMS_OUTPUT.PUT_LINE('출발 일자: ' || parr_date);
+    DBMS_OUTPUT.PUT_LINE('항공편명 : ' || pFlights);
+          
+    DBMS_OUTPUT.PUT_LINE('고객의 말씀이 입력되었습니다.');
+--EXCEPTION
+END;
+
+
 
 -- 고객의 말씀 입력
 
@@ -2632,9 +2748,12 @@ BEGIN
             e_check = pe_check ,city_arr = pcity_arr ,start_city = pstart_city 
             ,arr_date = parr_date  ,Flights = pFlights
             WHERE Q_NUM = pQ_NUM;
+            
+        DBMS_OUTPUT.PUT_LINE('수정이 완료되었습니다.');
     END IF;
 --EXCEPTION
 END;
+
 
 
 
@@ -2673,6 +2792,7 @@ END;
 
 
 
+
 --기내식 조회 쿼리 
 CREATE OR REPLACE PROCEDURE dc_flight_meal_01
 (
@@ -2696,15 +2816,71 @@ BEGIN
                      FROM flight_meal
                      WHERE meal_code = pmeal_code)
         LOOP
-            DBMS_OUTPUT.PUT_LINE('meal_code: ' || vrow.meal_code);
-            DBMS_OUTPUT.PUT_LINE('menu: ' || vrow.menu);
-            DBMS_OUTPUT.PUT_LINE('MENU_PDF: vrow.menu_pdf' );
+            DBMS_OUTPUT.PUT_LINE('기내식 번호: ' || vrow.meal_code);
+            DBMS_OUTPUT.PUT_LINE('메뉴: ' || vrow.menu);
+            DBMS_OUTPUT.PUT_LINE('MENU_PDF' );
         END LOOP;
     END IF;
 EXCEPTION
     WHEN OTHERS THEN
         DBMS_OUTPUT.PUT_LINE('오류가 발생했습니다 ' );
 END;
+
+---------기내식 blob 입력 
+---------기내식 blob 입력 
+
+--기내식 blob 입력
+
+
+CREATE OR REPLACE DIRECTORY BLOB_DIR
+AS 'C:\E\Class\Workspace\OracleClass';
+
+
+--;
+
+
+CREATE OR REPLACE PROCEDURE FLIGHT_meal_BLOB_INSERT
+( 
+pmeal_code number,
+V_FILENAME IN VARCHAR2
+)
+IS
+    V_LOCATOR_BLOB  BLOB;
+    
+    V_SOURCE_DATA_FILE BFILE := BFILENAME('BLOB_DIR', V_FILENAME);
+    
+    V_DEST_OFFSET    NUMBER := 1;
+    V_SRC_OFFSET      NUMBER := 1;
+    
+BEGIN
+         
+         UPDATE flight_meal
+         SET  
+         menu_pdf =  empty_blob()
+         WHERE meal_code = pmeal_code
+         RETURNING MENU_PDF INTO V_LOCATOR_BLOB;
+         
+         DBMS_LOB.OPEN(V_SOURCE_DATA_FILE, 
+                                  DBMS_LOB.LOB_READONLY);
+                                  
+         DBMS_LOB.LOADBLOBFROMFILE(V_LOCATOR_BLOB,
+                                                      V_SOURCE_DATA_FILE,
+                                                      DBMS_LOB.GETLENGTH(V_SOURCE_DATA_FILE),
+                                                      V_DEST_OFFSET,
+                                                      V_SRC_OFFSET
+                                                      );
+                                                      
+         DBMS_LOB.CLOSE(V_SOURCE_DATA_FILE);
+         
+         COMMIT;
+         
+         DBMS_OUTPUT.PUT_LINE('이미지 입력 성공!!!');
+         
+         EXCEPTION
+            WHEN OTHERS THEN 
+                DBMS_OUTPUT.PUT_LINE('이미지 입력 실패!!');
+END;
+
 
 ---------기내식 blob 입력 
 ---------기내식 blob 입력 
@@ -2791,6 +2967,9 @@ END;
 
 
 
+
+--기내식 수정쿼리
+
 --기내식 수정쿼리
 
 
@@ -2816,8 +2995,10 @@ BEGIN
                 menu =pmenu
                 WHERE meal_code = pmeal_code;
     END IF;
+    DBMS_OUTPUT.PUT_LINE('수정이 완료되었습니다.');
     --EXCEPTION
 END;
+
 
 
 
@@ -2843,6 +3024,7 @@ BEGIN
     ELSE
         DELETE FROM flight_meal 
         WHERE meal_code = pmeal_code;
+        DBMS_OUTPUT.PUT_LINE(pmeal_code||'번 기내식이 삭제되었습니다.'); 
     END IF;
   
 EXCEPTION
@@ -2852,33 +3034,36 @@ END;
 
 
 
+
+
 --기프트 카드 생성쿼리
 --기프트 카드 생성쿼리
 
 CREATE OR REPLACE FUNCTION dc_giftcard_03 RETURN VARCHAR2 IS
-    v_card_number VARCHAR2(19);
-    v_count NUMBER; 
+    vcardnumber VARCHAR2(19);
+    vcount NUMBER; 
 BEGIN
 
     LOOP
-        v_card_number := 
+        vcardnumber := 
             TO_CHAR(TRUNC(DBMS_RANDOM.VALUE(1000, 9999))) || '-' ||
             TO_CHAR(TRUNC(DBMS_RANDOM.VALUE(1000, 9999))) || '-' ||
             TO_CHAR(TRUNC(DBMS_RANDOM.VALUE(1000, 9999))) || '-' ||
             TO_CHAR(TRUNC(DBMS_RANDOM.VALUE(1000, 9999)));
 
         SELECT COUNT(*)
-        INTO v_count
+        INTO vcount
         FROM card_table
-        WHERE card_number = v_card_number;
+        WHERE card_number = vcardnumber;
 
-        EXIT WHEN v_count = 0;
+        EXIT WHEN vcount = 0;
     END LOOP;
     
-    RETURN v_card_number;
+    RETURN vcardnumber;
 --EXCEPTION
     
 END;
+
 -------------------위 function은 직접 실행 X ----
 ------------------------------------------------------
 
@@ -2897,34 +3082,33 @@ CREATE OR REPLACE PROCEDURE dc_giftcard_02
     Pamount NUMBER
 )
 IS
-    VCARD_NUM VARCHAR2(19);
+    VCARD_NUM VARCHAR2(19); 
     VPIN_NUM NUMBER(6);
-    v_card_number VARCHAR2(19);
-    v_card_code number;
+    v_card_number VARCHAR2(19); 
+    v_card_code NUMBER; 
+    VCHECK NUMBER; 
 BEGIN
-
     v_card_number := dc_giftcard_03;
     v_card_code := DC_giftcard_01.NEXTVAL;
 
-    INSERT INTO card_table  VALUES (v_card_code,v_card_number);
-    
+    INSERT INTO card_table  VALUES (v_card_code, v_card_number);
+    DBMS_OUTPUT.PUT_LINE('카드가 생성되었습니다 !');
     DBMS_OUTPUT.PUT_LINE('생성된 카드 번호: ' || v_card_number);
 
-
-
     SELECT FLOOR(DBMS_RANDOM.VALUE(100000, 999999)) INTO VPIN_NUM FROM dual;
+    
+    SELECT COUNT(*)
+    INTO VCHECK
+    FROM GIFTCARD
+    WHERE CARD_NUM = v_card_number;
 
-    SELECT CARD_NUMBER
-    INTO VCARD_NUM
-    FROM (
-        SELECT CARD_NUMBER
-        FROM CARD_TABLE
-        ORDER BY DBMS_RANDOM.VALUE
-    )
-    WHERE ROWNUM = 1;
-
-    INSERT INTO giftcard
-    VALUES (VCARD_NUM, Pmessage, VPIN_NUM, PRecipient, PRecipient_PNUM, PSENDER, PSENDER_PNUM, Pamount);
+    IF VCHECK = 0 THEN
+        INSERT INTO giftcard
+        VALUES (v_card_number, Pmessage, VPIN_NUM, PRecipient, PRecipient_PNUM, PSENDER, PSENDER_PNUM, Pamount);
+        DBMS_OUTPUT.PUT_LINE('선물 카드가 성공적으로 삽입되었습니다!');
+    ELSE
+        DBMS_OUTPUT.PUT_LINE('이미 존재하는 카드 번호입니다. 다시 시도해 주세요.');
+    END IF;
 END;
 
 
@@ -2950,7 +3134,11 @@ BEGIN
 
 
 
-    INSERT INTO SEAT_NUM(SEAT_CODE,asnum,seat_num,seat_grade) VALUES(vseat_code,pasnum,pseat_num,pseat_grade);
+    INSERT INTO SEAT_NUM(SEAT_CODE,asnum,seat_num,seat_grade) 
+    VALUES(vseat_code,pasnum,pseat_num,pseat_grade);
+    
+    DBMS_OUTPUT.PUT_LINE('좌석코드 : '|| vseat_code );
+    DBMS_OUTPUT.PUT_LINE('좌석생성이 완료되었습니다.' );
 EXCEPTION
     WHEN OTHERS THEN
     DBMS_OUTPUT.PUT_LINE('오류가 발생했습니다' );
@@ -2958,6 +3146,8 @@ EXCEPTION
 END;
 
 
+
+-- 생성과 동시에 pdf파일도 입력되게하는 업데이트 프로시저 생성
 -- 생성과 동시에 pdf파일도 입력되게하는 업데이트 프로시저 생성
  CREATE OR REPLACE DIRECTORY BLOB_DIR
  AS 'C:\E\Class\Workspace\OracleClass';
@@ -2999,6 +3189,7 @@ END;
 
 
 ---------------------------------------
+-- 이벤트 추가 
 ---------------------------------------
 CREATE OR REPLACE PROCEDURE DC_EVENT
 (   pEvcat varchar2,
@@ -3015,12 +3206,62 @@ BEGIN
     SELECT DC_SEQEVE.NEXTVAL INTO vevnum FROM dual;
     INSERT INTO Event VALUES (vevnum, pEvcat, pEvname, pstdate, pendate, pAdminID, NULL);       
     EVENT_BLOB_INSERT(vevnum, pEposter);
-    
+     DBMS_OUTPUT.PUT_LINE(pEvname|| ' 이벤트가 추가되었습니다.' );
 EXCEPTION
     WHEN others THEN 
         DBMS_OUTPUT.PUT_LINE('이벤트 추가 중 오류 발생 ' );
 END;
+
+----------------------------------이벤트 조회 ------------------------
+----------------------------------이벤트 조회 ------------------------
+-- 카테고리 선택하여 진행중인 이벤트확인
+CREATE OR REPLACE PROCEDURE SELEVENT(
+    pcategory IN VARCHAR2
+)
+IS
+    vdate DATE;
+BEGIN
+    vdate := SYSDATE;
+
+    FOR event_rec IN (SELECT * FROM Event WHERE Evcat LIKE '%' || pcategory || '%'
+    AND stdate <= vdate AND endate >= vdate)
+    LOOP
+    
+        DBMS_OUTPUT.PUT_LINE('이벤트 번호: ' || event_rec.Evnum);
+        DBMS_OUTPUT.PUT_LINE('이벤트 항목: ' || event_rec.Evcat);
+        DBMS_OUTPUT.PUT_LINE('이벤트 이름: ' || event_rec.Evname);
+        DBMS_OUTPUT.PUT_LINE('시작일: ' || TO_CHAR(event_rec.stdate, 'YYYY-MM-DD'));
+        DBMS_OUTPUT.PUT_LINE('종료일: ' || TO_CHAR(event_rec.endate, 'YYYY-MM-DD'));
+        DBMS_OUTPUT.PUT_LINE('관리자 아이디: ' || event_rec.AdminID);
+    END LOOP;
+END;
+
+--------------------------------이벤트 ----------------------------------
+--------------------------------이벤트 ----------------------------------
+-- 종료된 이벤트 코드 확인
+-- 종료된 이벤트 코드 확인
+
+CREATE OR REPLACE PROCEDURE ENDEDEVENT
+IS
+    vdate VARCHAR2(50);
+BEGIN
+    vdate := SYSDATE;
+
+    FOR event_rec IN (SELECT * FROM Event WHERE endate < vdate)
+    LOOP
+        DBMS_OUTPUT.PUT_LINE('이벤트 번호: ' || event_rec.Evnum);
+        DBMS_OUTPUT.PUT_LINE('이벤트 이름: ' || event_rec.Evname);
+        DBMS_OUTPUT.PUT_LINE('종료일: ' || TO_CHAR(event_rec.endate, 'YYYY-MM-DD'));
+        DBMS_OUTPUT.PUT_LINE('이벤트 상태: 종료됨');
+        
+    END LOOP;
+END;
+
+
 -------------------------------------------------------------------
+-------------------------------------------------------------------
+
+--- 이벤트 응모 , 여러번 응모 불가능
 -------------------------------------------------------------------
 
 CREATE OR REPLACE PROCEDURE EnterEvent (
@@ -3031,11 +3272,8 @@ CREATE OR REPLACE PROCEDURE EnterEvent (
 
     vcount number;
 BEGIN
-       
-       
     SELECT COUNT(*) INTO vcount FROM entrys WHERE evnum=pEventNum AND 
     USERID = puserid ;
-
     
     IF vcount >=1
     THEN
@@ -3051,6 +3289,7 @@ EXCEPTION
     WHEN OTHERS THEN
         DBMS_OUTPUT.PUT_LINE('이벤트 응모 중 오류가 발생했습니다');
 END;
+
 ----------------------------------경품 추첨 --------------------------------
 ----------------------------------경품 추첨 --------------------------------
 
@@ -3063,6 +3302,8 @@ CREATE OR REPLACE PROCEDURE draweventwinners(
     p_evnum  event.evnum%TYPE
 )
 AS
+    vename      VARCHAR2(30);
+    vnumber     VARCHAR2(30);
     v_totalentries NUMBER;
     v_winnercount NUMBER;
     CURSOR v_prizes IS
@@ -3098,8 +3339,16 @@ BEGIN
     END LOOP;
       dbms_output.put_line(p_evnum ||'번 이벤트의 당첨자가 추첨되었습니다.' );
     FOR  winnerrecord IN (SELECT * FROM winner WHERE evnum = p_evnum) LOOP
-  
-    dbms_output.put_line('당첨자 : ' || winnerrecord.userid || ', 상품 : ' ||winnerrecord.wingrade  || ' 축하드립니다 !!');
+            vename := 
+        SUBSTR(winnerrecord.userid, 1, 3) || LPAD('*', LENGTH(winnerrecord.userid) - 4, '*')
+        || SUBSTR(winnerrecord.userid, -3);
+        
+        
+        vnumber :=
+        SUBSTR(winnerrecord.PHONENUMBER, 1, 3) || LPAD('*', LENGTH(winnerrecord.PHONENUMBER)-7 , '*')
+        || SUBSTR(winnerrecord.PHONENUMBER, -4);
+     dbms_output.put_line('상품 : ' ||winnerrecord.wingrade);
+    dbms_output.put_line('당첨자 : ' || vename|| ', 전화번호 : ' ||vnumber  || ' 축하드립니다 !!');
     
     END LOOP;
 EXCEPTION
@@ -3149,6 +3398,7 @@ END;
 -- 
  --         Rfamily insert / userdetail update family_id 
 --  회원 가족 신청
+
 CREATE OR REPLACE PROCEDURE pd_da_Rfamily_01
 (
     pRelation Rfamily.relation%TYPE,
@@ -3169,6 +3419,7 @@ BEGIN
 END;
 
 
+-- 가족 진행 중과 완료 두 가지로 나누고 이 값을 1. 수정 2. 조회 3. 삭제  / 수정할 id -> 진행중 OR 완료 || 조회할 가족 id 만 출력  
 -- 가족 진행 중과 완료 두 가지로 나누고 이 값을 1. 수정 2. 조회 3. 삭제  / 수정할 id -> 진행중 OR 완료 || 조회할 가족 id 만 출력  
 CREATE OR REPLACE PROCEDURE pd_da_Rfamily_03
 (
@@ -3343,14 +3594,14 @@ BEGIN
     SELECT usergrade into vGrade
     FROM userdetail
     WHERE userid = p_Userid;
-    
+    --- 시연을 위해서 등급 기준 조정
 --     등급 체크 
-    IF vgetMile >= 50000 OR vride >= 40 THEN 
-        IF vgetMile >= 500000 AND vgetMile <= 999999 THEN
+    IF vgetMile >= 5000 OR vride >= 40 THEN 
+        IF vgetMile >= 50000 AND vgetMile <= 999999 THEN
             vGrade := '모닝캄 프리미엄 클럽';
         ELSIF vgetMile >= 1000000 THEN
             vGrade := '밀리언 마일러 클럽';
-        ELSIF vGrade = '모닝캄 클럽' AND vgetMile <= 499999 THEN
+        ELSIF vGrade = '모닝캄 클럽' AND vgetMile <= 49999 THEN
             SELECT grade_date into dat
             FROM userdetail
             WHERE userid = p_Userid;
@@ -3488,7 +3739,762 @@ BEGIN
 -- EXCEPTION
 END ye_Update_Contract;
 
+---------------------------------------------------명건 --------------------------
+---------------------------------------------------명건 --------------------------
+---------------------------------------------------명건 --------------------------
+---------------영화 작성 프로시저 -------------
+---------------영화 작성 프로시저 -------------
+CREATE OR REPLACE PROCEDURE up_create_movie (
+    p_Title IN Movie.Title%TYPE,
+    p_Duration IN Movie.Duration%TYPE,
+    p_Category IN Movie.Category%TYPE,
+    p_Content IN Movie.Content%TYPE,
+    p_Lang IN Movie.Lang%TYPE
+)
+AS
+    v_MovieID NUMBER;
+BEGIN
+    SELECT NVL(MAX(MovieID), 0) + 1 INTO v_MovieID FROM Movie;
+    
+    INSERT INTO Movie (MovieID, Title, Duration, Category, Content, Lang)
+    VALUES (v_MovieID, p_Title, p_Duration, p_Category, p_Content, p_Lang);
+    
+    COMMIT;
+    DBMS_OUTPUT.PUT_LINE('영화 정보가 성공적으로 추가되었습니다. MovieID: ' || v_MovieID);
+EXCEPTION
+    WHEN OTHERS THEN
+        DBMS_OUTPUT.PUT_LINE('영화 정보를 추가하는 도중 오류가 발생했습니다: ' || SQLERRM);
+        ROLLBACK;
+END;
 
+
+--------------------------영화 정보 수정 -----------------------------
+--------------------------영화 정보 수정 -----------------------------
+
+CREATE OR REPLACE PROCEDURE up_update_movie (
+    p_MovieID IN Movie.MovieID%TYPE,
+    p_Title IN Movie.Title%TYPE,
+    p_Duration IN Movie.Duration%TYPE,
+    p_Category IN Movie.Category%TYPE,
+    p_Content IN Movie.Content%TYPE,
+    p_Lang IN Movie.Lang%TYPE
+)
+IS
+BEGIN
+    UPDATE Movie
+    SET Title = COALESCE(p_Title, Title),
+        Duration = COALESCE(p_Duration, Duration),
+        Category = COALESCE(p_Category, Category),
+        Content = COALESCE(p_Content, Content),
+        Lang = COALESCE(p_Lang, Lang)
+    WHERE MovieID = p_MovieID;
+
+    IF SQL%ROWCOUNT = 0 THEN
+        DBMS_OUTPUT.PUT_LINE('해당하는 무비 아이디의 영화를 찾을 수 없습니다.');
+    ELSE
+        COMMIT;
+        DBMS_OUTPUT.PUT_LINE('영화 정보가 성공적으로 업데이트되었습니다.');
+    END IF;
+EXCEPTION
+    WHEN OTHERS THEN
+        DBMS_OUTPUT.PUT_LINE('영화 정보를 업데이트하는 도중 오류가 발생했습니다: ' || SQLERRM);
+        ROLLBACK;
+END;
+
+--------------------------영화 정보 삭제 -------------------------------
+--------------------------영화 정보 삭제 -------------------------------
+
+CREATE OR REPLACE PROCEDURE up_delete_movie (
+    p_MovieID IN VARCHAR2
+)
+IS
+    v_deleted_count NUMBER := 0; -- 삭제된 행 수를 추적하기 위한 변수
+BEGIN
+    IF INSTR(p_MovieID, '~') > 0 THEN -- 범위 형태로 받은 경우
+        FOR i IN (
+            SELECT TO_NUMBER(REGEXP_SUBSTR(p_MovieID, '\d+', 1, 1)) AS start_MovieID,
+                   TO_NUMBER(REGEXP_SUBSTR(p_MovieID, '\d+', 1, 2)) AS end_MovieID
+            FROM dual
+        ) LOOP
+            FOR j IN i.start_MovieID..i.end_MovieID LOOP
+                DELETE FROM Movie
+                WHERE MovieID = j;
+                v_deleted_count := v_deleted_count + SQL%ROWCOUNT;
+            END LOOP;
+        END LOOP;
+    ELSE -- 쉼표로 구분된 키넘들을 받은 경우 또는 단일 키넘을 받은 경우
+        FOR i IN (
+            SELECT TO_NUMBER(REGEXP_SUBSTR(p_MovieID, '\d+', 1, LEVEL)) AS MovieID
+            FROM dual
+            CONNECT BY LEVEL <= REGEXP_COUNT(p_MovieID, '\d+')
+        ) LOOP
+            DELETE FROM Movie
+            WHERE MovieID = i.MovieID;
+            v_deleted_count := v_deleted_count + SQL%ROWCOUNT;
+        END LOOP;
+    END IF;
+
+    IF v_deleted_count = 0 THEN
+        DBMS_OUTPUT.PUT_LINE('해당하는 무비 아이디의 영화를 찾을 수 없습니다.');
+    ELSE
+        COMMIT;
+        DBMS_OUTPUT.PUT_LINE('영화 정보가 성공적으로 삭제되었습니다.');
+    END IF;
+EXCEPTION
+    WHEN OTHERS THEN
+        DBMS_OUTPUT.PUT_LINE('영화 정보를 삭제하는 도중 오류가 발생했습니다: ' || SQLERRM);
+        ROLLBACK;
+END;
+----------------------------영화 정보 조회--------------------------
+----------------------------영화 정보 조회--------------------------
+----------------------------영화 정보 조회--------------------------
+
+CREATE OR REPLACE PROCEDURE up_movieinfo (
+    p_YearMonth IN VARCHAR2
+)
+AS
+    v_StartDate DATE;
+    v_EndDate DATE;
+BEGIN
+    v_StartDate := TO_DATE(p_YearMonth || '01', 'YYYYMMDD');
+    v_EndDate := LAST_DAY(v_StartDate);
+    
+    FOR movieinfo IN (
+        SELECT Title, Duration, Category, Content, Lang
+        FROM Movie
+        WHERE TRUNC(Duration, 'MM') = v_StartDate
+    ) LOOP
+        DBMS_OUTPUT.PUT_LINE('제목: ' || movieinfo.Title);
+        DBMS_OUTPUT.PUT_LINE('시청가능일자: ' || TO_CHAR(movieinfo.Duration, 'YYYY-MM-DD'));
+        DBMS_OUTPUT.PUT_LINE('장르: ' || movieinfo.Category);
+        DBMS_OUTPUT.PUT_LINE('줄거리: ' || movieinfo.Content);
+        DBMS_OUTPUT.PUT_LINE('언어: ' || movieinfo.Lang);
+        DBMS_OUTPUT.PUT_LINE('---------------------------------------');
+    END LOOP;
+    
+EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+        DBMS_OUTPUT.PUT_LINE('해당 월에 시청 가능한 컨텐츠가 없습니다.');
+    WHEN OTHERS THEN
+        DBMS_OUTPUT.PUT_LINE('컨텐츠 조회 중 오류가 발생했습니다: ' || SQLERRM);
+END;
+----------------------------------------------------------------------------
+------------------------------TV 테이블 작성 -------------------------
+
+CREATE OR REPLACE PROCEDURE up_create_movie (
+    p_Title IN Movie.Title%TYPE,
+    p_Duration IN Movie.Duration%TYPE,
+    p_Category IN Movie.Category%TYPE,
+    p_Content IN Movie.Content%TYPE,
+    p_Lang IN Movie.Lang%TYPE
+)
+AS
+    v_MovieID NUMBER;
+BEGIN
+    SELECT NVL(MAX(MovieID), 0) + 1 INTO v_MovieID FROM Movie;
+    
+    INSERT INTO Movie (MovieID, Title, Duration, Category, Content, Lang)
+    VALUES (v_MovieID, p_Title, p_Duration, p_Category, p_Content, p_Lang);
+    
+    COMMIT;
+    DBMS_OUTPUT.PUT_LINE('영화 정보가 성공적으로 추가되었습니다. MovieID: ' || v_MovieID);
+EXCEPTION
+    WHEN OTHERS THEN
+        DBMS_OUTPUT.PUT_LINE('영화 정보를 추가하는 도중 오류가 발생했습니다: ' || SQLERRM);
+        ROLLBACK;
+END;
+
+-------------------------------TV 테이블 수정 ----------------------------------
+-------------------------------TV 테이블 수정 ----------------------------------
+
+CREATE OR REPLACE PROCEDURE up_update_TV (
+    p_TVID IN TV.TVID%TYPE,
+    p_Title IN TV.Title%TYPE,
+    p_Duration IN TV.Duration%TYPE,
+    p_Category IN TV.Cate%TYPE,
+    p_Content IN TV.Content%TYPE
+)
+IS
+BEGIN
+    UPDATE TV
+    SET Title = COALESCE(p_Title, Title),
+        Duration = COALESCE(p_Duration, Duration),
+        Cate = COALESCE(p_Category, Cate),
+        Content = COALESCE(p_Content, Content)
+    WHERE TVID = p_TVID;
+
+    IF SQL%ROWCOUNT = 0 THEN
+        DBMS_OUTPUT.PUT_LINE('해당하는 TV 아이디의 프로그램을 찾을 수 없습니다.');
+    ELSE
+        COMMIT;
+        DBMS_OUTPUT.PUT_LINE('TV 프로그램 정보가 성공적으로 업데이트되었습니다.');
+    END IF;
+EXCEPTION
+    WHEN OTHERS THEN
+        DBMS_OUTPUT.PUT_LINE('TV 프로그램 정보를 업데이트하는 도중 오류가 발생했습니다: ' || SQLERRM);
+        ROLLBACK;
+END;
+
+---------------------------------TV 테이블 삭제 -------------------------------
+---------------------------------TV 테이블 삭제 -------------------------------
+
+CREATE OR REPLACE PROCEDURE up_delete_TV (
+    p_TVIDs IN VARCHAR2
+)
+IS
+    v_deleted_count NUMBER := 0;
+BEGIN
+    IF INSTR(p_TVIDs, '~') > 0 THEN  -- ~로 구분된 문자열숫자를 받은 경우
+        FOR i IN (
+            SELECT TO_NUMBER(REGEXP_SUBSTR(p_TVIDs, '\d+', 1, 1)) AS start_TVID,
+                   TO_NUMBER(REGEXP_SUBSTR(p_TVIDs, '\d+', 1, 2)) AS end_TVID
+            FROM dual
+        ) LOOP
+            FOR j IN i.start_TVID..i.end_TVID LOOP
+                DELETE FROM TV
+                WHERE TVID = j;
+                v_deleted_count := v_deleted_count + SQL%ROWCOUNT;
+            END LOOP;
+        END LOOP;
+    ELSE -- 쉼표로 구분된 TVID들을 받은 경우 또는 단일 TVID를 받은 경우
+        FOR i IN (
+            SELECT TO_NUMBER(REGEXP_SUBSTR(p_TVIDs, '\d+', 1, LEVEL)) AS TVID
+            FROM dual
+            CONNECT BY LEVEL <= REGEXP_COUNT(p_TVIDs, '\d+')
+        ) LOOP
+            DELETE FROM TV
+            WHERE TVID = i.TVID;
+            v_deleted_count := v_deleted_count + SQL%ROWCOUNT;
+        END LOOP;
+    END IF;
+
+    IF v_deleted_count = 0 THEN
+        DBMS_OUTPUT.PUT_LINE('해당하는 TV 아이디의 프로그램을 찾을 수 없습니다.');
+    ELSE
+        COMMIT;
+        DBMS_OUTPUT.PUT_LINE('프로그램이 성공적으로 삭제되었습니다.');
+    END IF;
+EXCEPTION
+    WHEN OTHERS THEN
+        DBMS_OUTPUT.PUT_LINE('프로그램을 삭제하는 도중 오류가 발생했습니다: ' || SQLERRM);
+        ROLLBACK;
+END;
+------------------------------------------------------------------
+------------------------------------------------------------------
+------------------TV 테이블 삭제 프로시저 ---------------------------
+------------------TV 테이블 삭제 프로시저 ---------------------------
+
+CREATE OR REPLACE PROCEDURE up_delete_TV (
+    p_TVIDs IN VARCHAR2
+)
+IS
+    v_deleted_count NUMBER := 0;
+BEGIN
+    IF INSTR(p_TVIDs, '~') > 0 THEN  -- ~로 구분된 문자열숫자를 받은 경우
+        FOR i IN (
+            SELECT TO_NUMBER(REGEXP_SUBSTR(p_TVIDs, '\d+', 1, 1)) AS start_TVID,
+                   TO_NUMBER(REGEXP_SUBSTR(p_TVIDs, '\d+', 1, 2)) AS end_TVID
+            FROM dual
+        ) LOOP
+            FOR j IN i.start_TVID..i.end_TVID LOOP
+                DELETE FROM TV
+                WHERE TVID = j;
+                v_deleted_count := v_deleted_count + SQL%ROWCOUNT;
+            END LOOP;
+        END LOOP;
+    ELSE -- 쉼표로 구분된 TVID들을 받은 경우 또는 단일 TVID를 받은 경우
+        FOR i IN (
+            SELECT TO_NUMBER(REGEXP_SUBSTR(p_TVIDs, '\d+', 1, LEVEL)) AS TVID
+            FROM dual
+            CONNECT BY LEVEL <= REGEXP_COUNT(p_TVIDs, '\d+')
+        ) LOOP
+            DELETE FROM TV
+            WHERE TVID = i.TVID;
+            v_deleted_count := v_deleted_count + SQL%ROWCOUNT;
+        END LOOP;
+    END IF;
+
+    IF v_deleted_count = 0 THEN
+        DBMS_OUTPUT.PUT_LINE('해당하는 TV 아이디의 프로그램을 찾을 수 없습니다.');
+    ELSE
+        COMMIT;
+        DBMS_OUTPUT.PUT_LINE('프로그램이 성공적으로 삭제되었습니다.');
+    END IF;
+EXCEPTION
+    WHEN OTHERS THEN
+        DBMS_OUTPUT.PUT_LINE('프로그램을 삭제하는 도중 오류가 발생했습니다: ' || SQLERRM);
+        ROLLBACK;
+END;
+----------------------------------------------------------------------------------------------------
+---------------------TV 콘텐츠 조회 -----------------------------------------
+---------------------TV 콘텐츠 조회 -----------------------------------------
+---------------------TV 콘텐츠 조회 -----------------------------------------
+--EXEC up_tvinfo(202404);
+CREATE OR REPLACE PROCEDURE up_tvinfo (
+    p_YearMonth IN VARCHAR2
+)
+AS
+    v_StartDate DATE;
+    v_EndDate DATE;
+BEGIN
+    v_StartDate := TO_DATE(p_YearMonth || '01', 'YYYYMMDD');
+    v_EndDate := LAST_DAY(v_StartDate);
+    
+    FOR tvinfo IN (
+        SELECT Title, duration, cate, content
+        FROM TV
+        WHERE TRUNC(duration, 'MM') = v_StartDate
+    ) LOOP
+        DBMS_OUTPUT.PUT_LINE('제목: ' || tvinfo.Title);
+        DBMS_OUTPUT.PUT_LINE('시청가능기간: ' || TO_CHAR(tvinfo.duration, 'YYYY-MM-DD'));
+        DBMS_OUTPUT.PUT_LINE('장르: ' || tvinfo.cate);
+        DBMS_OUTPUT.PUT_LINE('내용: ' || tvinfo.content);
+        DBMS_OUTPUT.PUT_LINE('---------------------------------------');
+    END LOOP;
+    
+EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+        DBMS_OUTPUT.PUT_LINE('해당 월에 시청 가능한 TV 컨텐츠가 없습니다.');
+    WHEN OTHERS THEN
+        DBMS_OUTPUT.PUT_LINE('TV 컨텐츠 조회 중 오류가 발생했습니다: ' || SQLERRM);
+END;
+--------------------------------음악 테이블 작성 ------------------------
+--------------------------------음악 테이블 작성 ------------------------
+CREATE OR REPLACE PROCEDURE up_create_music (
+    p_Title IN Music.Title%TYPE,
+    p_Duration IN Music.Duration%TYPE,
+    p_Category IN Music.Cate%TYPE,
+    p_Content IN Music.Content%TYPE
+)
+AS
+    v_MusicID NUMBER;
+BEGIN
+    SELECT NVL(MAX(MusicID), 0) + 1 INTO v_MusicID FROM Music;
+    
+    INSERT INTO Music (MusicID, Title, Duration, Cate, Content)
+    VALUES (v_MusicID, p_Title, p_Duration, p_Category, p_Content);
+    
+    DBMS_OUTPUT.PUT_LINE('음악 정보가 성공적으로 추가되었습니다. MusicID: ' || v_MusicID);
+EXCEPTION
+    WHEN OTHERS THEN
+        DBMS_OUTPUT.PUT_LINE('음악 정보를 추가하는 도중 오류가 발생했습니다: ' || SQLERRM);
+        ROLLBACK;
+END;
+-------------------------------음악 테이블 수정 ----------------------------
+-------------------------------음악 테이블 수정 ----------------------------
+CREATE OR REPLACE PROCEDURE up_update_music (
+    p_MusicID IN Music.MusicID%TYPE,
+    p_Title IN Music.Title%TYPE,
+    p_Duration IN Music.Duration%TYPE,
+    p_Category IN Music.Cate%TYPE,
+    p_Content IN Music.Content%TYPE
+)
+IS
+BEGIN
+    UPDATE Music
+    SET Title = COALESCE(p_Title, Title),
+        Duration = COALESCE(p_Duration, Duration),
+        Cate = COALESCE(p_Category, Cate),
+        Content = COALESCE(p_Content, Content)
+    WHERE MusicID = p_MusicID;
+
+    IF SQL%ROWCOUNT = 0 THEN
+        DBMS_OUTPUT.PUT_LINE('해당하는 음악 아이디의 프로그램을 찾을 수 없습니다.');
+    ELSE
+        COMMIT;
+        DBMS_OUTPUT.PUT_LINE('음악 정보가 성공적으로 업데이트되었습니다.');
+    END IF;
+EXCEPTION
+    WHEN OTHERS THEN
+        DBMS_OUTPUT.PUT_LINE('음악 정보를 업데이트하는 도중 오류가 발생했습니다: ' || SQLERRM);
+        ROLLBACK;
+END;
+----------------------------------------------------------------------------------------------------
+--------------------------뮤직 테이블 삭제 프로시저
+--EXEC up_delete_music(1);
+--EXEC up_delete_music('2,5');
+--EXEC up_delete_music('1~11');
+CREATE OR REPLACE PROCEDURE up_delete_music (
+    p_MusicIDs IN VARCHAR2
+)
+IS
+    v_deleted_count NUMBER := 0;
+BEGIN
+    IF INSTR(p_MusicIDs, '~') > 0 THEN  -- ~로 구분된 문자열숫자를 받은 경우
+        FOR i IN (
+            SELECT TO_NUMBER(REGEXP_SUBSTR(p_MusicIDs, '\d+', 1, 1)) AS start_MusicID,
+                   TO_NUMBER(REGEXP_SUBSTR(p_MusicIDs, '\d+', 1, 2)) AS end_MusicID
+            FROM dual
+        ) LOOP
+            FOR j IN i.start_MusicID..i.end_MusicID LOOP
+                DELETE FROM Music
+                WHERE MusicID = j;
+                v_deleted_count := v_deleted_count + SQL%ROWCOUNT;
+            END LOOP;
+        END LOOP;
+    ELSE -- 쉼표로 구분된 MusicID들을 받은 경우 또는 단일 MusicID를 받은 경우
+        FOR i IN (
+            SELECT TO_NUMBER(REGEXP_SUBSTR(p_MusicIDs, '\d+', 1, LEVEL)) AS MusicID
+            FROM dual
+            CONNECT BY LEVEL <= REGEXP_COUNT(p_MusicIDs, '\d+')
+        ) LOOP
+            DELETE FROM Music
+            WHERE MusicID = i.MusicID;
+            v_deleted_count := v_deleted_count + SQL%ROWCOUNT;
+        END LOOP;
+    END IF;
+
+    IF v_deleted_count = 0 THEN
+        DBMS_OUTPUT.PUT_LINE('해당하는 음악 아이디의 음악을 찾을 수 없습니다.');
+    ELSE
+        COMMIT;
+        DBMS_OUTPUT.PUT_LINE('음악이 성공적으로 삭제되었습니다.');
+    END IF;
+EXCEPTION
+    WHEN OTHERS THEN
+        DBMS_OUTPUT.PUT_LINE('음악을 삭제하는 도중 오류가 발생했습니다: ' || SQLERRM);
+        ROLLBACK;
+END;
+
+----------------------------음악 컨텐츠 조회 ------------------------------------
+----------------------------음악 컨텐츠 조회 ------------------------------------
+
+CREATE OR REPLACE PROCEDURE up_musicinfo (
+    p_YearMonth IN VARCHAR2
+)
+AS
+    v_StartDate DATE;
+    v_EndDate DATE;
+BEGIN
+    v_StartDate := TO_DATE(p_YearMonth || '01', 'YYYYMMDD');
+    v_EndDate := LAST_DAY(v_StartDate);
+    
+    FOR musicinfo IN (
+        SELECT Title, Duration, cate, content
+        FROM Music
+        WHERE TRUNC(Duration, 'MM') = v_StartDate
+    ) LOOP
+        DBMS_OUTPUT.PUT_LINE('제목: ' || musicinfo.Title);
+        DBMS_OUTPUT.PUT_LINE('감상가능기간: ' || TO_CHAR(musicinfo.Duration, 'YYYY-MM-DD'));
+        DBMS_OUTPUT.PUT_LINE('장르: ' || musicinfo.cate);
+        DBMS_OUTPUT.PUT_LINE('내용: ' || musicinfo.content);
+        DBMS_OUTPUT.PUT_LINE('---------------------------------------');
+    END LOOP;
+    
+EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+        DBMS_OUTPUT.PUT_LINE('해당 월에 감상 가능한 음악 컨텐츠가 없습니다.');
+    WHEN OTHERS THEN
+        DBMS_OUTPUT.PUT_LINE('음악 컨텐츠 조회 중 오류가 발생했습니다: ' || SQLERRM);
+END;
+
+----------------------------------국제선 운임 작성 ---------------------------
+----------------------------------국제선 운임 작성 ---------------------------
+----------------------------------국제선 운임 작성 ---------------------------
+--국제선 기본운임 작성 쿼리
+--EXEC  up_createifare('ICN', 'FUK', '일반석', 150000, 110000, 20300, 21000, '#admin003');
+--                    (keynum, starta, arrive, sg, fare, redis, tax, fuelch, adminid)
+
+CREATE OR REPLACE PROCEDURE up_createifare (
+    
+    p_starta IN VARCHAR2,
+    p_arrive IN VARCHAR2,
+    p_sg IN VARCHAR2,
+    p_fare IN NUMBER,
+    p_redis IN NUMBER,
+    p_tax IN NUMBER,
+    p_fuelch IN NUMBER,
+    p_adminid IN VARCHAR2
+    )
+IS
+    v_admin_count NUMBER;
+    v_keynum ifare.keynum%TYPE;
+BEGIN
+    -- 관리자 권한 확인
+    SELECT COUNT(*)
+    INTO v_admin_count
+    FROM Adminstrator
+    WHERE AdminID = p_adminid;
+
+    IF v_admin_count = 0 THEN
+        DBMS_OUTPUT.PUT_LINE('해당 관리자는 권한이 없습니다.');
+        RETURN;
+    END IF;
+
+    -- KEYNUM 값 한개씩 증가
+    SELECT NVL(MAX(keynum), 0) + 1 INTO v_keynum FROM ifare;
+
+    -- 운임 정보 작성
+    INSERT INTO ifare (keynum, starta, arrive, sg, fare, redis, tax, fuelch, adminid)
+    VALUES (v_keynum, p_starta, p_arrive, p_sg, p_fare, p_redis, p_tax, p_fuelch, p_adminid);
+    DBMS_OUTPUT.PUT_LINE('운임 정보가 성공적으로 추가되었습니다.');
+EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+        DBMS_OUTPUT.PUT_LINE('해당하는 관리자가 없습니다.');
+END;
+
+------------------------------------------------------------------------------
+
+--국제선 운임 테이블 수정쿼리
+--국제선 운임 테이블 수정쿼리
+--EXEC up_updateifare(3, 'IC', 'FU', '반석', 333333, 333333, 33333, 33333, '#admin001');
+--                   (keynum, starta, arrive, sg, fare, redis, tax, fuelch, adminid)
+--EXEC up_updateifare(3, NULL, NULL, '쮸쀼', NULL, NULL, NULL, NULL, '#admin005');
+--                  일부만 수정하고싶을때에는 NULL값을 준다.
+--                  수정의 경우 adminid는 권한확인에만 쓰임
+CREATE OR REPLACE PROCEDURE up_updateifare (
+    p_keynum IN NUMBER,
+    p_starta IN VARCHAR2 DEFAULT NULL,
+    p_arrive IN VARCHAR2 DEFAULT NULL,
+    p_sg IN VARCHAR2 DEFAULT NULL,
+    p_fare IN NUMBER DEFAULT NULL,
+    p_redis IN NUMBER DEFAULT NULL,
+    p_tax IN NUMBER DEFAULT NULL,
+    p_fuelch IN NUMBER DEFAULT NULL,
+    p_adminid IN VARCHAR2
+)
+IS
+    v_admin_count NUMBER;
+BEGIN
+    -- 관리자 권한 확인
+    SELECT COUNT(*)
+    INTO v_admin_count
+    FROM Adminstrator
+    WHERE AdminID = p_adminid;
+
+    IF v_admin_count = 0 THEN
+        DBMS_OUTPUT.PUT_LINE('해당 관리자는 권한이 없습니다.');
+        RETURN;
+    END IF;
+
+    -- 매개변수가 NULL이 아니면 해당 값으로 수정
+    UPDATE ifare
+    SET starta = COALESCE(p_starta, starta),
+        arrive = COALESCE(p_arrive, arrive),
+        sg = COALESCE(p_sg, sg),
+        fare = COALESCE(p_fare, fare),
+        redis = COALESCE(p_redis, redis),
+        tax = COALESCE(p_tax, tax),
+        fuelch = COALESCE(p_fuelch, fuelch)
+    WHERE keynum = p_keynum;
+    
+    DBMS_OUTPUT.PUT_LINE('운임 정보가 성공적으로 수정되었습니다.');
+EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+        DBMS_OUTPUT.PUT_LINE('해당하는 관리자가 없습니다.');
+END;
+
+------------------------------국제선 운임 테이블  삭제 ------------------
+------------------------------국제선 운임 테이블  삭제 ------------------
+CREATE OR REPLACE PROCEDURE up_deleteifare (
+    p_range_or_nums IN VARCHAR2,
+    p_adminid IN VARCHAR2
+)
+IS
+    v_admin_count NUMBER;
+    v_deleted_count NUMBER := 0;
+BEGIN
+    -- 관리자 권한 확인
+    SELECT COUNT(*)
+    INTO v_admin_count
+    FROM Adminstrator
+    WHERE AdminID = p_adminid;
+
+    IF v_admin_count = 0 THEN
+        DBMS_OUTPUT.PUT_LINE('해당 관리자는 권한이 없습니다.');
+        RETURN;
+    END IF;
+
+    -- 쉼표로 구분된 키넘들 파싱하여 삭제
+    IF INSTR(p_range_or_nums, '~') > 0 THEN -- 범위 형태로 받은 경우
+        FOR i IN (
+            SELECT TO_NUMBER(REGEXP_SUBSTR(p_range_or_nums, '\d+', 1, 1)) AS start_keynum,
+                   TO_NUMBER(REGEXP_SUBSTR(p_range_or_nums, '\d+', 1, 2)) AS end_keynum
+            FROM dual
+        ) LOOP
+            FOR j IN i.start_keynum..i.end_keynum LOOP
+                DELETE FROM ifare -- ifare 테이블명 수정
+                WHERE keynum = j;
+                v_deleted_count := v_deleted_count + SQL%ROWCOUNT;
+            END LOOP;
+        END LOOP;
+    ELSE -- 쉼표로 구분된 키넘들을 받은 경우 또는 단일 키넘을 받은 경우
+        FOR i IN (
+            SELECT TO_NUMBER(REGEXP_SUBSTR(p_range_or_nums, '\d+', 1, LEVEL)) AS keynum
+            FROM dual
+            CONNECT BY LEVEL <= REGEXP_COUNT(p_range_or_nums, '\d+')
+        ) LOOP
+            DELETE FROM ifare -- ifare 테이블명 수정
+            WHERE keynum = i.keynum;
+            v_deleted_count := v_deleted_count + SQL%ROWCOUNT;
+        END LOOP;
+    END IF;
+
+    -- 삭제된 행 수가 0이면 해당하는 운임 정보가 없다고 출력
+    IF v_deleted_count = 0 THEN
+        DBMS_OUTPUT.PUT_LINE('해당하는 운임 정보가 없습니다.');
+    ELSE
+        DBMS_OUTPUT.PUT_LINE(v_deleted_count || '개의 운임 정보가 성공적으로 삭제되었습니다.');
+    END IF;
+EXCEPTION
+    WHEN OTHERS THEN
+        DBMS_OUTPUT.PUT_LINE('운임 정보를 삭제하는 도중 오류가 발생했습니다.');
+END;
+
+-------------------- 국내선 운임  작성 -----------------
+-------------------- 국내선 운임  작성 -----------------
+-------------------- 국내선 운임  작성 -----------------
+CREATE OR REPLACE PROCEDURE up_createdfare (
+    p_peak IN VARCHAR2,
+    p_discount IN VARCHAR2,
+    p_timezone IN VARCHAR2,
+    p_sg IN VARCHAR2,
+    p_route IN VARCHAR2,
+    p_fare IN NUMBER,
+    p_redis IN NUMBER,
+    p_adminid IN VARCHAR2,
+    p_wknddy IN VARCHAR2
+)
+IS
+    v_admin_count NUMBER;
+    v_keynum dfare.keynum%TYPE;
+BEGIN
+    -- 관리자 권한 확인
+    SELECT COUNT(*)
+    INTO v_admin_count
+    FROM Adminstrator
+    WHERE AdminID = p_adminid;
+
+    IF v_admin_count = 0 THEN
+        DBMS_OUTPUT.PUT_LINE('해당 관리자는 권한이 없습니다.');
+        RETURN;
+    END IF;
+
+    -- KEYNUM 값 설정
+    SELECT NVL(MAX(keynum), 0) + 1 INTO v_keynum FROM dfare;
+
+    -- 운임 정보 작성
+    INSERT INTO dfare (keynum, peak, discount, timezone, sg, route, fare, redis, adminid, wknddy)
+    VALUES (v_keynum, p_peak, p_discount, p_timezone, p_sg, p_route, p_fare, p_redis, p_adminid, p_wknddy);
+
+    DBMS_OUTPUT.PUT_LINE('운임 정보가 성공적으로 추가되었습니다.');
+EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+        DBMS_OUTPUT.PUT_LINE('해당하는 관리자가 없습니다.');
+    WHEN OTHERS THEN
+        DBMS_OUTPUT.PUT_LINE('운임 정보를 추가하는 도중 오류가 발생했습니다.');
+END;
+-----------------------------------국내선 운임 수정 
+-----------------------------------국내선 운임 수정 
+CREATE OR REPLACE PROCEDURE up_updatedfare (
+    p_keynum IN dfare.keynum%TYPE,
+    p_peak IN VARCHAR2 DEFAULT NULL,
+    p_discount IN VARCHAR2 DEFAULT NULL,
+    p_timezone IN VARCHAR2 DEFAULT NULL,
+    p_sg IN VARCHAR2 DEFAULT NULL,
+    p_route IN VARCHAR2 DEFAULT NULL,
+    p_fare IN NUMBER DEFAULT NULL,
+    p_redis IN NUMBER DEFAULT NULL,
+    p_adminid IN VARCHAR2,
+    p_wknddy IN VARCHAR2 DEFAULT NULL
+)
+IS
+    v_admin_count NUMBER;
+BEGIN
+    -- 관리자 권한 확인
+    SELECT COUNT(*)
+    INTO v_admin_count
+    FROM Adminstrator
+    WHERE AdminID = p_adminid;
+
+    IF v_admin_count = 0 THEN
+        DBMS_OUTPUT.PUT_LINE('해당 관리자는 권한이 없습니다.');
+        RETURN;
+    END IF;
+
+    -- 운임 정보 수정
+    UPDATE dfare
+    SET peak = COALESCE(p_peak, peak),
+        discount = COALESCE(p_discount, discount),
+        timezone = COALESCE(p_timezone, timezone),
+        sg = COALESCE(p_sg, sg),
+        route = COALESCE(p_route, route),
+        fare = COALESCE(p_fare, fare),
+        redis = COALESCE(p_redis, redis),
+        wknddy = COALESCE(p_wknddy, wknddy)
+    WHERE keynum = p_keynum;
+
+    DBMS_OUTPUT.PUT_LINE('운임 정보가 성공적으로 수정되었습니다.');
+EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+        DBMS_OUTPUT.PUT_LINE('해당하는 운임 정보가 없습니다.');
+    WHEN OTHERS THEN
+        DBMS_OUTPUT.PUT_LINE('운임 정보를 수정하는 도중 오류가 발생했습니다.');
+END;
+
+------------------------------------국내선 운임 삭제 프로시저
+------------------------------------국내선 운임 삭제 프로시저
+--국내선 운임정보 삭제 프로시저
+--EXEC up_deletedfare(13, '#admin001');
+--keynum값과 관리자ID를 매개변수로 받아 해당 행의 정보를 삭제
+--EXEC up_deletedfare('9~13', '#admin001');
+--                  문자열로 숫자와 숫자 사이에 '~' 를 입력한 값을 주면 다수행의 삭제가 가능
+--EXEC up_deletedfare('9,13,4,7', '#admin001');
+--                  ','를 주면 해당하는 번호만 골라서 삭제 가능
+CREATE OR REPLACE PROCEDURE up_deletedfare (
+    p_range_or_nums IN VARCHAR2,
+    p_adminid IN VARCHAR2
+)
+IS
+    v_admin_count NUMBER;
+    v_deleted_count NUMBER := 0;
+BEGIN
+    -- 관리자 권한 확인
+    SELECT COUNT(*)
+    INTO v_admin_count
+    FROM Adminstrator
+    WHERE AdminID = p_adminid;
+
+    IF v_admin_count = 0 THEN
+        DBMS_OUTPUT.PUT_LINE('해당 관리자는 권한이 없습니다.');
+        RETURN;
+    END IF;
+
+    -- 쉼표로 구분된 키넘들 파싱하여 삭제
+   IF INSTR(p_range_or_nums, '~') > 0 THEN -- 범위 형태로 받은 경우
+    FOR i IN (
+        SELECT TO_NUMBER(REGEXP_SUBSTR(p_range_or_nums, '\d+', 1, 1)) AS start_keynum,
+               TO_NUMBER(REGEXP_SUBSTR(p_range_or_nums, '\d+', 1, 2)) AS end_keynum
+        FROM dual
+    ) LOOP
+        FOR j IN i.start_keynum..i.end_keynum LOOP
+            DELETE FROM dfare -- dfare 테이블명 수정
+            WHERE keynum = j;
+            v_deleted_count := v_deleted_count + SQL%ROWCOUNT;
+        END LOOP;
+    END LOOP;
+ELSE -- 쉼표로 구분된 키넘들을 받은 경우 또는 단일 키넘을 받은 경우
+    FOR i IN (
+        SELECT TO_NUMBER(REGEXP_SUBSTR(p_range_or_nums, '\d+', 1, LEVEL)) AS keynum
+        FROM dual
+        CONNECT BY LEVEL <= REGEXP_COUNT(p_range_or_nums, '\d+')
+    ) LOOP
+        DELETE FROM dfare -- dfare 테이블명 수정
+        WHERE keynum = i.keynum;
+        v_deleted_count := v_deleted_count + SQL%ROWCOUNT;
+    END LOOP;
+END IF;
+
+    -- 삭제된 행 수가 0이면 해당하는 운임 정보가 없다고 출력
+    IF v_deleted_count = 0 THEN
+        DBMS_OUTPUT.PUT_LINE('해당하는 운임 정보가 없습니다.');
+    ELSE
+        DBMS_OUTPUT.PUT_LINE(v_deleted_count || '개의 운임 정보가 성공적으로 삭제되었습니다.');
+    END IF;
+EXCEPTION
+    WHEN OTHERS THEN
+        DBMS_OUTPUT.PUT_LINE('운임 정보를 삭제하는 도중 오류가 발생했습니다.');
+END;
 
 -------------------------------------------- 실제 실행 ------------------------------------------------------------------
 -------------------------------------------- 실제 실행 ------------------------------------------------------------------
@@ -3582,24 +4588,41 @@ select * from loginhis;
 exec mk_scplane_02 ('SEOUL','JEJU','240328',1,'일반석');
 exec mk_scplane_02 ('SEOUL','LAS','240327',1,'일반석');
 exec mk_scplane_02 ('SEOUL','JEJU','240420',1,'일반석');
-select * from scplane;
+select  S.* ,TO_CHAR(DDATE , ' HH24 :MI') from scplane S;
 select * from seat_num;
 ----------------------------- 예약 ( 결제 ) 기능 ------
 ----------------------------- 예약 ( 결제 ) 기능 ------
 ----------------------------- 예약 ( 결제 ) 기능 ------
 ----------------------------- 예약 ( 결제 ) 기능 ------
 
-
+select * from userdetail;
 exec MK_PAYREFUND_01('2403270625','GMP','CJU','20A',1,'정상','카드',3);
 exec MK_PAYREFUND_01('2403270915','GMP','CJU','20A',1,'정상','카드',3);
 exec MK_PAYREFUND_01('2403271330','GMP','CJU','22A',1,'정상','카드',3);
-exec MK_PAYREFUND_01('2403271940','ICN','LAS','22A',1,'정상','카드',3);
+exec MK_PAYREFUND_01('2403271940','ICN','LAS','20A',1,'정상','카드',3);
 
+delete mtracking 
+SELECT * FROM GIFTCARD;
+SELECT * FROM PAYREFUND
+exec MK_PAYREFUND_01('2404051355','ICN','FUK','20A',1,'정상','기프트카드',3,'5753-1680-5134-7860',442506);
+
+update userdetail set totalmile = 5000000 where userid = 'user001';
+exec MK_PAYREFUND_01('2403200930','GMP','CJU','20A',1,'정상','마일리지',3);
+
+exec MK_PAYREFUND_01('2405100920','ICN','BOS','20A',1,'정상','카드',3);
+exec MK_PAYREFUND_01('2405100920','ICN','BOS','10B',1,'정상','카드',3);
+exec MK_PAYREFUND_01('2405100920','ICN','BOS','11A',1,'정상','카드',3);
+exec MK_PAYREFUND_01('2405100920','ICN','BOS','10A',1,'정상','카드',3);
+exec MK_PAYREFUND_01('2405100930','ICN','BOS','12A',1,'정상','카드',3);
+exec MK_PAYREFUND_01('2405100930','ICN','BOS','11A',1,'정상','카드',3);
+
+update userdetail set totalmile =0 where userid = 'user001'
 select * from userdetail;
 select * from scplane;
 select S.* ,DDATE,TO_CHAR(DDATE,'HH24:MI') from scplane S;
 select * from seat_num;
-
+DELETE PAYREFUND;
+select * from mtracking;
 --------------로그인을 필수로해야함----------------------
 --------------로그인을 필수로해야함----------------------
 --------------로그인을 필수로해야함----------------------
@@ -3613,13 +4636,14 @@ exec mk_scplane_02 ('SEOUL','BEIJING','240420',1,'일반석');
 exec mk_scplane_02 ('SEOUL','NYC','240420',1,'일반석');
 ---------------------예약  내역 조회-----------------
 ---------------------예약  내역 조회-----------------
-
+SELECT * FROM GIFTCARD;
 exec mk_payrefund_04 
 select * from USERDETAIL;
 SELECT * FROM MTRACKING;
 delete mtracking;
 select * from payrefund;
 delete userdetail;
+
 -------------------------------------------------
 -------------------------------------------------
 -------------------------------------------------
@@ -3627,14 +4651,17 @@ delete userdetail;
 exec mk_payrefund_03(2);
 delete payrefund ;
 delete refund;
+delete bpass;
 select * from refund;
 --------------------------------예약 후 탑승권 발급
 --------------------------------예약 후 탑승권 발급
 --------------------------------예약 후 탑승권 발급
 
-EXEC SE_PAYREFUND_01 (4,TO_DATE('2024-03-27 19:40', 'YYYY-MM-DD HH24:MI'),'Hong', 'GilDong');
+EXEC SE_PAYREFUND_01 (1,TO_DATE('2024-03-27 09:15', 'YYYY-MM-DD HH24:MI'),'Hong', 'GilDong');
 EXEC SE_PAYREFUND_01 (3,TO_DATE('2024-03-27 13:30', 'YYYY-MM-DD HH24:MI'),'Hong', 'GilDong');
 
+select * from bpass
+select * from payrefund;
 ---------------------수화물 규정검색--------------
 ---------------------수화물 규정검색--------------
 
@@ -3673,7 +4700,7 @@ EXEC SE_CSERVICE_02 ( '886','동북아시아','대만','02-2518-2200', '','한�
 
 ---------------------지역별 서비스 작성한 글 조회
 
-EXEC SE_CSERVICE_03('#admin004');
+EXEC SE_CSERVICE_03('#admin003');
 -----------------------
 EXEC SE_CSERVICE_04( pnum => '61', pcall1 => '03-9262-6111');
 
@@ -3684,23 +4711,26 @@ EXEC  SE_CSERVICE_05('61');
 ---------------------------동찬 ---------------------------------
 ---------------------------동찬 ---------------------------------
 
+---------------------------동찬 ---------------------------------
+---------------------------동찬 ---------------------------------
+SELECT * FROM CUSTOMERC
+--고객의 말씀 조회
+EXEC dc_customerc_01(1);
+EXEC dc_customerc_01(6);
 
 ---------------고객의 말씀 작성 ------------------
 ---------------고객의 말씀 작성 ------------------
----------------고객의 말씀 작성 ------------------ ?
+---------------고객의 말씀 작성 ------------------ 
 BEGIN 
     dc_customerc_02(
-    '칭송', '공항서비스', '이', '동찬', '(82) 10-1234-5678',
-    'example@email.com', '칭찬해요 ~', '모두 너무 친절합니다',
-    '1232-3456-7890-1323', '34534534', 1,
+    '불만', '공항서비스', '김', '어둠', '(82) 10-5464-6788',
+    'QNFAKSDLDI@email.com', '흠','모두 불만이에요',
+    '1232-4565-7232-6555', '123344', 0,
     '서울', '뉴욕', TO_DATE('2024-03-10', 'YYYY-MM-DD'),
-    'KE123'
+    'KE331'
     );
     END;
 
-
---고객의 말씀 조회
-EXEC dc_customerc_01(1);
 
 
 
@@ -3710,7 +4740,7 @@ EXEC dc_customerc_01(1);
 --고객의 말씀 수정 -입력
 
 CALL dc_customerc_03(
-     1,   '칭송',    '공항서비스',
+     6,   '칭송',    '공항서비스',
      '이',   '호통',    '(82) 10-1234-5678',
      'example@email.com',    '칭찬해요 ~',    '모두 너무 친절합니다',
    '1232-3456-7890-1323',    '34534534',    1,
@@ -3721,25 +4751,27 @@ CALL dc_customerc_03(
 --------------------------고객의 말씀 삭제 ---------------------
 -- 고객의말씀 DELETE -입력
 
-
+EXEC dc_customerc_04(6);
 
 
 ---------------기내식 조회 ------------------------------------
 ---------------기내식 조회 ------------------------------------
 ---------------기내식 조회 ------------------------------------
+SELECT * FROM FLIGHT_MEAL;
 
-EXEC dc_flight_meal_01(1);
+EXEC dc_flight_meal_01(4);
 
 -------------------------기내식 작성 --------------------------
 -------------------------기내식 작성 --------------------------
 
- EXECUTE dc_flight_meal_02('아이스크림');
+
+EXECUTE dc_flight_meal_02('아이스크림','meal.jpg');
 
 
 ------------------------------기내식 수정 ------------------------------
 ------------------------------기내식 수정 ------------------------------
 
-EXECUTE dc_flight_meal_03(1,'아이스크림');
+EXECUTE dc_flight_meal_03(1,'삼겹살');
 
 ---------------------------기내식 삭제 
 ---------------------------기내식 삭제 
@@ -3751,9 +4783,8 @@ exec dc_flight_meal_04(1);
 ----------------------기프트 카드 자동생성 ------------------------
 ----------------------기프트 카드 자동생성 ------------------------
 ----------------------기프트 카드 자동생성 ------------------------
-
+SELECT * FROM GIFTCARD;
 EXEC DC_GIFTCARD_02('항상 고마워','이동찬','01020893028','오동찬','01023938474',500000);
-select * from giftcard
 
 
 ------------------------------좌석번호 생성 -----------------------------------
@@ -3761,32 +4792,34 @@ select * from giftcard
 ------------------------------좌석번호 생성 -----------------------------------
 ------------------------------좌석번호 생성 -----------------------------------
 
-EXEC DC_SEAT_NUM('HL7553','03A','일반석');
+EXEC DC_SEAT_NUM('HL7553','25A','일반석');
 
+SELECT * FROM SEAT_NUM;
 
 ------------------------------생성과 동시에 pdf파일도 입력되게하는 업데이트 프로시저
 ------------------------------생성과 동시에 pdf파일도 입력되게하는 업데이트 프로시저
-------------------------------생성과 동시에 pdf파일도 입력되게하는 업데이트 프로시저
+------------------------------생성과 동시에 pdf파일도 입력되게하는 업데이트 프로시저 이벤트 작성에서사용
 
-EXEC EVENT_BLOB_INSERT('1','fare.pdf');
-select * from event;
+
+--  EXEC EVENT_BLOB_INSERT('1','fare.pdf');
 
 ------------------------------생성과 동시에 pdf파일도 기내식 입력되게하는 업데이트 프로시저
 ------------------------------생성과 동시에 pdf파일도 기내식입력되게하는 업데이트 프로시저
-------------------------------생성과 동시에 pdf파일도 기내식입력되게하는 업데이트 프로시저
-EXEC FLIGHT_meal_BLOB_INSERT('meal.htm')
+------------------------------생성과 동시에 pdf파일도 기내식입력되게하는 업데이트 프로시저 작성에서사용
+--  EXEC FLIGHT_meal_BLOB_INSERT('meal.htm')
 -------------------------------------이벤트 생성
 -------------------------------------이벤트 생성
 -------------------------------------이벤트 생성
 
-
+ SELECT * FROM  EVENT;
+ 
 BEGIN
     DC_EVENT
-    ('콘서트', '2024 음악축제', '2024-04-15', '2024-04-17', '#admin001', 'meal.htm');
+    ('콘서트', '괌정부관광청 추천 일정으로 지금 바로 떠나볼 괌! ', '2024-04-15', '2024-04-17', '#admin001', 'event.jpg');
 END;
 
 --------------------이벤트 참여 --------------------------
-
+SELECT * FROM ENTRYS;
 BEGIN
     EnterEvent('user006', '01067890123', 1);
     EnterEvent('user007', '01078901234', 1);
@@ -3810,16 +4843,23 @@ BEGIN
     EnterEvent('user005', '01001234567', 4);
     COMMIT;
 END;
+-----------------------------------이벤트 -------------------------
+-----------------------------------이벤트 -------------------------
+-----------------------------------이벤트 -------------------------
 
+--이벤트 할인 카테고리 목록 조회
+EXEC SELEVENT('응모');
+----------- 종료된 이벤트 목록 조회
+EXEC ENDEDEVENT;
+------------
 -----------------------------당첨자 조회-----------------------------
+
 -----------------------------당첨자 조회-----------------------------
 
 exec DrawEventWinners(1);
 exec DrawEventWinners(2);
 exec DrawEventWinners(3);
 exec DrawEventWinners(4);
-
-EXEC SELWINNER(1);
 
 
 -----------------------------------------대안------------------------------------
@@ -3831,13 +4871,14 @@ EXEC SELWINNER(1);
 ---------유저 정보 조회 ---------------------------------
 ---------유저 정보 조회 ---------------------------------
 EXEC pd_da_userdetail_04('user001');
-
-
-
+select * from mtracking;
+select * from userdetail;
+update userdetail set usergrade = '스카이패스 클럽';
 
 -----------------------회원 가족 신청 ----------------------
 -----------------------회원 가족 신청 ----------------------
 
+SELECT * FROM RFAMILY;
 EXEC pd_da_Rfamily_01('본','user001','user001');
 EXEC pd_da_Rfamily_01('녀','user001','user002');
 EXEC pd_da_Rfamily_01('자','user001','user003');
@@ -3847,7 +4888,7 @@ EXEC pd_da_Rfamily_01('부','user001','user005');
 -----------------------가족 정보 조회,수정,삭제 ---------------------
 -----------------------맨 앞의 매개변수로 1.수정 2.조회 3.삭제------------
 -----------------------맨 앞의 매개변수로 1.수정 2.조회 3.삭제------------
-EXEC pd_da_Rfamily_03(2,'user001');
+EXEC pd_da_Rfamily_03(3,'user001');
 
 
 
@@ -3863,9 +4904,13 @@ EXEC pd_da_Rfamily_03(2,'user001');
 --- 마일리지 내역 -----
 EXEC da_Mtracking_04('user001','적립',1);
 select * from userdetail;
+
+delete mtracking;
 -----------------------------------------
 ---------------------------------------------------- job 으로 등록
 ---------------------------------------------------- job 으로 등록
+SELECT * 
+  FROM USER_JOBS;
 DECLARE
     vjob_no NUMBER;
 BEGIN
@@ -3880,48 +4925,137 @@ DBMS_JOB.SUBMIT(
 END;
 
 BEGIN
-  DBMS_JOB.NEXT_DATE(5, SYSDATE + 1/24/60);
+  DBMS_JOB.NEXT_DATE(28, SYSDATE + 1/24/60);
 END;
 
 BEGIN
-    DBMS_JOB.REMOVE(5);
+    DBMS_JOB.REMOVE(25);
     COMMIT;
 END;
+
+update userdetail set totalmile = 500000 where userid = 'user001'
 select * from userdetail;
+select * from mtracking;
 
 
 --------------------------------------------------------------------
 --------------------------------------------------------------------
 -----------------------------------영은---------------------------------
 -----------------------------------영은---------------------------------
-
---공지사항 생성을 위한 프로시저
-EXEC ye_Notice_01('10', '새로운 공지사항', '새로운 내용', '새로운 주제', '#admin003');
-
-
----- 약관 추가 및 수정
----- 약관 추가 및 수정
----- 약관 추가 및 수정
- EXEC ye_Update_Contract(11, '필수', '2023년 02월 14일 추가됨', '추가완료');
- EXEC ye_Update_Contract(11, '선택', '2024년 03월 13일 수정됨', '수정완료');
- 
- ---------공지사항 전제 조회--------------
- ---------공지사항 전제 조회--------------
- ---------공지사항 전제 조회--------------
+-------공지사항 전체조회-------
  EXEC ye_Notice_02;
+--공지사항 생성을 위한 프로시저
+
  --공지사항 삭제를 위한 프로시저
  --공지사항 삭제를 위한 프로시저
  EXEC ye_Notice_04('4');
-
+EXEC ye_Notice_01('6', '새로운 공지사항', '새로운 내용', '새로운 주제', '#admin003');
 -- 공지사항 수정을 위한 프로시저
 -- 공지사항 수정을 위한 프로시저
  EXEC ye_Notice_03('1', '세관신고 절차가 굉장히 복잡해짐');
 
+---- 약관 추가 및 수정
+---- 약관 추가 및 수정
+SELECT * FROM CONTRACT;
+---- 약관 추가 및 수정
+ EXEC ye_Update_Contract(11, '필수', '2023년 02월 14일 추가됨', '추가완료');
+ EXEC ye_Update_Contract(12, '선택', '2024년 03월 13일 수정됨', '수정완료');
+ 
 
 
 
 
 
+-------------------------------------------
+----------------------명건 ---------------------
+----------------------명건 ---------------------
+------------------영화 정보 작성 --------------------
+------------------영화 정보 작성 --------------------
+EXEC up_create_movie('어른 김장하', TO_DATE('2024-03-31', 'YYYY-MM-DD'), '다큐멘터리', '(다큐멘터리) 경남 진주의 어느 한약방, 그곳에는 60년 동안 한약방을 지킨 한약사 김장하 선생이 있다. 전 재산을 사회에 환원하고도 인터뷰 한 번 하지 않고 많은 이들을 도우면서도 자신의 옷 한 벌 허투루 사지 않는 그를 만나본다.', '한국어');
+EXEC up_create_movie('아쿠아맨과 로스트 킹덤', TO_DATE('2024-03-31', 'YYYY-MM-DD'), '액션', '세상을 뒤흔들 강력한 아이템을 손에 넣은 블랙 만타는 아버지를 죽인 원수 아쿠아맨을 무너뜨리려 한다.', '영어, 스페인어');
+EXEC up_create_movie('화란', TO_DATE('2024-03-31', 'YYYY-MM-DD'), '드라마', '(드라마) 새아버지의 반복되는 폭력으로 인해 돈을 모아 엄마와 같이 네덜란드로 떠나는 것이 유일한 희망인 소년 연규. 어느 날 동생을 지키기 위해 싸움을 벌이게 되고 합의금이 필요한 연규에게 조직의 중간 보스 치건이 도움을 준다.', '한국어');
+EXEC up_create_movie('만추 리마스터링', TO_DATE('2024-03-31', 'YYYY-MM-DD'), '로맨스', '(로맨스) 수인번호 2537번 애나는 7년째 수감 중, 어머니의 부고로 3일간의 휴가가 허락된다. 장례식에 가기 위해 탄 시애틀행 버스에 쫓기듯이 탄 훈이 차비를 빌린다. 훈은 돈을 갚고 찾아가겠다며 애나에게 억지로 시계를 채워준다.', '한국어');
+EXEC up_create_movie('30일', TO_DATE('2024-03-31', 'YYYY-MM-DD'), '코미디', '(코미디) 지성과 외모, 찌질함까지 타고난 정열은 능력과 커리어, 똘기까지 타고난 나라와 영화같은 사랑을 했지만 서로의 찌질함과 똘기를 견디다 못해 마침내 이혼을 결심한다. 그러나 이혼을 30일 앞둔 둘은 같이 교통사고를 당한다.', '한국어');
+EXEC up_create_movie('거미집', TO_DATE('2024-03-31', 'YYYY-MM-DD'), '코미디', '(코미디) 성공적이었던 데뷔작 이후, 악평과 조롱에 시달리던 김감독은 촬영이 끝난 영화 거미집의 새로운 결말에 대한 꿈을 며칠째 꾸고 있다. 그대로만 찍으면 틀림없이 걸작이 된다는 예감에 딱 이틀간의 추가 촬영을 꿈꾼다.', '한국어');
+EXEC up_create_movie('천박사 퇴마 연구소: 설경의 비밀', TO_DATE('2024-03-31', 'YYYY-MM-DD'), '드라마', '(판타지) 대대로 마을을 지켜 온 당주집 장손이지만 정작 귀신은 믿지 않는 가짜 퇴마사 천박사는 사람의 마음을 꿰뚫는 통찰력으로 가짜 퇴마를 하며, 의뢰받은 사건들을 해결한다. 의뢰인 유경이 찾아와 거절하기 힘든 제안을 한다.', '한국어');
+EXEC up_create_movie('괴물', TO_DATE('2024-03-31', 'YYYY-MM-DD'), '드라마', '싱글맘 사오리는 아들의 행동이 이상해지자 학교를 찾아가 선생님과 상담을 하는데, 그날 이후 선생님과 학생들의 분위기가 심상치 않게 흐르기 시작한다.', '일본어');
+EXEC up_create_movie('넥스트 골 윈즈', TO_DATE('2024-03-31', 'YYYY-MM-DD'), '드라마', '2001년 FIFA 월드컵에서 31 대 0으로 패배한 것으로 악명 높은 아메리칸사모아 국가대표팀과 이 팀에 새롭게 부임한 다혈질 감독의 유쾌한 도전 실화를 담은 영화.', '영어');
+EXEC up_create_movie('오펜하이머', TO_DATE('2024-03-31', 'YYYY-MM-DD'), '드라마', '핵을 개발한 과학자 오펜하이머의 삶을 그린 영화. 세상을 구할지도, 파괴할지도 모르는 오펜하이머의 이야기를 담았다.', '영어');
+EXEC up_create_movie('1947 보스톤', TO_DATE('2024-04-30', 'YYYY-MM-DD'), '드라마', '(드라마) 1936년 베를린 올림픽 마라톤 금메달리스트 손기정은 시상대에서 가슴에 단 일장기를 가려 일제의 탄압으로 더 이상 달릴 수 없게 된다. 광복 이후 촉망받는 마라토너 윤복에게 기정은 보스톤 마라톤 대회에 나가자고 제안한다.', '한국어');
+EXEC up_create_movie('헝거게임: 노래하는 새와 뱀의 발라드', TO_DATE('2024-04-30', 'YYYY-MM-DD'), '액션', '헝거게임 10회를 맞아 멘토제가 도입되자 스노우는 루시 그레이의 멘토가 되고, 선과 악 사이에서 본능과 싸운다.', '영어');
+EXEC up_create_movie('범죄도시3', TO_DATE('2024-04-30', 'YYYY-MM-DD'), '범죄', '(범죄) 베트남 납치 살해범 검거 후 7년 뒤, 마석도는 서울 광수대로 발탁되어 새로운 팀원들과 함께 살인사건을 조사한다. 사건 조사 중 석도는 신종 마약 사건이 연루되었음을 알게 되고 수사를 확대한다.', '한국어');
+EXEC up_create_movie('트롤: 밴드 투게더', TO_DATE('2024-04-30', 'YYYY-MM-DD'), '애니메이션', '파피의 남자친구이자 최고의 아이돌 그룹 브로존의 멤버였던 브랜치는 납치당한 메인 보컬을 구하기 위해 흩어져 있는 브로존 멤버들을 불러 모은다.', '한국어');
+EXEC up_create_movie('트롤', TO_DATE('2024-04-30', 'YYYY-MM-DD'), '애니메이션', '모두가 행복한 트롤 왕국에 우울 종결자 버겐이 쳐들어온다. 긍정 공주 파피는 납치된 친구들을 구하기 위해 걱정병 친구 브랜치와 위험천만한 모험을 떠난다.', '한국어');
+EXEC up_create_movie('다운튼 애비 2', TO_DATE('2024-04-30', 'YYYY-MM-DD'), '드라마', '전 세계적으로 인기 있는 TV 시리즈 "다운튼 애비"를 영화로 만든 작품.', '영어');
+EXEC up_create_movie('에브리씽 에브리웨어 올 앳 원스', TO_DATE('2024-04-30', 'YYYY-MM-DD'), '액션', '빨래방을 운영하는 중국계 미국인 에벌린은 남편의 이혼 요구와 반항하는 딸로 인해 혼란에 빠지는데, 어느 날 멀티버스 안에서 살아가는 수만 명의 자신을 발견하게 된다.', '영어');
+
+
+-----------------------영화 정보 조회 ----------------
+---------------------영화 정보 조회 ----------------
+---------------------영화 정보 조회 ----------------
+EXEC up_movieinfo(202403);
+------------------영화 정보 수정 --------------------
+------------------영화 정보 수정 --------------------
+EXEC up_update_movie(0001,'가', TO_DATE('2024-03-31', 'YYYY-MM-DD'),'다','라','마');
+
+
+--------------------------영화 정보 삭제 ------------------------------
+--------------------------영화 정보 삭제 ------------------------------
+
+EXEC up_delete_movie(1);
+EXEC up_delete_movie('1~7');
+EXEC up_delete_movie('6~10');
+
+-----------
+-----------------------------국내선 운임 작성 -----------------------
+select * from dfare;
+
+EXEC up_createdfare('성수기', '특가', '선호', '일반석', 'SEOUL.GMP/GWANGJU.KWJ', 50000, 1000, '#admin001', '주말');
+
+---------------------------국내선 운임 수정---------------
+EXEC up_updatedfare(4, NULL, NULL, NULL, NULL, NULL, 888500, NULL, '#admin001', '주말');
+
+-------------------------------국내선 운임 삭제---------------------------
+EXEC up_deletedfare(1, '#admin001');
+
+--keynum값과 관리자ID를 매개변수로 받아 해당 행의 정보를 삭제
+--EXEC up_deletedfare('9~13', '#admin001');
+
+
+--------------------------TV 테이블 작성 프로시저 ----------------------
+--------------------------TV 테이블 작성 프로시저 ----------------------
+--EXEC up_create_TV('작은 불빛 시즌1 (1-2)', TO_DATE('2024-03-31', 'YYYY-MM-DD'), '드라마', '제2차 세계대전 때 나치로부터 오토 프랑크의 가족을 숨겨준 젊고 발랄한 비서 미프 히스의 이야기를 담은 드라마.');
+---------------------------------TV 정보 조회 --------------------------
+---------------------------------TV 정보 조회 --------------------------
+--EXEC up_tvinfo(202404);
+--------------------------TV 테이블 수정 프로시저 ---------------------------
+--------------------------TV 테이블 수정 프로시저 ---------------------------
+--
+--EXEC up_update_TV(13,NULL,TO_DATE('2024-04-20', 'YYYY-MM-DD'),NULL,NULL);
+--
+---------------------------TV 테이블 삭제 프로시저 ----------------
+---------------------------TV 테이블 삭제 프로시저 ----------------
+--select * from tv;
+--EXEC up_delete_TV(13);
+--EXEC up_delete_TV('1~16');
+--EXEC up_delete_TV('6,7,8,10');
+--
+-----------------------------------음악 테이블 작성 
+-----------------------------------음악 테이블 작성 
+--EXEC up_create_music('포레스텔라', TO_DATE('2024-03-31', 'YYYY-MM-DD'), '클래식', 'JTBC ˂팬텀싱어2˃ 에서 우승을 거머쥔 포레스텔라의 노래 모음집.');
+--
+------------------------------음악 테이블 조회 ----------------------
+------------------------------음악 테이블 조회 ----------------------
+--EXEC up_musicinfo(202404);
+-------------------음악 테이블 수정 ---------------------------------
+-------------------음악 테이블 수정 ---------------------------------
+--EXEC up_update_music(1,'쮸쀼쮸쀼',NULL,NULL,NULL);
+--
+---------------------------음악 테이블 삭제 ----------------------------
+---------------------------음악 테이블 삭제 ----------------------------
+--EXEC up_delete_music(1);
+--EXEC up_delete_music('2,5');
+--EXEC up_delete_music('1~11');
 ---------------------------------------------------------------------
 ---------------------------------------------------------------------
 ---------------------------------------------------------------------
